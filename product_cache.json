@@ -1,0 +1,183 @@
+{
+    "hp": {
+        "name": "HP",
+        "products": [],
+        "total": 0
+    },
+    "lenovo": {
+        "name": "Lenovo",
+        "products": [
+            {
+                "name": "Lenovo IdeaPad 3 11th Gen Intel Core i3 15.6\" FHD Thin & Light Laptop(8GB/512GB SSD/Windows 11/Offic",
+                "price_inr": 37380,
+                "processor": "Unknown",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 4.2,
+                "reviews": 1045,
+                "url": "https://www.amazon.in/dp/B0B2RBP83P",
+                "brand": "Lenovo",
+                "source": "Amazon"
+            },
+            {
+                "name": "Lenovo IdeaPad Slim 3 Intel Celeron N4020 14'' (35.56cm) HD Thin & Light Laptop (4GB/256GB SSD/Windo",
+                "price_inr": 29999,
+                "processor": "Unknown",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "HD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 4.0,
+                "reviews": 888,
+                "url": "https://www.amazon.in/dp/B09MM4FPMR",
+                "brand": "Lenovo",
+                "source": "Amazon"
+            },
+            {
+                "name": "Lenovo IdeaPad Slim 1 AMD Ryzen 3 3250U 15.6\" (39.62cm) FHD Thin & Light Laptop (8GB/512GB SSD/Windo",
+                "price_inr": 36996,
+                "processor": "Unknown",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 4.0,
+                "reviews": 604,
+                "url": "https://www.amazon.in/dp/B0B4JRH895",
+                "brand": "Lenovo",
+                "source": "Amazon"
+            },
+            {
+                "name": "Lenovo IdeaPad Slim 1 AMD Ryzen 5 3500U 15.6\" (39.62cm) FHD Thin & Light Laptop (8GB/512GB SSD/Windo",
+                "price_inr": 38799,
+                "processor": "Unknown",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 3.8,
+                "reviews": 344,
+                "url": "https://www.amazon.in/dp/B0B4JRBGQ8",
+                "brand": "Lenovo",
+                "source": "Amazon"
+            },
+            {
+                "name": "Lenovo V15 Intel Core i3 10th Gen 15.6\" Laptop (4GBRAM/256GB SSD/Windows 10 Home/1.45 kg) 82C500X4IH",
+                "price_inr": 26990,
+                "processor": "Unknown",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 10",
+                "weight_kg": 1.7,
+                "rating": 3.6,
+                "reviews": 22,
+                "url": "https://www.amazon.in/dp/B095YTYHR7",
+                "brand": "Lenovo",
+                "source": "Amazon"
+            },
+            {
+                "name": "Lenovo IdeaPad Slim 1 AMD Ryzen 3 7320U 15.6\" (39.62cm) FHD Laptop (8GB/512GB SSD/Win 11/Office 2021",
+                "price_inr": 34990,
+                "processor": "Unknown",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 3.5,
+                "reviews": 22,
+                "url": "https://www.amazon.in/dp/B0BT7468FG",
+                "brand": "Lenovo",
+                "source": "Amazon"
+            }
+        ],
+        "total": 6
+    },
+    "acer": {
+        "name": "Acer",
+        "products": [],
+        "total": 0
+    },
+    "dell": {
+        "name": "Dell",
+        "products": [
+            {
+                "name": "Dell New 14\" Latitude 3420- Intel I3 11Th Gen | 8 Gb | 256 Gb Ssd | 14\" Hd (1366 X 768) Pixels | Ubu",
+                "price_inr": 36990,
+                "processor": "Unknown",
+                "ram_gb": 8,
+                "storage_gb": 256,
+                "display_inch": 14.0,
+                "display_quality": "HD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 3.9,
+                "reviews": 35,
+                "url": "https://www.amazon.in/dp/B0BWK4RT4M",
+                "brand": "Dell",
+                "source": "Amazon"
+            }
+        ],
+        "total": 1
+    },
+    "asus": {
+        "name": "Asus",
+        "products": [
+            {
+                "name": "ASUS Chromebook Intel Celeron Dual Core N4500 - (4 GB/128 GB EMMC Storage/Chrome OS) CX1500CKA-NJ041",
+                "price_inr": 28990,
+                "processor": "Celeron",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 11,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "ChromeOS",
+                "weight_kg": 1.7,
+                "rating": 5.0,
+                "reviews": 1,
+                "url": "https://www.amazon.in/dp/B0DGQT1214",
+                "brand": "Asus",
+                "source": "Amazon"
+            }
+        ],
+        "total": 1
+    },
+    "last_updated": "2026-06-26 16:37"
+}

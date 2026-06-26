@@ -1,0 +1,27 @@
+{
+    "hp": {
+        "name": "HP",
+        "products": [],
+        "total": 0
+    },
+    "lenovo": {
+        "name": "Lenovo",
+        "products": [],
+        "total": 0
+    },
+    "acer": {
+        "name": "Acer",
+        "products": [],
+        "total": 0
+    },
+    "dell": {
+        "name": "Dell",
+        "products": [],
+        "total": 0
+    },
+    "asus": {
+        "name": "Asus",
+        "products": [],
+        "total": 0
+    }
+}
