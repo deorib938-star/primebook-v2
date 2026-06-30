@@ -31,3 +31,11 @@ body {
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: #141820; }
 ::-webkit-scrollbar-thumb { background: #C9A84C44; border-radius: 2px; }
+* {
+  font-size: 14px;
+}
+
+body {
+  font-size: 14px;
+  line-height: 1.6;
+}
