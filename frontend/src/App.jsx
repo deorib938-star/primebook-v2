@@ -2,8 +2,9 @@ import { useState } from "react"
 import Overview from "./pages/Overview"
 import News from "./pages/News"
 import PriceTracking from "./pages/PriceTracking"
-import SocialYoutube from "./pages/SocialYoutube"
+import SocialMedia from "./pages/SocialMedia"
 import AIResearch from "./pages/AIResearch"
+
 
 export default function App() {
   const [activePage, setActivePage] = useState("overview")
@@ -21,7 +22,7 @@ export default function App() {
       case "overview": return <Overview />
       case "news":     return <News />
       case "price":    return <PriceTracking />
-      case "social":   return <SocialYoutube />
+      case "social":   return <SocialMedia />
       case "ai":       return <AIResearch />
       default:         return <Overview />
     }

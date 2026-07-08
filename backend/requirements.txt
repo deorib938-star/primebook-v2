@@ -1,0 +1,7 @@
+# Runtime deps for the deployed API server.
+# (The scrapers/cache-builders need more — see requirements-full.txt — but they
+#  run on your machine, not on the server, which serves the committed JSON caches.)
+fastapi
+uvicorn[standard]
+httpx
+python-dotenv

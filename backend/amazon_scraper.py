@@ -9,17 +9,19 @@ import re
 import json
 import os
 from datetime import datetime
+from matplotlib import text
 import undetected_chromedriver as uc
 from selenium.webdriver.common.by import By
 
-CACHE_FILE = "product_cache.json"
+CACHE_FILE = "amazon_cache.json"
 
 BRAND_URLS = {
-    "hp":     {"name": "HP",     "url": "https://www.amazon.in/s?k=HP+laptop&rh=n%3A1375424031%2Cp_89%3AHP%2Cp_36%3A-4000000&s=review-rank"},
-    "lenovo": {"name": "Lenovo", "url": "https://www.amazon.in/s?k=Lenovo+laptop&rh=n%3A1375424031%2Cp_89%3ALenovo%2Cp_36%3A-4000000&s=review-rank"},
-    "acer":   {"name": "Acer",   "url": "https://www.amazon.in/s?k=Acer+laptop&rh=n%3A1375424031%2Cp_89%3AAcer%2Cp_36%3A-4000000&s=review-rank"},
-    "dell":   {"name": "Dell",   "url": "https://www.amazon.in/s?k=Dell+laptop&rh=n%3A1375424031%2Cp_89%3ADell%2Cp_36%3A-4000000&s=review-rank"},
-    "asus":   {"name": "Asus",   "url": "https://www.amazon.in/s?k=Asus+laptop&rh=n%3A1375424031%2Cp_89%3AASUS%2Cp_36%3A-4000000&s=review-rank"},
+    "hp":        {"name": "HP",       "url": "https://www.amazon.in/s?k=HP+laptop&rh=n%3A1375424031%2Cp_89%3AHP%2Cp_36%3A-4000000&s=review-rank"},
+    "lenovo":    {"name": "Lenovo",   "url": "https://www.amazon.in/s?k=Lenovo+laptop&rh=n%3A1375424031%2Cp_89%3ALenovo%2Cp_36%3A-4000000&s=review-rank"},
+    "acer":      {"name": "Acer",     "url": "https://www.amazon.in/s?k=Acer+laptop&rh=n%3A1375424031%2Cp_89%3AAcer%2Cp_36%3A-4000000&s=review-rank"},
+    "dell":      {"name": "Dell",     "url": "https://www.amazon.in/s?k=Dell+laptop&rh=n%3A1375424031%2Cp_89%3ADell%2Cp_36%3A-4000000&s=review-rank"},
+    "asus":      {"name": "Asus",     "url": "https://www.amazon.in/s?k=Asus+laptop&rh=n%3A1375424031%2Cp_89%3AASUS%2Cp_36%3A-4000000&s=review-rank"},
+    "primebook": {"name": "Primebook","url": "https://www.amazon.in/s?k=Primebook+laptop&s=review-rank"},
 }
 
 # ================================
@@ -118,7 +120,7 @@ def parse_specs(product, text):
     if m:
         product["ram_gb"] = int(m.group(1))
 
-    m = re.search(r'(\d+)\s*(gb|tb)\s*(?:ssd|emmc|nvme|storage|hdd)', text)
+    m = re.search(r'(\d+)\s*(gb|tb)\s*(?:ufs\s*)?(?:ssd|emmc|nvme|storage|hdd)', text)
     if m:
         val = int(m.group(1))
         if m.group(2) == "tb":
@@ -143,7 +145,7 @@ def parse_specs(product, text):
     if m:
         hrs = int(m.group(1))
         if 3 <= hrs <= 24:
-            product["battery_hours"] = hrs
+            product["battery_hours"] = hrs   
 
     if "1080p" in text and "camera" in text:
         product["webcam"] = "1080p"
@@ -153,7 +155,9 @@ def parse_specs(product, text):
     if "backlit" in text:
         product["keyboard_backlit"] = True
 
-    if "windows 11" in text:
+    if "primeos" in text or "prime os" in text or "android 15" in text or "android" in text:
+        product["os"] = "PrimeOS 3.0 (Android 15)"
+    elif "windows 11" in text:
         product["os"] = "Windows 11"
     elif "windows 10" in text:
         product["os"] = "Windows 10"
@@ -161,10 +165,48 @@ def parse_specs(product, text):
         product["os"] = "ChromeOS"
     elif "dos" in text:
         product["os"] = "DOS"
-
-    for proc in ["core ultra 7", "core ultra 5", "core i9", "core i7", "core i5", "core i3", "ryzen 9", "ryzen 7", "ryzen 5", "ryzen 3", "celeron", "pentium"]:
-        if proc in text:
-            product["processor"] = proc.title()
+    # Comprehensive processor detection — order matters (specific → generic)
+    processor_patterns = [
+        # Intel Core (specific to generic)
+        ("core ultra 7", "Core Ultra 7"),
+        ("core ultra 5", "Core Ultra 5"),
+        ("core i9", "Core i9"),
+        ("core i7", "Core i7"),
+        ("core i5", "Core i5"),
+        ("core i3", "Core i3"),
+        # AMD Ryzen
+        ("ryzen 9", "Ryzen 9"),
+        ("ryzen 7", "Ryzen 7"),
+        ("ryzen 5", "Ryzen 5"),
+        ("ryzen 3", "Ryzen 3"),
+        # MediaTek — for Chromebooks and Android laptops
+        ("kompanio 838", "MediaTek Kompanio 838"),
+        ("kompanio 540", "MediaTek Kompanio 540"),
+        ("kompanio 520", "MediaTek Kompanio 520"),
+        ("kompanio", "MediaTek Kompanio"),
+        ("helio g99", "MediaTek Helio G99"),
+        ("helio", "MediaTek Helio"),
+        ("mediatek", "MediaTek"),
+        # Intel N-series (budget laptops)
+        ("pentium silver n6000", "Pentium N6000"),
+        ("pentium n6000", "Pentium N6000"),
+        ("celeron n4500", "Celeron N4500"),
+        ("celeron n4020", "Celeron N4020"),
+        ("celeron n4120", "Celeron N4120"),
+        ("celeron n100", "Celeron N100"),
+        ("celeron n50", "Celeron N50"),
+        ("intel n100", "Intel N100"),
+        ("intel n50", "Intel N50"),
+        ("intel n4500", "Celeron N4500"),
+        # Generic Intel/AMD (last resort)
+        ("celeron", "Celeron"),
+        ("pentium", "Pentium"),
+        ("athlon", "Athlon"),
+        ("snapdragon", "Snapdragon"),
+    ]
+    for keyword, label in processor_patterns:
+        if keyword in text:
+            product["processor"] = label
             break
 
     m = re.search(r'(\d+\.?\d*)\s*kg', text)
@@ -174,6 +216,49 @@ def parse_specs(product, text):
             product["weight_kg"] = val
 
     return product
+
+# ================================
+# PRICE SANITY FILTER
+# ================================
+
+def filter_price_outliers(products, brand_name):
+    """
+    Remove products whose price is unrealistically low compared to peers.
+    Rule: if a product costs less than 60% of the median price for products
+    with the same RAM tier, flag it as suspicious and skip.
+    """
+    if len(products) < 3:
+        return products  # not enough data to compare
+
+    # Group by RAM tier since RAM is the strongest price signal
+    from statistics import median
+    ram_prices = {}
+    for p in products:
+        ram = p.get("ram_gb", 0)
+        price = p.get("price_inr", 0)
+        if ram > 0 and price > 0:
+            ram_prices.setdefault(ram, []).append(price)
+
+    # Calculate median per RAM tier
+    ram_median = {ram: median(prices) for ram, prices in ram_prices.items() if len(prices) >= 2}
+
+    filtered = []
+    for p in products:
+        ram = p.get("ram_gb", 0)
+        price = p.get("price_inr", 0)
+
+        if ram in ram_median:
+            threshold = ram_median[ram] * 0.6  # 60% of median
+            if price < threshold:
+                print(f"  [PRICE OUTLIER] Skipping {p['name'][:50]} — Rs.{price:,} is below Rs.{int(threshold):,} (60% of Rs.{int(ram_median[ram]):,} median for {ram}GB)")
+                continue
+
+        filtered.append(p)
+
+    if len(filtered) < len(products):
+        print(f"  [FILTER] {brand_name}: removed {len(products) - len(filtered)} outlier price(s)")
+
+    return filtered
 
 # ================================
 # SCRAPE SINGLE PRODUCT
@@ -201,6 +286,11 @@ def scrape_product(driver, url, brand_name):
         except:
             pass
 
+        # Skip products that don't actually match the brand (Primebook search picks up junk)
+        if brand_name.lower() == "primebook" and "primebook" not in product["name"].lower():
+            print(f"  Skipping — not a Primebook product: {product['name'][:50]}")
+            return None
+
         # Price
         try:
             price_selectors = [
@@ -223,7 +313,9 @@ def scrape_product(driver, url, brand_name):
         except:
             pass
 
-        if product["price_inr"] == 0 or product["price_inr"] > 40000:
+        MAX_PRICE_OVERRIDE = {}
+        max_price = MAX_PRICE_OVERRIDE.get(brand_name.lower(), 40000)
+        if product["price_inr"] == 0 or product["price_inr"] > max_price:
             print(f"  Skipping price Rs.{product['price_inr']:,}")
             return None
 
@@ -245,7 +337,7 @@ def scrape_product(driver, url, brand_name):
         except:
             pass
 
-        # Bullet specs
+        # Bullet specs — used as FALLBACK only
         try:
             bullets = driver.find_elements(By.CSS_SELECTOR, "#feature-bullets li span.a-list-item")
             full_text = " ".join([b.text for b in bullets])
@@ -254,26 +346,92 @@ def scrape_product(driver, url, brand_name):
         except Exception as e:
             print(f"  BULLET ERROR: {e}")
 
-        # Also try specs table
+        # Specs table — AUTHORITATIVE source, overrides bullet-text guesses
+        table_specs = {}
         try:
             rows = driver.find_elements(By.CSS_SELECTOR, "tr.a-spacing-small")
             for row in rows:
                 try:
-                    label = row.find_element(By.TAG_NAME, "td").text.lower()
-                    value = row.find_elements(By.TAG_NAME, "td")[1].text.lower()
+                    label = row.find_element(By.TAG_NAME, "td").text.lower().strip()
+                    value = row.find_elements(By.TAG_NAME, "td")[1].text.lower().strip()
                     print(f"  TABLE: {label} = {value}")
+                    table_specs[label] = value
                 except:
                     pass
         except:
             pass
 
+        # Apply table values — these are Amazon's own structured fields, trust them over regex
+        if "hard disk size" in table_specs:
+            m = re.search(r'(\d+\.?\d*)\s*(gb|tb)', table_specs["hard disk size"])
+            if m:
+                val = float(m.group(1))
+                if m.group(2) == "tb":
+                    val *= 1024
+                if val >= 32:
+                    product["storage_gb"] = int(val)
+
+        if "ram memory installed size" in table_specs:
+            m = re.search(r'(\d+)\s*gb', table_specs["ram memory installed size"])
+            if m:
+                product["ram_gb"] = int(m.group(1))
+
+        if "screen size" in table_specs:
+            m = re.search(r'(\d+\.?\d*)', table_specs["screen size"])
+            if m:
+                val = float(m.group(1))
+                if val > 20:  # value given in cm, convert
+                    val = round(val / 2.54, 1)
+                if 10 <= val <= 18:
+                    product["display_inch"] = val
+
+        if "cpu model" in table_specs and table_specs["cpu model"]:
+            product["processor"] = table_specs["cpu model"].title()
+
+        if "operating system" in table_specs:
+            os_val = table_specs["operating system"]
+            if "primeos" in os_val or "prime os" in os_val or "android" in os_val:
+                product["os"] = "PrimeOS 3.0 (Android 15)"
+            elif "windows 11" in os_val:
+                product["os"] = "Windows 11"
+            elif "windows 10" in os_val:
+                product["os"] = "Windows 10"
+            elif "chrome" in os_val:
+                product["os"] = "ChromeOS"
+            elif "dos" in os_val:
+                product["os"] = "DOS"
+
         print(f"  [OK] {product['name'][:50]}")
-        print(f"       Rs.{product['price_inr']:,} | {product['ram_gb']}GB RAM | {product['storage_gb']}GB | {product['display_inch']}\" | {product['rating']} stars ({product['reviews']} reviews)")
         return product
 
     except Exception as e:
         print(f"  Error: {e}")
         return None
+
+# ================================
+# FILTER PRICE OUTLIERS
+# ================================
+
+def filter_price_outliers(products, brand_name):
+    if not products:
+        return []
+
+    prices = [p.get("price_inr", 0) for p in products if p.get("price_inr", 0) > 0]
+    if not prices:
+        return []
+
+    avg_price = sum(prices) / len(prices)
+    min_price = max(5000, int(avg_price * 0.5))
+
+    filtered = []
+    for product in products:
+        price = product.get("price_inr", 0)
+        if price >= min_price:
+            filtered.append(product)
+        else:
+            print(f"  Filtered out low price Rs.{price:,} for {product.get('name', '')[:50]}")
+
+    return filtered
 
 # ================================
 # SCRAPE ALL BRANDS
@@ -309,6 +467,9 @@ def scrape_all(force=False):
                     products.append(p)
                     seen.add(p["name"])
                 time.sleep(2)
+            # Price sanity check — remove obviously wrong low prices
+            # (deals, refurbished, EMI, or parse errors)
+            products = filter_price_outliers(products, info["name"])
 
             # Sort by reviews
             products.sort(key=lambda x: x["reviews"], reverse=True)

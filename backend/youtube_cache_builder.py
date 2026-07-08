@@ -11,10 +11,16 @@ import re
 import httpx
 from datetime import datetime, timezone, timedelta
 
-YOUTUBE_API_KEY = "AIzaSyBHjJOtHy4H1NxVfgV9xuKNVsGngdOwFss"
+import os
+try:
+    from dotenv import load_dotenv; load_dotenv()
+except Exception:
+    pass
+YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
 CACHE_FILE      = "youtube_cache.json"
 
 BRAND_CHANNELS = {
+    "primebook": { "handle": "@primebookhq",          "name": "Primebook"              },
     "hp":     { "handle": "@HPIndiaVideos",        "name": "HP India"               },
     "lenovo": { "handle": "@lenovoindia",            "name": "Lenovo India"           },
     "acer":   { "handle": "@AcerIndiaYT",            "name": "Acer India"             },
@@ -23,7 +29,7 @@ BRAND_CHANNELS = {
 }
 
 BRAND_LABELS = {
-    "hp":"HP","lenovo":"Lenovo","acer":"Acer","dell":"Dell","asus":"Asus"
+    "primebook":"Primebook","hp":"HP","lenovo":"Lenovo","acer":"Acer","dell":"Dell","asus":"Asus"
 }
 
 # --- Helpers ------------------------------------------------------------------

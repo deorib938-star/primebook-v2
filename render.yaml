@@ -1,0 +1,18 @@
+# Render Blueprint — deploys the FastAPI backend.
+# In Render: New → Blueprint → connect this repo. Then set the 3 secret env vars
+# (marked sync:false) in the dashboard. Free plan sleeps after inactivity (~50s cold start).
+services:
+  - type: web
+    name: primebook-backend
+    runtime: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: YOUTUBE_API_KEY
+        sync: false
+      - key: GNEWS_API_KEY
+        sync: false

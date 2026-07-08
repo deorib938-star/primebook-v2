@@ -1,348 +1,496 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import {
-  TrendingDown, TrendingUp, Minus, RefreshCw,
-  AlertCircle, Sparkles, Bell, ExternalLink, Search
+  TrendingDown, RefreshCw, AlertCircle, Sparkles, Bell, SlidersHorizontal, X
 } from "lucide-react";
 import axios from "axios";
+import {
+  Chart as ChartJS, LineController, LineElement, PointElement, LinearScale, CategoryScale,
+  Tooltip, Legend, Filler
+} from "chart.js";
+import zoomPlugin from "chartjs-plugin-zoom";
 
-const API = "http://127.0.0.1:8000";
+ChartJS.register(LineController, LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler, zoomPlugin);
+
+const API = (import.meta.env.VITE_API_URL || `http://${location.hostname}:8000`);
 
 const BRANDS = [
-  { id: "hp",     label: "HP",     color: "#0096D6" },
-  { id: "lenovo", label: "Lenovo", color: "#E2231A" },
-  { id: "acer",   label: "Acer",   color: "#83B81A" },
-  { id: "dell",   label: "Dell",   color: "#007DB8" },
-  { id: "asus",   label: "Asus",   color: "#FF6600" },
+  { id: "primebook", label: "Primebook", color: "#f59e0b", isOurs: true },
+  { id: "hp",         label: "HP",       color: "#0096D6" },
+  { id: "lenovo",     label: "Lenovo",   color: "#E2231A" },
+  { id: "acer",       label: "Acer",     color: "#83B81A" },
+  { id: "dell",       label: "Dell",     color: "#007DB8" },
+  { id: "asus",       label: "Asus",     color: "#FF6600" },
 ];
 const BRAND_MAP = Object.fromEntries(BRANDS.map(b => [b.id, b]));
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun"];
+const MODEL_COLORS = ["#818cf8", "#34d399", "#fbbf24", "#f472b6", "#38bdf8", "#a78bfa", "#fb923c", "#4ade80", "#f87171", "#22d3ee", "#c084fc", "#facc15"];
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+const PRICE_MIN = 0;
+const PRICE_MAX = 60000;
+
 function fmtRs(n) {
-  if (!n && n !== 0) return "—";
+  if (!n || n <= 0) return null;
   return "Rs." + Number(n).toLocaleString("en-IN");
 }
 
-function bestPrice(p) {
-  const a = p.amazon_price  || p.price_inr || 0;
-  const f = p.flipkart_price || 0;
-  if (a > 0 && f > 0) return Math.min(a, f);
-  return a || f || p.price_inr || 0;
+// Categorize processor into simple groups for filtering
+function processorGroup(proc) {
+  if (!proc) return "Others";
+  const p = proc.toLowerCase();
+  if (p.includes("core i") || p.includes("core ultra")) return "Intel Core";
+  if (p.includes("ryzen")) return "AMD Ryzen";
+  if (p.includes("celeron") || p.includes("pentium") || p.includes("athlon")) return "Celeron/Pentium";
+  if (p.includes("mediatek") || p.includes("kompanio") || p.includes("helio")) return "MediaTek";
+  return "Others";
 }
 
-function priceDelta(history) {
-  if (!history || history.length < 2) return 0;
-  return history[history.length - 1] - history[history.length - 2];
-}
+function PriceTableRow({ row }) {
+  const prices = [row.amazon, row.flipkart].filter(p => p > 0);
+  const minP = prices.length > 0 ? Math.min(...prices) : 0;
 
-function deduplicateProducts(products) {
-  const seen = new Set();
-  return products.filter(p => {
-    // Key: brand + ram + storage + display + os — same specs = duplicate
-    const key = `${p.brand}-${p.ram_gb}-${p.storage_gb}-${p.display_inch}-${p.os}`;
-    // Also check name similarity
-    const nameKey = p.name?.toLowerCase().replace(/\s+/g, "").slice(0, 20);
-    const fullKey = key + nameKey;
-    if (seen.has(fullKey)) return false;
-    seen.add(fullKey);
-    return true;
-  });
-}
+  const Cell = ({ value, url }) => {
+    if (!value || value <= 0) return <span style={{ fontSize: 11, color: "#475569" }}>Not available</span>;
+    const isBest = value === minP;
+    
+    const content = (
+      <span style={{ 
+        fontWeight: isBest ? 600 : 500, 
+        color: isBest ? "#10b981" : "#e2e8f0", 
+        display: "inline-flex", 
+        alignItems: "center", 
+        gap: 4,
+        padding: url ? "4px 8px" : "0",
+        borderRadius: 6,
+        transition: "background 0.15s",
+        cursor: url ? "pointer" : "default",
+      }}
+      onMouseEnter={e => { if (url) e.currentTarget.style.background = isBest ? "rgba(16,185,129,0.1)" : "rgba(148,163,184,0.08)"; }}
+      onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+        {fmtRs(value)} 
+        {url && <span style={{ fontSize: 9, opacity: 0.5 }}>↗</span>}
+      </span>
+    );
+    
+    return url ? (
+      <a href={url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>{content}</a>
+    ) : content;
+  };
 
-// Generate mock price history (6 months) from current price
-// In production this will come from a price_history.json cache
-function generateHistory(currentPrice) {
-  if (!currentPrice || currentPrice === 0) return Array(6).fill(0);
-  const history = [];
-  let price = currentPrice * 1.08; // start ~8% higher 6 months ago
-  for (let i = 0; i < 6; i++) {
-    const change = (Math.random() - 0.55) * currentPrice * 0.02;
-    price = Math.max(currentPrice * 0.9, price + change);
-    history.push(Math.round(price / 10) * 10);
+  let osColor = "#C9A84C";
+  let osBg = "rgba(201,168,76,0.15)";
+  let osLabel = row.os || "—";
+  
+  if (osLabel.toLowerCase().includes("windows")) {
+    osColor = "#0096D6"; osBg = "rgba(0,150,214,0.15)";
+  } else if (osLabel.toLowerCase().includes("chrome")) {
+    osColor = "#83B81A"; osBg = "rgba(131,184,26,0.15)";
+  } else if (osLabel.toLowerCase().includes("prime") || osLabel.toLowerCase().includes("android")) {
+    osColor = "#C9A84C"; osBg = "rgba(201,168,76,0.15)";
+  } else if (osLabel.toLowerCase().includes("dos") || osLabel.toLowerCase().includes("linux")) {
+    osColor = "#94a3b8"; osBg = "rgba(148,163,184,0.15)";
   }
-  history[5] = currentPrice; // last point = current price
-  return history;
-}
-
-// ─── Mini sparkline (pure SVG — no Chart.js needed) ──────────────────────────
-function Sparkline({ data, data2, color, height = 80 }) {
-  if (!data || data.length === 0) return null;
-  const w = 300, h = height;
-  const allVals = [...data, ...(data2 || [])].filter(v => v > 0);
-  if (allVals.length === 0) return null;
-  const min = Math.min(...allVals) * 0.99;
-  const max = Math.max(...allVals) * 1.01;
-  const range = max - min || 1;
-
-  const pts = (arr) => arr.map((v, i) => {
-    const x = (i / (arr.length - 1)) * w;
-    const y = h - ((v - min) / range) * h;
-    return `${x},${y}`;
-  }).join(" ");
-
-  const poly1 = pts(data);
-  const polyArr = poly1.split(" ");
-  const fillPath = `M ${polyArr[0]} L ${poly1.replace(/,/g, " ").replace(/ /g, ",")} L ${w},${h} L 0,${h} Z`.replace(/,/g, " ");
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} style={{ width: "100%", height }} preserveAspectRatio="none">
-      <defs>
-        <linearGradient id={`grad-${color.replace("#","")}`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.25" />
-          <stop offset="100%" stopColor={color} stopOpacity="0.02" />
-        </linearGradient>
-      </defs>
-      {/* Fill area */}
-      <path d={fillPath} fill={`url(#grad-${color.replace("#","")})`} />
-      {/* Amazon line */}
-      <polyline points={poly1} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-      {/* Flipkart dashed line */}
-      {data2 && data2.some(v => v > 0) && (
-        <polyline points={pts(data2)} fill="none" stroke={color} strokeWidth="1.5" strokeDasharray="4 3" opacity="0.6" strokeLinejoin="round" />
-      )}
-      {/* End dot */}
-      <circle cx={w} cy={h - ((data[data.length-1] - min) / range) * h} r="3" fill={color} />
-    </svg>
-  );
-}
-
-// ─── Price history chart card ─────────────────────────────────────────────────
-function HistoryCard({ product, color }) {
-  const amzPrice  = product.amazon_price   || product.price_inr || 0;
-  const flipPrice = product.flipkart_price || 0;
-  const amzHist   = generateHistory(amzPrice);
-  const flipHist  = flipPrice > 0 ? generateHistory(flipPrice) : [];
-  const d         = priceDelta(amzHist);
-  const best      = bestPrice(product);
-
-  return (
-    <div style={{
-      background: "var(--surface-2, #1e293b)",
-      border: "0.5px solid var(--border, #334155)",
-      borderRadius: 12, padding: 14,
-    }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 10 }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{
-            fontSize: 12, fontWeight: 500, color: "var(--text-primary, #e2e8f0)",
-            lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical", overflow: "hidden",
-          }}>
-            {product.name}
-          </div>
-        </div>
-        <div style={{ textAlign: "right", flexShrink: 0 }}>
-          <div style={{ fontSize: 16, fontWeight: 600, color: "var(--text-primary, #f1f5f9)" }}>
-            {fmtRs(best)}
-          </div>
-          <div style={{ fontSize: 10, display: "flex", alignItems: "center", gap: 3, justifyContent: "flex-end", marginTop: 2,
-            color: d < 0 ? "#10b981" : d > 0 ? "#ef4444" : "var(--text-muted, #64748b)" }}>
-            {d < 0 ? <TrendingDown size={10} /> : d > 0 ? <TrendingUp size={10} /> : <Minus size={10} />}
-            {d !== 0 ? fmtRs(Math.abs(d)) + (d < 0 ? " drop" : " rise") : "Stable"}
-          </div>
-        </div>
-      </div>
-
-      {/* Sparkline */}
-      <Sparkline data={amzHist} data2={flipHist} color={color} height={80} />
-
-      {/* X axis labels */}
-      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9, color: "var(--text-muted, #475569)" }}>
-        {MONTHS.map(m => <span key={m}>{m}</span>)}
-      </div>
-
-      {/* Source prices */}
-      <div style={{ display: "flex", gap: 5, marginTop: 8, flexWrap: "wrap" }}>
-        {amzPrice > 0 && (
-          <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: "#FF9900", color: "#111", fontWeight: 600 }}>
-            Amz {fmtRs(amzPrice)}
-          </span>
-        )}
-        {flipPrice > 0 && (
-          <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: "#2874F0", color: "#fff", fontWeight: 600 }}>
-            Flip {fmtRs(flipPrice)}
-          </span>
-        )}
-        <span style={{ fontSize: 9, padding: "2px 5px", borderRadius: 3, background: color + "22", color, fontWeight: 500, marginLeft: "auto" }}>
-          {product.source || "Amazon"}
-        </span>
-      </div>
-
-      {/* Legend */}
-      <div style={{ display: "flex", gap: 10, marginTop: 6, fontSize: 9, color: "var(--text-muted, #475569)" }}>
-        <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-          <span style={{ width: 10, height: 2, background: color, display: "inline-block", borderRadius: 2 }} />
-          Amazon
-        </span>
-        {flipPrice > 0 && (
-          <span style={{ display: "flex", alignItems: "center", gap: 3 }}>
-            <span style={{ width: 10, borderTop: `2px dashed ${color}`, opacity: 0.6, display: "inline-block" }} />
-            Flipkart
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-// ─── Deal card ────────────────────────────────────────────────────────────────
-function DealCard({ product, color }) {
-  const best = bestPrice(product);
-  const amz  = product.amazon_price   || product.price_inr || 0;
-  const flip = product.flipkart_price || 0;
-  const cheaper = (amz > 0 && flip > 0) ? (amz <= flip ? "Amazon" : "Flipkart") : (amz > 0 ? "Amazon" : "Flipkart");
-
-  return (
-    <div style={{
-      background: "var(--surface-2, #1e293b)",
-      border: "0.5px solid var(--border, #334155)",
-      borderRadius: 12, padding: 14, position: "relative",
-      transition: "border-color 0.12s", cursor: "pointer",
+    <tr style={{
+      background: row.is_our_brand ? "#f59e0b0c" : "transparent",
+      borderBottom: "0.5px solid #334155",
+      transition: "background 0.12s",
     }}
-      onMouseEnter={e => e.currentTarget.style.borderColor = color + "80"}
-      onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border, #334155)"}
+      onMouseEnter={e => e.currentTarget.style.background = row.is_our_brand ? "#f59e0b16" : "#1e293b"}
+      onMouseLeave={e => e.currentTarget.style.background = row.is_our_brand ? "#f59e0b0c" : "transparent"}
     >
-      <div style={{
-        position: "absolute", top: 10, right: 10,
-        background: "#10b98120", color: "#10b981",
-        fontSize: 10, fontWeight: 500, padding: "2px 7px", borderRadius: 20,
-      }}>
-        Best on {cheaper}
-      </div>
-      <div style={{ fontSize: 10, color: "var(--text-muted, #64748b)", marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>
-        {product.brand}
-      </div>
-      <div style={{
-        fontSize: 12, fontWeight: 500, color: "var(--text-primary, #e2e8f0)",
-        marginBottom: 8, lineHeight: 1.35, paddingRight: 60,
-        display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
-      }}>
-        {product.name}
-      </div>
-      <div style={{ display: "flex", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
-        <span style={{ fontSize: 18, fontWeight: 600, color: "var(--text-primary, #f1f5f9)" }}>{fmtRs(best)}</span>
-        {product.rating > 0 && (
-          <span style={{ fontSize: 10, color: "#f59e0b" }}>★ {product.rating}</span>
-        )}
-        {product.reviews > 0 && (
-          <span style={{ fontSize: 10, color: "var(--text-muted, #64748b)" }}>({Number(product.reviews).toLocaleString()})</span>
-        )}
-      </div>
-      <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
-        {amz > 0 && <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: amz <= flip || flip === 0 ? "#FF9900" : "#FF990055", color: amz <= flip || flip === 0 ? "#111" : "#888", fontWeight: 600 }}>Amz {fmtRs(amz)}</span>}
-        {flip > 0 && <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: flip <= amz || amz === 0 ? "#2874F0" : "#2874F055", color: flip <= amz || amz === 0 ? "#fff" : "#aaa", fontWeight: 600 }}>Flip {fmtRs(flip)}</span>}
-        {product.ram_gb && <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: color + "22", color, fontWeight: 500 }}>{product.ram_gb}GB RAM</span>}
-        {product.storage_gb && <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 3, background: "var(--surface-1, #0f172a)", color: "var(--text-muted, #64748b)" }}>{product.storage_gb}GB</span>}
-      </div>
-    </div>
+      <td style={{ padding: "12px 14px" }}>
+        <div style={{ fontWeight: 600, color: "#e2e8f0", fontSize: 13 }}>{row.name}</div>
+      </td>
+      <td style={{ padding: "12px 14px", color: "#94a3b8", fontSize: 12 }}>
+        <span style={{ color: "white", fontWeight: 500 }}>{row.ram_gb || "—"}</span> GB
+      </td>
+      <td style={{ padding: "12px 14px", color: "#94a3b8", fontSize: 12 }}>
+        <span style={{ color: "white", fontWeight: 500 }}>{row.storage_gb || "—"}</span> GB
+      </td>
+      <td style={{ padding: "12px 14px", color: "#94a3b8", fontSize: 12 }}>{row.processor || "—"}</td>
+      <td style={{ padding: "12px 14px", color: "#94a3b8", fontSize: 12 }}>{row.battery_hours ? row.battery_hours + " hrs" : "—"}</td>
+      <td style={{ padding: "12px 14px" }}>
+        <span style={{ background: osBg, color: osColor, fontSize: 10, padding: "2px 7px", borderRadius: 3, fontWeight: 500 }}>{osLabel}</span>
+      </td>
+      <td style={{ padding: "12px 14px" }}><Cell value={row.amazon}   url={row.amazon_url} /></td>
+      <td style={{ padding: "12px 14px" }}><Cell value={row.flipkart} url={row.flipkart_url} /></td>
+    </tr>
   );
 }
 
-// ─── Compare table row ────────────────────────────────────────────────────────
-function CompareRow({ product, index }) {
-  const amz  = product.amazon_price   || product.price_inr || 0;
-  const flip = product.flipkart_price || 0;
-  const diff = flip - amz;
-  const hasBoth = amz > 0 && flip > 0;
+// ─── Filter sidebar ────────────────────────────────────────────────────────────
+function FilterSidebar({ filters, setFilters, counts, onReset }) {
+  const toggleSet = (key, value) => {
+    setFilters(prev => {
+      const set = new Set(prev[key]);
+      if (set.has(value)) set.delete(value);
+      else set.add(value);
+      return { ...prev, [key]: set };
+    });
+  };
+
+  const Checkbox = ({ label, checked, onChange, count }) => (
+    <label style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 0", cursor: "pointer", fontSize: 11, color: checked ? "white" : "#94a3b8" }}>
+      <input type="checkbox" checked={checked} onChange={onChange} style={{ accentColor: "#C9A84C", cursor: "pointer", width: 12, height: 12 }} />
+      {label} {count != null && <span style={{ color: "#64748b", fontSize: 9, marginLeft: 3 }}>({count})</span>}
+    </label>
+  );
 
   return (
-    <div style={{
-      display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr",
-      padding: "10px 14px", borderBottom: "0.5px solid var(--border, #ffffff08)",
-      alignItems: "center", fontSize: 12, transition: "background 0.12s",
-      background: index % 2 === 0 ? "transparent" : "var(--surface-1, #0f172a44)",
-    }}
-      onMouseEnter={e => e.currentTarget.style.background = "var(--surface-1, #ffffff08)"}
-      onMouseLeave={e => e.currentTarget.style.background = index % 2 === 0 ? "transparent" : "var(--surface-1, #0f172a44)"}
-    >
-      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <span style={{ fontWeight: 500, color: "var(--text-primary, #e2e8f0)", fontSize: 12,
-          overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-          {product.name?.slice(0, 35)}{product.name?.length > 35 ? "…" : ""}
-        </span>
-        <span style={{ fontSize: 10, color: "var(--text-muted, #64748b)" }}>
-          {product.brand} · {product.ram_gb}GB · {product.storage_gb}GB
-        </span>
+    <div style={{ background: "#1e293b", padding: 12, borderRadius: 10, height: "fit-content", position: "sticky", top: 20 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+        <h3 style={{ color: "#C9A84C", fontSize: 9, fontWeight: 700, letterSpacing: "0.15em", margin: 0, textTransform: "uppercase" }}>Filters</h3>
+        <button onClick={onReset} style={{ color: "#ef4444", background: "transparent", border: "none", fontSize: 10, cursor: "pointer", padding: 0 }}>
+          Reset
+        </button>
       </div>
-      <span style={{ color: hasBoth && amz < flip ? "#10b981" : hasBoth && amz > flip ? "#ef4444" : "var(--text-primary, #e2e8f0)", fontWeight: hasBoth ? 500 : 400 }}>
-        {amz > 0 ? fmtRs(amz) : "—"}
-      </span>
-      <span style={{ color: hasBoth && flip < amz ? "#10b981" : hasBoth && flip > amz ? "#ef4444" : "var(--text-primary, #e2e8f0)", fontWeight: hasBoth ? 500 : 400 }}>
-        {flip > 0 ? fmtRs(flip) : "—"}
-      </span>
-      <span style={{ color: !hasBoth ? "var(--text-muted, #64748b)" : Math.abs(diff) < 200 ? "var(--text-muted, #64748b)" : diff > 0 ? "#10b981" : "#ef4444" }}>
-        {!hasBoth ? "One source" : Math.abs(diff) < 200 ? "Same" : diff > 0 ? `Flipkart +${fmtRs(Math.abs(diff))}` : `Amazon +${fmtRs(Math.abs(diff))}`}
-      </span>
+
+      <div style={{ marginBottom: 12, paddingBottom: 10, borderBottom: "0.5px solid #334155" }}>
+  <div style={{ color: "white", fontSize: 11, fontWeight: 600, marginBottom: 6 }}>Price (Rs)</div>
+  <div style={{ display: "flex", gap: 4, alignItems: "center", marginTop: 4 }}>
+    <input
+      type="number"
+      placeholder="Min"
+      value={filters.priceMin === 0 ? "" : filters.priceMin}
+      onChange={e => {
+        const val = e.target.value === "" ? 0 : Number(e.target.value);
+        setFilters({ ...filters, priceMin: val });
+      }}
+      style={{ background: "#0f172a", border: "1px solid #334155", color: "white", padding: "3px 6px", borderRadius: 4, fontSize: 10, width: 65 }}
+    />
+    <span style={{ color: "#64748b", fontSize: 10 }}>to</span>
+    <input
+      type="number"
+      placeholder="Max"
+      value={filters.priceMax === 999999 ? "" : filters.priceMax}
+      onChange={e => {
+        const val = e.target.value === "" ? 999999 : Number(e.target.value);
+        setFilters({ ...filters, priceMax: val });
+      }}
+      style={{ background: "#0f172a", border: "1px solid #334155", color: "white", padding: "3px 6px", borderRadius: 4, fontSize: 10, width: 65 }}
+    />
+  </div>
+  <div style={{ display: "flex", gap: 4, marginTop: 6, flexWrap: "wrap" }}>
+    {[
+      { label: "Under 20K", min: 0, max: 20000 },
+      { label: "20K-30K", min: 20000, max: 30000 },
+      { label: "30K-40K", min: 30000, max: 40000 },
+      { label: "All", min: 0, max: 999999 },
+    ].map(preset => (
+      <button
+        key={preset.label}
+        onClick={() => setFilters({ ...filters, priceMin: preset.min, priceMax: preset.max })}
+        style={{
+          background: "transparent",
+          border: "1px solid #334155",
+          color: "#94a3b8",
+          fontSize: 9,
+          padding: "2px 6px",
+          borderRadius: 3,
+          cursor: "pointer",
+        }}
+        onMouseEnter={e => { e.currentTarget.style.background = "#334155"; e.currentTarget.style.color = "white"; }}
+        onMouseLeave={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#94a3b8"; }}
+      >
+        {preset.label}
+      </button>
+    ))}
+  </div>
+</div>
+
+      <div style={{ marginBottom: 12, paddingBottom: 10, borderBottom: "0.5px solid #334155" }}>
+        <div style={{ color: "white", fontSize: 11, fontWeight: 600, marginBottom: 6 }}>Platform</div>
+        <Checkbox label="On Amazon" checked={filters.platforms.has("amazon")} onChange={() => toggleSet("platforms", "amazon")} count={counts.platforms.amazon} />
+        <Checkbox label="On Flipkart" checked={filters.platforms.has("flipkart")} onChange={() => toggleSet("platforms", "flipkart")} count={counts.platforms.flipkart} />
+        <Checkbox label="Available on both" checked={filters.platforms.has("both")} onChange={() => toggleSet("platforms", "both")} count={counts.platforms.both} />
+      </div>
+
+      <div style={{ marginBottom: 12, paddingBottom: 10, borderBottom: "0.5px solid #334155" }}>
+        <div style={{ color: "white", fontSize: 11, fontWeight: 600, marginBottom: 6 }}>RAM</div>
+        {[4, 6, 8, 12, 16].map(v => (
+          <Checkbox key={v} label={`${v} GB`} checked={filters.ram.has(v)} onChange={() => toggleSet("ram", v)} count={counts.ram[v]} />
+        ))}
+      </div>
+
+      <div style={{ marginBottom: 12, paddingBottom: 10, borderBottom: "0.5px solid #334155" }}>
+        <div style={{ color: "white", fontSize: 11, fontWeight: 600, marginBottom: 6 }}>Storage</div>
+        {[32, 64, 128, 256, 512].map(v => (
+          <Checkbox key={v} label={`${v} GB`} checked={filters.storage.has(v)} onChange={() => toggleSet("storage", v)} count={counts.storage[v]} />
+        ))}
+      </div>
+
+      <div>
+        <div style={{ color: "white", fontSize: 11, fontWeight: 600, marginBottom: 6 }}>Processor</div>
+        {["Intel Core", "AMD Ryzen", "Celeron/Pentium", "MediaTek", "Others"].map(v => (
+          <Checkbox key={v} label={v} checked={filters.processor.has(v)} onChange={() => toggleSet("processor", v)} count={counts.processor[v]} />
+        ))}
+      </div>
     </div>
   );
 }
 
-// ─── Main page ────────────────────────────────────────────────────────────────
-export default function PriceTracking() {
-  const [activeTab,    setActiveTab]    = useState("deals");
-  const [activeBrand,  setActiveBrand]  = useState("all");
-  const [allProducts,  setAllProducts]  = useState({});
-  const [loading,      setLoading]      = useState(true);
-  const [error,        setError]        = useState(null);
-  const [searchQuery,  setSearchQuery]  = useState("");
-  const [priceRange,   setPriceRange]   = useState("all");
-  const [historyBrand, setHistoryBrand] = useState("hp");
+function InteractiveHistoryChart({ months, models }) {
+  const canvasRef = useRef(null);
+  const chartRef  = useRef(null);
+  const [activeModel, setActiveModel] = useState(null);
 
-  // Load all products from existing cache
+  function toggleModel(i) { setActiveModel(prev => (prev === i ? null : i)); }
+
+  function buildDatasets() {
+    return models.map((m, i) => {
+      const color = MODEL_COLORS[i % MODEL_COLORS.length];
+      const isActive = activeModel === null || activeModel === i;
+      return {
+        label: m.name, data: m.history,
+        borderColor: isActive ? color : color + "22",
+        pointBackgroundColor: isActive ? color : color + "22",
+        borderWidth: activeModel === i ? 4 : 2,
+        pointRadius: activeModel === i ? 5 : 3,
+        pointHoverRadius: 7, pointHitRadius: 15, tension: 0.3, fill: false,
+        order: activeModel === i ? 0 : 1,
+      };
+    });
+  }
+
   useEffect(() => {
-    setLoading(true);
-    axios.get(`${API}/products`)
-      .then(res => {
-        const data = res.data;
-        // Deduplicate per brand
-        const cleaned = {};
-        Object.entries(data).forEach(([brandId, brandData]) => {
-          const products = brandData.products || [];
-          cleaned[brandId] = {
-            ...brandData,
-            products: deduplicateProducts(products),
-          };
-        });
-        setAllProducts(cleaned);
-      })
-      .catch(() => setError("Could not load products. Make sure backend is running."))
-      .finally(() => setLoading(false));
-  }, []);
+    if (!canvasRef.current || !months || months.length === 0) return;
+    if (chartRef.current) chartRef.current.destroy();
+    try {
+      chartRef.current = new ChartJS(canvasRef.current, {
+        type: "line",
+        data: { labels: months, datasets: buildDatasets() },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          interaction: { mode: "nearest", intersect: false },
+          onClick: (evt, elements, chartInstance) => {
+            const points = chartInstance.getElementsAtEventForMode(evt, "nearest", { intersect: false }, true);
+            if (points.length > 0) toggleModel(points[0].datasetIndex);
+          },
+          onHover: (evt, elements, chartInstance) => {
+            const points = chartInstance.getElementsAtEventForMode(evt, "nearest", { intersect: false }, true);
+            if (evt.native?.target) evt.native.target.style.cursor = points.length > 0 ? "pointer" : "default";
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: c => " " + c.dataset.label + ": " + fmtRs(c.raw) } },
+            zoom: {
+              zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: "xy" },
+              pan: { enabled: true, mode: "xy" },
+              limits: { y: { min: PRICE_MIN, max: PRICE_MAX } },
+            },
+          },
+          scales: {
+            y: { min: PRICE_MIN, max: PRICE_MAX,
+              ticks: { callback: v => "Rs." + (v / 1000).toFixed(0) + "K", font: { size: 11 }, color: "#64748b" },
+              grid: { color: "rgba(128,128,128,0.08)" } },
+            x: { ticks: { font: { size: 11 }, color: "#64748b" }, grid: { display: false } },
+          },
+        },
+      });
+    } catch (err) { console.error("Chart.js error:", err); }
+    return () => { if (chartRef.current) chartRef.current.destroy(); };
+  }, [months, models, activeModel]);
 
-  // All products flat list
-  const flatProducts = Object.entries(allProducts).flatMap(([brandId, d]) =>
-    (d.products || []).map(p => ({ ...p, brand: p.brand || BRAND_MAP[brandId]?.label || brandId }))
+  return (
+    <div>
+      <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8 }}>
+        Scroll to zoom · drag to pan · click a line or model name to isolate it
+      </div>
+      <div style={{ position: "relative", width: "100%", height: 320 }}>
+        <canvas ref={canvasRef} />
+      </div>
+      <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
+        {models.map((m, i) => {
+          const color = MODEL_COLORS[i % MODEL_COLORS.length];
+          const isActive = activeModel === i;
+          const isDimmed = activeModel !== null && activeModel !== i;
+          return (
+            <div key={m.name} onClick={() => toggleModel(i)} style={{
+              display: "flex", alignItems: "center", gap: 6, fontSize: 11,
+              color: isActive ? "#f1f5f9" : "#64748b",
+              cursor: "pointer", padding: "5px 10px", borderRadius: 20,
+              border: `1px solid ${isActive ? "#475569" : "transparent"}`,
+              background: isActive ? "#1e293b" : "transparent",
+              opacity: isDimmed ? 0.35 : 1,
+              fontWeight: isActive ? 600 : 400, transition: "all 0.15s", userSelect: "none",
+            }}>
+              <span style={{ width: 10, height: 10, borderRadius: "50%", background: color, flexShrink: 0 }} />
+              {m.name}
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
+}
 
-  // Filtered products for deals tab
-  const filteredProducts = flatProducts.filter(p => {
-    const price = bestPrice(p);
-    const brandOk = activeBrand === "all" || p.brand?.toLowerCase() === activeBrand;
-    const rangeOk = priceRange === "all" ||
-      (priceRange === "10-20" && price >= 10000 && price < 20000) ||
-      (priceRange === "20-30" && price >= 20000 && price < 30000) ||
-      (priceRange === "30-40" && price >= 30000 && price <= 40000);
-    const searchOk = !searchQuery || p.name?.toLowerCase().includes(searchQuery.toLowerCase());
-    return brandOk && rangeOk && searchOk && price > 0;
-  }).sort((a, b) => bestPrice(a) - bestPrice(b));
+function AlertItem({ icon: Icon, iconColor, title, subtitle, rightText, rightColor, badge }) {
+  return (
+    <div style={{ background: "#1e293b", border: "0.5px solid #334155", borderRadius: 12, padding: 14, display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 10 }}>
+      <div style={{ width: 36, height: 36, borderRadius: 8, background: iconColor + "20", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <Icon size={16} color={iconColor} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 13, fontWeight: 500, color: "#e2e8f0", display: "flex", alignItems: "center", gap: 6, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {title} {badge}
+        </div>
+        <div style={{ fontSize: 11, color: "#64748b", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{subtitle}</div>
+      </div>
+      <div style={{ fontSize: 14, fontWeight: 600, color: rightColor, flexShrink: 0 }}>{rightText}</div>
+    </div>
+  );
+}
 
-  // New products (added in last 30 days — based on source "Both" or highest reviews)
-  const newProducts = flatProducts
-    .filter(p => p.source === "Both" || p.reviews > 1000)
-    .sort((a, b) => (b.reviews || 0) - (a.reviews || 0))
-    .slice(0, 6);
+export default function PriceTracking() {
+  const [activeTab,      setActiveTab]      = useState("table");
+  const [selectedBrands, setSelectedBrands] = useState(new Set()); // empty = all
+  const [historyBrand,   setHistoryBrand]   = useState("primebook");
+  const [allRows,        setAllRows]        = useState([]);
+  const [historyData,    setHistoryData]    = useState({ months: [], models: [] });
+  const [alertsData,     setAlertsData]     = useState({ price_diff_alerts: [], new_products: [] });
+  const [loading,        setLoading]        = useState(true);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [error,          setError]          = useState(null);
 
-  // Price alerts — products with biggest price difference between Amazon and Flipkart
-  const priceAlerts = flatProducts
-    .filter(p => p.amazon_price > 0 && p.flipkart_price > 0)
-    .map(p => ({ ...p, diff: Math.abs(p.amazon_price - p.flipkart_price) }))
-    .sort((a, b) => b.diff - a.diff)
-    .slice(0, 6);
+  const [sidebarOpen,    setSidebarOpen]    = useState(false);
+  const [sortOrder,      setSortOrder]      = useState("price_asc");
+  const [filters,        setFilters]        = useState({
+    priceMin: 0, priceMax: 999999,
+    platforms: new Set(),
+    ram: new Set(),
+    storage: new Set(),
+    processor: new Set(),
+  });
 
-  // History brand products (top 4 unique)
-  const historyProducts = (allProducts[historyBrand]?.products || []);
-  const histColor = BRAND_MAP[historyBrand]?.color || "#6366f1";
+  // Fetch ALL products once, then filter client-side
+  useEffect(() => {
+    if (activeTab !== "table") return;
+    setLoading(true);
+    axios.get(`${API}/price/table`, { params: { brand: "all" } })
+      .then(res => setAllRows(res.data.rows || []))
+      .catch(() => setError("Could not load price table. Check backend is running."))
+      .finally(() => setLoading(false));
+  }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== "history") return;
+    setHistoryLoading(true);
+    axios.get(`${API}/price/history/${historyBrand}`)
+      .then(res => setHistoryData(res.data))
+      .catch(() => setHistoryData({ months: [], models: [] }))
+      .finally(() => setHistoryLoading(false));
+  }, [activeTab, historyBrand]);
+
+  useEffect(() => {
+    if (activeTab !== "alerts") return;
+    axios.get(`${API}/price/alerts`)
+      .then(res => setAlertsData(res.data))
+      .catch(() => setAlertsData({ price_diff_alerts: [], new_products: [] }));
+  }, [activeTab]);
+
+  // Client-side filtering + sorting
+  const filteredRows = useMemo(() => {
+    let rows = allRows;
+
+    // Brand filter (empty = all). Primebook is always kept so it shows for every brand.
+    if (selectedBrands.size > 0) {
+      rows = rows.filter(r => r.is_our_brand || selectedBrands.has(r.brand?.toLowerCase()));
+    }
+
+    // Price range
+    rows = rows.filter(r => {
+      const price = r.best_price || r.amazon || r.flipkart || 0;
+      return price >= filters.priceMin && price <= filters.priceMax;
+    });
+
+    // Platform
+    if (filters.platforms.size > 0) {
+      rows = rows.filter(r => {
+        const onAmazon = r.amazon > 0;
+        const onFlipkart = r.flipkart > 0;
+        if (filters.platforms.has("both") && onAmazon && onFlipkart) return true;
+        if (filters.platforms.has("amazon") && onAmazon) return true;
+        if (filters.platforms.has("flipkart") && onFlipkart) return true;
+        return false;
+      });
+    }
+
+    // RAM
+    if (filters.ram.size > 0) {
+      rows = rows.filter(r => filters.ram.has(r.ram_gb));
+    }
+
+    // Storage
+    if (filters.storage.size > 0) {
+      rows = rows.filter(r => filters.storage.has(r.storage_gb));
+    }
+
+    // Processor group
+    if (filters.processor.size > 0) {
+      rows = rows.filter(r => filters.processor.has(processorGroup(r.processor)));
+    }
+
+    // Sort — Primebook always pinned to the top, then sorted by the chosen order within each group
+    rows = [...rows].sort((a, b) => {
+      if (a.is_our_brand && !b.is_our_brand) return -1;
+      if (!a.is_our_brand && b.is_our_brand) return 1;
+      const pa = a.best_price || a.amazon || a.flipkart || 999999;
+      const pb = b.best_price || b.amazon || b.flipkart || 999999;
+      return sortOrder === "price_asc" ? pa - pb : pb - pa;
+    });
+
+    return rows;
+  }, [allRows, selectedBrands, filters, sortOrder]);
+
+  // Counts for the sidebar (based on brand-selection only, so counts stay meaningful)
+  const counts = useMemo(() => {
+    let base = allRows;
+    if (selectedBrands.size > 0) base = base.filter(r => selectedBrands.has(r.brand?.toLowerCase()));
+    
+    const c = {
+      platforms: { amazon: 0, flipkart: 0, both: 0 },
+      ram: {}, storage: {}, processor: {},
+    };
+    base.forEach(r => {
+      if (r.amazon > 0) c.platforms.amazon++;
+      if (r.flipkart > 0) c.platforms.flipkart++;
+      if (r.amazon > 0 && r.flipkart > 0) c.platforms.both++;
+      c.ram[r.ram_gb] = (c.ram[r.ram_gb] || 0) + 1;
+      c.storage[r.storage_gb] = (c.storage[r.storage_gb] || 0) + 1;
+      const g = processorGroup(r.processor);
+      c.processor[g] = (c.processor[g] || 0) + 1;
+    });
+    return c;
+  }, [allRows, selectedBrands]);
+
+  // Active filter count for the badge
+  const activeFilterCount = 
+  (filters.priceMin > 0 || filters.priceMax < 999999 ? 1 : 0) +
+  filters.platforms.size + filters.ram.size + filters.storage.size + filters.processor.size;
+  function toggleBrand(brandId) {
+    setSelectedBrands(prev => {
+      const set = new Set(prev);
+      if (set.has(brandId)) set.delete(brandId);
+      else set.add(brandId);
+      return set;
+    });
+  }
+
+  function clearAllBrands() { setSelectedBrands(new Set()); }
+
+  function resetFilters() {
+    setFilters({
+      priceMin: 0, priceMax: 999999,
+      platforms: new Set(), ram: new Set(),
+      storage: new Set(), processor: new Set(),
+    });
+  }
+
+  const brandCounts = useMemo(() => {
+    const c = {};
+    allRows.forEach(r => { const b = r.brand?.toLowerCase(); c[b] = (c[b] || 0) + 1; });
+    return c;
+  }, [allRows]);
 
   return (
     <>
@@ -354,240 +502,204 @@ export default function PriceTracking() {
         .pt-tabs{display:flex;border-bottom:1px solid #334155;margin-bottom:22px}
         .pt-tab{padding:10px 16px;font-size:13px;color:#64748b;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all 0.15s}
         .pt-tab.active{color:#f1f5f9;border-bottom-color:#6366f1}
-        .pt-filters{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-        .pt-chip{padding:5px 12px;border-radius:20px;border:1.5px solid #334155;background:#1e293b;color:#94a3b8;cursor:pointer;font-size:12px;font-weight:500;transition:all 0.12s}
-        .pt-chip.active{border-color:currentColor}
-        .pt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-        .pt-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        .pt-section-title{font-size:13px;font-weight:600;color:#94a3b8;margin-bottom:12px;display:flex;align-items:center;gap:6px}
-        .compare-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;padding:10px 14px;font-size:11px;font-weight:600;color:#64748b;background:#1e293b;border-radius:8px 8px 0 0}
+        .pt-chip{padding:5px 11px;border-radius:16px;border:1px solid #334155;background:transparent;color:#94a3b8;cursor:pointer;font-size:11px;font-weight:500;transition:all 0.15s;user-select:none}
+        .pt-chip:hover{background:rgba(148,163,184,0.1);color:white}
+        .pt-card{background:#1e293b;border:0.5px solid #334155;border-radius:12px;padding:18px}
+        .pt-table{width:100%;border-collapse:collapse;font-size:13px}
+        .pt-table th{text-align:left;padding:12px 14px;background:#0f172a;color:#64748b;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;white-space:nowrap}
         .refresh-btn{display:flex;align-items:center;gap:6px;background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:13px;transition:all 0.2s}
         .refresh-btn:hover{background:#334155;color:#e2e8f0}
-        .search-wrap{position:relative;flex:1;max-width:260px}
-        .search-wrap input{width:100%;padding:7px 10px 7px 30px;border-radius:8px;border:1px solid #334155;background:#1e293b;color:#e2e8f0;font-size:12px}
-        .search-icon{position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#64748b}
         .error-box{background:#450a0a20;border:1px solid #7f1d1d;color:#fca5a5;padding:16px 20px;border-radius:10px;display:flex;gap:10px;margin-bottom:24px;font-size:13px}
         .center-msg{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:80px 0;color:#475569}
-        .alert-item{background:#1e293b;border:0.5px solid #334155;border-radius:12px;padding:14px;display:flex;align-items:flex-start;gap:12px;margin-bottom:10px}
-        .alert-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+        .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+        .section-title{font-size:13px;font-weight:600;color:#94a3b8;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+        .filter-btn{background:transparent;border:1px solid #334155;color:#94a3b8;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.15s}
+        .filter-btn:hover{background:rgba(148,163,184,0.1);color:white;border-color:#C9A84C}
+        .filter-btn.active{background:#C9A84C;color:#0f1117;border-color:#C9A84C}
+        .filter-badge{background:rgba(255,255,255,0.25);color:inherit;font-size:10px;padding:1px 6px;border-radius:10px;font-weight:700}
+        .sort-select{background:#0f172a;color:white;border:1px solid #334155;padding:5px 8px;border-radius:5px;font-size:11px;cursor:pointer}
         @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
         .spin{animation:spin 1s linear infinite}
-        @media(max-width:900px){.pt-page{padding:16px}.pt-grid{grid-template-columns:1fr 1fr}.pt-grid-2{grid-template-columns:1fr}}
-        @media(max-width:600px){.pt-grid{grid-template-columns:1fr}}
+        @media(max-width:900px){.pt-page{padding:16px}.two-col{grid-template-columns:1fr}}
       `}</style>
 
       <div className="pt-page">
-        {/* Header */}
         <div className="pt-header">
           <div>
-            <div className="pt-title">
-              <TrendingDown size={24} color="#10b981" /> Price tracking
-            </div>
-            <div className="pt-sub">All 65 products · Amazon + Flipkart · Rs. 10K–40K range</div>
+            <div className="pt-title"><TrendingDown size={24} color="#10b981" /> Price tracking</div>
+            <div className="pt-sub">Primebook + HP + Lenovo + Acer + Dell + Asus · Amazon + Flipkart</div>
           </div>
-          <button className="refresh-btn" onClick={() => window.location.reload()} disabled={loading}>
-            <RefreshCw size={14} className={loading ? "spin" : ""} />
-            {loading ? "Loading…" : "Refresh"}
+          <button className="refresh-btn" onClick={() => window.location.reload()}>
+            <RefreshCw size={14} /> Refresh
           </button>
         </div>
 
-        {error && (
-          <div className="error-box">
-            <AlertCircle size={16} style={{ flexShrink: 0 }} />
-            <div>{error}</div>
-          </div>
-        )}
+        {error && <div className="error-box"><AlertCircle size={16} /> <div>{error}</div></div>}
 
-        {/* Tabs */}
         <div className="pt-tabs">
           {[
-            { id: "deals",   label: "Best deals"          },
-            { id: "history", label: "Price history"        },
-            { id: "compare", label: "Amazon vs Flipkart"   },
-            { id: "alerts",  label: "Alerts"               },
+            { id: "table",   label: "Price table"   },
+            { id: "history", label: "Price history" },
+            { id: "alerts",  label: "Alerts"         },
           ].map(t => (
-            <button key={t.id} className={`pt-tab${activeTab === t.id ? " active" : ""}`}
-              onClick={() => setActiveTab(t.id)}>
+            <button key={t.id} className={`pt-tab${activeTab === t.id ? " active" : ""}`} onClick={() => setActiveTab(t.id)}>
               {t.label}
-              {t.id === "alerts" && priceAlerts.length > 0 && (
+              {t.id === "alerts" && alertsData.price_diff_alerts.length > 0 && (
                 <span style={{ background: "#ef444420", color: "#ef4444", fontSize: 10, padding: "1px 6px", borderRadius: 20, marginLeft: 6 }}>
-                  {priceAlerts.length}
+                  {alertsData.price_diff_alerts.length}
                 </span>
               )}
             </button>
           ))}
         </div>
 
-        {loading ? (
-          <div className="center-msg">
-            <TrendingDown size={48} />
-            <div style={{ fontSize: 15 }}>Loading price data…</div>
-          </div>
-        ) : error ? null : (
+        {activeTab === "table" && (
           <>
-            {/* ── BEST DEALS TAB ── */}
-            {activeTab === "deals" && (
-              <>
-                <div className="pt-filters">
-                  <div className="search-wrap">
-                    <Search size={13} className="search-icon" />
-                    <input placeholder="Search products…" value={searchQuery}
-                      onChange={e => setSearchQuery(e.target.value)} />
-                  </div>
-                  <select value={priceRange} onChange={e => setPriceRange(e.target.value)}
-                    style={{ fontSize: 12, padding: "7px 10px", borderRadius: 8, border: "1px solid #334155", background: "#1e293b", color: "#e2e8f0" }}>
-                    <option value="all">All prices</option>
-                    <option value="10-20">Rs. 10K – 20K</option>
-                    <option value="20-30">Rs. 20K – 30K</option>
-                    <option value="30-40">Rs. 30K – 40K</option>
-                  </select>
-                  {BRANDS.map(br => (
-                    <button key={br.id} className={`pt-chip${activeBrand === br.id ? " active" : ""}`}
-                      onClick={() => setActiveBrand(br.id === activeBrand ? "all" : br.id)}
-                      style={activeBrand === br.id ? { color: br.color, borderColor: br.color, background: br.color + "18" } : {}}>
-                      {br.label}
-                    </button>
-                  ))}
-                  {activeBrand !== "all" && (
-                    <button className="pt-chip" onClick={() => setActiveBrand("all")}>Clear</button>
+            {/* Top bar: filters button + brand chips + sort */}
+            <div style={{ background: "#1e293b", padding: "12px 14px", borderRadius: 10, marginBottom: 14, display: "flex", justifyContent: "space-between", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                <button className={`filter-btn${sidebarOpen ? " active" : ""}`} onClick={() => setSidebarOpen(!sidebarOpen)}>
+                  <SlidersHorizontal size={13} /> Filters
+                  {activeFilterCount > 0 && <span className="filter-badge">{activeFilterCount}</span>}
+                </button>
+
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <span className="pt-chip"
+                    onClick={clearAllBrands}
+                    style={selectedBrands.size === 0 ? { background: "#C9A84C", color: "#0f1117", borderColor: "#C9A84C" } : { borderColor: "#C9A84C", color: "#C9A84C" }}>
+                    All ({allRows.length})
+                  </span>
+                  {BRANDS.filter(br => !br.isOurs).map(br => {
+                    const isActive = selectedBrands.has(br.id);
+                    return (
+                      <span key={br.id} className="pt-chip"
+                        onClick={() => toggleBrand(br.id)}
+                        style={isActive
+                          ? { background: br.color, color: "#0f1117", borderColor: br.color }
+                          : {}}>
+                        {br.label} ({brandCounts[br.id] || 0})
+                      </span>
+                    );
+                  })}
+                  {selectedBrands.size > 0 && (
+                    <span className="pt-chip" onClick={clearAllBrands}
+                      style={{ color: "#ef4444", borderColor: "#ef4444", fontSize: 10 }}>
+                      <X size={10} style={{ verticalAlign: "middle" }} /> Clear
+                    </span>
                   )}
                 </div>
-                <div style={{ fontSize: 12, color: "#64748b", marginBottom: 12 }}>
-                  {filteredProducts.length} products · sorted by lowest price
-                </div>
-                <div className="pt-grid">
-                  {filteredProducts.length === 0
-                    ? <div style={{ gridColumn: "1/-1", textAlign: "center", padding: "40px 0", color: "#475569", fontSize: 13 }}>No products match this filter</div>
-                    : filteredProducts.map((p, i) => (
-                        <DealCard key={i} product={p} color={BRAND_MAP[p.brand?.toLowerCase()]?.color || "#6366f1"} />
-                      ))
-                  }
-                </div>
-              </>
-            )}
+              </div>
 
-            {/* ── PRICE HISTORY TAB ── */}
-            {activeTab === "history" && (
-              <>
-                {/* Brand selector */}
-                <div className="pt-filters" style={{ marginBottom: 20 }}>
-                  {BRANDS.map(br => (
-                    <button key={br.id} className={`pt-chip${historyBrand === br.id ? " active" : ""}`}
-                      onClick={() => setHistoryBrand(br.id)}
-                      style={historyBrand === br.id ? { color: br.color, borderColor: br.color, background: br.color + "18" } : {}}>
-                      {br.label}
-                      <span style={{ fontSize: 10, opacity: 0.7, marginLeft: 4 }}>
-                        ({(allProducts[br.id]?.products || []).length})
-                      </span>
-                    </button>
-                  ))}
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ color: "#64748b", fontSize: 11 }}>Sort:</span>
+                <select className="sort-select" value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+                  <option value="price_asc">Price low → high</option>
+                  <option value="price_desc">Price high → low</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Layout: optional sidebar + table */}
+            <div style={{ display: "grid", gridTemplateColumns: sidebarOpen ? "180px 1fr" : "1fr", gap: 14, transition: "all 0.2s" }}>
+              {sidebarOpen && (
+                <FilterSidebar filters={filters} setFilters={setFilters} counts={counts} onReset={resetFilters} />
+              )}
+
+              <div>
+                <div style={{ color: "#64748b", fontSize: 11, marginBottom: 8 }}>
+                  Showing <span style={{ color: "white", fontWeight: 600 }}>{filteredRows.length}</span> of {allRows.length} products
                 </div>
-                <div style={{ fontSize: 12, color: "#64748b", marginBottom: 14 }}>
-                  Showing {historyProducts.length} unique products for {BRAND_MAP[historyBrand]?.label} · no duplicates · Amazon + Flipkart
-                </div>
-                {historyProducts.length === 0
-                  ? <div style={{ textAlign: "center", padding: "40px 0", color: "#475569", fontSize: 13 }}>No products cached for this brand</div>
-                  : <div className="pt-grid">
-                      {historyProducts.map((p, i) => (
-                        <HistoryCard key={i} product={p} color={histColor} />
-                      ))}
+
+                {loading ? (
+                  <div className="center-msg"><TrendingDown size={40} /><div style={{ fontSize: 14 }}>Loading price table…</div></div>
+                ) : (
+                  <div className="pt-card" style={{ padding: 0, overflow: "hidden auto" }}>
+                    <div style={{ overflowX: "auto" }}>
+                      <table className="pt-table">
+                        <thead>
+                          <tr>
+                            <th>Model</th>
+                            <th>RAM</th>
+                            <th>Storage</th>
+                            <th>Processor</th>
+                            <th>Battery</th>
+                            <th>OS</th>
+                            <th>Amazon</th>
+                            <th>Flipkart</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filteredRows.length === 0
+                            ? <tr><td colSpan={8} style={{ textAlign: "center", padding: 40, color: "#475569" }}>No products match your filters</td></tr>
+                            : filteredRows.map((row, i) => <PriceTableRow key={i} row={row} />)
+                          }
+                        </tbody>
+                      </table>
                     </div>
-                }
-              </>
-            )}
-
-            {/* ── AMAZON VS FLIPKART TAB ── */}
-            {activeTab === "compare" && (
-              <>
-                <div style={{ fontSize: 12, color: "#64748b", marginBottom: 14 }}>
-                  Green = cheaper on that platform · showing all products with both sources
-                </div>
-                <div style={{ border: "1px solid #334155", borderRadius: 12, overflow: "hidden" }}>
-                  <div className="compare-header">
-                    <span>Product</span>
-                    <span>Amazon</span>
-                    <span>Flipkart</span>
-                    <span>Difference</span>
                   </div>
-                  {flatProducts
-                    .filter(p => bestPrice(p) > 0)
-                    .sort((a, b) => bestPrice(a) - bestPrice(b))
-                    .map((p, i) => <CompareRow key={i} product={p} index={i} />)
-                  }
-                </div>
-              </>
-            )}
+                )}
+              </div>
+            </div>
+          </>
+        )}
 
-            {/* ── ALERTS TAB ── */}
-            {activeTab === "alerts" && (
-              <div className="pt-grid-2">
-                {/* Price difference alerts */}
-                <div>
-                  <div className="pt-section-title">
-                    <Bell size={14} color="#ef4444" /> Price difference alerts
-                  </div>
-                  {priceAlerts.map((p, i) => {
-                    const amz  = p.amazon_price   || p.price_inr || 0;
-                    const flip = p.flipkart_price || 0;
-                    const diff = Math.abs(amz - flip);
-                    const cheaper = amz < flip ? "Amazon" : "Flipkart";
-                    return (
-                      <div key={i} className="alert-item">
-                        <div className="alert-icon" style={{ background: "#ef444420" }}>
-                          <Bell size={16} color="#ef4444" />
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 500, color: "#e2e8f0", marginBottom: 3,
-                            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {p.name?.slice(0, 32)}{p.name?.length > 32 ? "…" : ""}
-                          </div>
-                          <div style={{ fontSize: 11, color: "#64748b" }}>
-                            {cheaper} is {fmtRs(diff)} cheaper
-                          </div>
-                        </div>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#10b981", flexShrink: 0 }}>
-                          Save {fmtRs(diff)}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+        {activeTab === "history" && (
+          <>
+            <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+              {BRANDS.map(br => (
+                <button key={br.id} className="pt-chip" onClick={() => setHistoryBrand(br.id)}
+                  style={historyBrand === br.id ? { color: br.color, borderColor: br.color, background: br.color + "18" } : { borderColor: br.isOurs ? br.color + "80" : "#334155", color: br.isOurs ? br.color : "#94a3b8" }}>
+                  {br.label}
+                </button>
+              ))}
+            </div>
+            <div className="pt-card">
+              <div style={{ marginBottom: 8 }}>
+                <div style={{ fontSize: 14, fontWeight: 500, color: "#f1f5f9" }}>{BRAND_MAP[historyBrand]?.label} — All models</div>
+                <div style={{ fontSize: 12, color: "#64748b" }}>Last 6 months · price range fixed at Rs.0 – Rs.60K</div>
+              </div>
+              {historyLoading ? (
+                <div className="center-msg" style={{ padding: 40 }}><RefreshCw size={24} className="spin" /></div>
+              ) : historyData.models.length === 0 ? (
+                <div style={{ textAlign: "center", padding: 40, color: "#475569", fontSize: 13 }}>No price history available</div>
+              ) : (
+                <InteractiveHistoryChart months={historyData.months} models={historyData.models} />
+              )}
+            </div>
+          </>
+        )}
 
-                {/* New products detected */}
-                <div>
-                  <div className="pt-section-title">
-                    <Sparkles size={14} color="#6366f1" /> New products detected
-                    <span style={{ fontSize: 10, color: "#64748b", fontWeight: 400 }}>under Rs. 40K</span>
-                  </div>
-                  {newProducts.map((p, i) => {
+        {activeTab === "alerts" && (
+          <div className="two-col">
+            <div>
+              <div className="section-title"><Bell size={14} color="#ef4444" /> Price difference alerts</div>
+              {alertsData.price_diff_alerts.length === 0
+                ? <div style={{ color: "#475569", fontSize: 13, padding: 20 }}>No significant price differences found</div>
+                : alertsData.price_diff_alerts.map((a, i) => (
+                    <AlertItem key={i} icon={Bell} iconColor="#ef4444"
+                      title={`${a.brand} — ${a.name?.slice(0, 28)}${a.name?.length > 28 ? "…" : ""}`}
+                      subtitle={`${a.cheaper} is ${fmtRs(a.diff)} cheaper`}
+                      rightText={`Save ${fmtRs(a.diff)}`} rightColor="#10b981" />
+                  ))
+              }
+            </div>
+            <div>
+              <div className="section-title"><Sparkles size={14} color="#6366f1" /> New products detected <span style={{ fontSize: 10, color: "#64748b", fontWeight: 400 }}>under Rs. 40K</span></div>
+              {alertsData.new_products.length === 0
+                ? <div style={{ color: "#475569", fontSize: 13, padding: 20 }}>No new products detected recently</div>
+                : alertsData.new_products.map((p, i) => {
                     const color = BRAND_MAP[p.brand?.toLowerCase()]?.color || "#6366f1";
                     return (
-                      <div key={i} className="alert-item">
-                        <div className="alert-icon" style={{ background: color + "20" }}>
-                          <Sparkles size={16} color={color} />
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 500, color: "#e2e8f0", marginBottom: 3,
-                            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {p.brand}
-                            <span style={{ background: color + "22", color, fontSize: 9, fontWeight: 600,
-                              padding: "1px 6px", borderRadius: 20, marginLeft: 6 }}>NEW</span>
-                          </div>
-                          <div style={{ fontSize: 11, color: "#64748b",
-                            overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {p.name?.slice(0, 35)}{p.name?.length > 35 ? "…" : ""}
-                          </div>
-                        </div>
-                        <div style={{ fontSize: 14, fontWeight: 600, color, flexShrink: 0 }}>
-                          {fmtRs(bestPrice(p))}
-                        </div>
-                      </div>
+                      <AlertItem key={i} icon={Sparkles} iconColor={color}
+                        title={p.brand}
+                        badge={<span style={{ background: color + "22", color, fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 20 }}>NEW</span>}
+                        subtitle={p.name}
+                        rightText={fmtRs(p.price)} rightColor={color} />
                     );
-                  })}
-                </div>
-              </div>
-            )}
-          </>
+                  })
+              }
+            </div>
+          </div>
         )}
       </div>
     </>
