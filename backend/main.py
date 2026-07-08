@@ -2054,12 +2054,14 @@ def youtube_analytics_brand(brand_id: str):
     ranked = sorted(withv, key=lambda v: v["views"], reverse=True)
 
     def slim(v):
-        er = round((v.get("likes", 0) + v.get("comments", 0)) / v["views"] * 100, 2) if v.get("views") else 0
+        views = v.get("views", 0) or 0
+        er = round((v.get("likes", 0) + v.get("comments", 0)) / views * 100, 2) if views else 0
         return {
-            "title": v.get("title"), "views": v.get("views"), "likes": v.get("likes"),
+            "video_id": v.get("video_id"),
+            "title": v.get("title"), "views": views, "likes": v.get("likes"),
             "comments": v.get("comments"), "url": v.get("url"), "thumbnail": v.get("thumbnail"),
             "published_at": v.get("published_at"), "duration_secs": v.get("duration_secs"),
-            "is_short": v.get("is_short"), "engagement_rate": er, "outlier": v["views"] >= 2 * med,
+            "is_short": v.get("is_short"), "engagement_rate": er, "outlier": views >= 2 * med,
         }
 
     buckets = {"Short (<1m)": 0, "Mid (1-10m)": 0, "Long (>10m)": 0}
@@ -2069,10 +2071,92 @@ def youtube_analytics_brand(brand_id: str):
         elif s <= 600:   buckets["Mid (1-10m)"] += 1
         else:            buckets["Long (>10m)"] += 1
 
+    latest = sorted(vids, key=lambda v: v.get("published_at") or "", reverse=True)[:8]
+
     m["top_videos"]       = [slim(v) for v in ranked[:8]]
+    m["latest_videos"]    = [slim(v) for v in latest]
     m["bottom_videos"]    = [slim(v) for v in ranked[-5:][::-1]] if len(ranked) >= 5 else []
     m["duration_buckets"] = buckets
     return m
+
+
+# ─── Per-video AI analysis — aware of (ours vs competitor) × (top vs latest) ──
+VIDEO_ANALYSIS_CACHE = {}
+
+@app.get("/youtube/video-analysis/{brand_id}/{video_id}")
+async def youtube_video_analysis(brand_id: str, video_id: str, context: str = Query(default="top")):
+    brand_id = brand_id.lower()
+    context  = "latest" if context == "latest" else "top"
+    b = _brand_cache(brand_id)
+    if not b:
+        return {"error": "Not cached yet"}
+    v = next((x for x in _yt_all_videos(b) if x.get("video_id") == video_id), None)
+    if not v:
+        return {"error": "Video not found"}
+
+    ckey = f"{video_id}:{context}"
+    cached = VIDEO_ANALYSIS_CACHE.get(ckey)
+    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 168:
+        return cached["result"]
+
+    is_ours    = brand_id == "primebook"
+    brand_name = b.get("stats", {}).get("name", brand_id)
+    dur = v.get("duration_secs", 0)
+    dur_txt = f"{dur // 60}m {dur % 60}s" + (" (Short)" if v.get("is_short") else "")
+    dt = _parse_dt(v.get("published_at"))
+    days = (datetime.now(timezone.utc) - dt).days if dt else None
+    age_txt = (f"{days} days ago" if days and days > 0 else "today/very recently") if days is not None else "unknown"
+
+    stats_line = (f'- Views: {v.get("views", 0):,} | Likes: {v.get("likes", 0):,} | '
+                  f'Comments: {v.get("comments", 0):,} | Posted: {age_txt} | Length: {dur_txt}')
+
+    # Choose the task + the label for the "action" field per the 4 cases
+    if is_ours and context == "top":
+        action_label = ""
+        task = ("This is one of PRIMEBOOK's OWN best videos. In 3 points explain why it performed well so we can "
+                "repeat the winning formula. Do NOT suggest adapting or remaking our own video. "
+                "badge_text = a 1-2 word label like TOP PERFORMER, badge_tone = good. Leave action empty.")
+    elif is_ours and context == "latest":
+        action_label = "Improvements"
+        task = ("This is a RECENT PRIMEBOOK upload (our own). Judge whether its views and likes are GOOD ENOUGH for how "
+                "long ago it was posted. In 3 points explain why it is doing well OR why it is underperforming. "
+                "badge_text = GOOD / UNDERPERFORMING / TOO EARLY, badge_tone = good / warn / neutral. "
+                "action = concrete improvements Primebook can make to get more views and likes on videos like this.")
+    elif (not is_ours) and context == "top":
+        action_label = "Primebook recommendation"
+        task = ("This is a COMPETITOR top video. In 3 points explain why it performed well. "
+                "badge_text = MAKE THIS / ADAPT IT / SKIP IT (should Primebook make this type), "
+                "badge_tone = good / warn / bad. action = if MAKE or ADAPT, how Primebook should make its own version "
+                "and what angle; if SKIP, what different content Primebook should make instead.")
+    else:  # competitor latest
+        action_label = "Primebook move"
+        task = ("This is a RECENT COMPETITOR upload. In 3 points analyze whether it gained views and likes FAST for how "
+                "recently it was posted (or not) and WHY. badge_text = FAST GROWTH / STEADY / SLOW, "
+                "badge_tone = good / neutral / warn. action = what Primebook can do, related to this video topic, "
+                "to gain fast views and likes.")
+
+    prompt = f"""You are a YouTube strategist for Primebook India (Android 15 budget laptops, Rs. 10,000-40,000).
+
+Channel: {brand_name} {"(OUR OWN channel)" if is_ours else "(competitor)"}
+Video title: "{v.get('title', '')}"
+{stats_line}
+
+TASK: {task}
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "summary": "1-2 sentence plain description of what this video most likely is",
+  "badge_text": "short label as instructed",
+  "badge_tone": "good|warn|bad|neutral",
+  "points": ["point 1", "point 2", "point 3"],
+  "action": "{'text as instructed' if action_label else ''}"
+}}"""
+
+    result = await _groq_json(prompt, 1200)
+    if "error" not in result:
+        result["action_label"] = action_label
+        VIDEO_ANALYSIS_CACHE[ckey] = {"result": result, "time": datetime.now()}
+    return result
 
 
 # ─── Groq JSON helper (shared by content-strategy + sentiment) ────────────────
@@ -2083,7 +2167,8 @@ async def _groq_json(prompt: str, max_tokens: int = 2500, temperature: float = 0
                 GROQ_URL,
                 headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
                 json={"model": GROQ_MODEL, "messages": [{"role": "user", "content": prompt}],
-                      "temperature": temperature, "max_tokens": max_tokens},
+                      "temperature": temperature, "max_tokens": max_tokens,
+                      "response_format": {"type": "json_object"}},
             )
             data = resp.json()
             if "error" in data:

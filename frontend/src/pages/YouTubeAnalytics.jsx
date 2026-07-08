@@ -6,7 +6,7 @@ import {
 } from "chart.js"
 import {
   RefreshCw, TrendingUp, Users, Eye, ThumbsUp, MessageCircle, Clock, Trophy,
-  Target, Lightbulb, AlertTriangle, ExternalLink, Calendar, BarChart3, Crown,
+  Target, Lightbulb, AlertTriangle, ExternalLink, Calendar, BarChart3, Crown, Sparkles,
 } from "lucide-react"
 
 ChartJS.register(
@@ -44,6 +44,19 @@ function fmt(n) {
   return Math.round(n).toString()
 }
 const commas = n => (n == null ? "—" : Math.round(n).toLocaleString("en-IN"))
+
+function relativeTime(iso) {
+  if (!iso) return ""
+  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000)
+  if (s < 0) return "just now"
+  const units = [["year", 31536000], ["month", 2592000], ["week", 604800], ["day", 86400], ["hour", 3600], ["minute", 60]]
+  for (const [name, secs] of units) { const n = Math.floor(s / secs); if (n >= 1) return `${n} ${name}${n > 1 ? "s" : ""} ago` }
+  return "just now"
+}
+function dateShort(iso) {
+  if (!iso) return ""
+  return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+}
 
 // ── styles ─────────────────────────────────────────────────────────────────
 const card = { background: CARD, border: `0.5px solid ${BORDER}`, borderRadius: 14, padding: 18 }
@@ -290,6 +303,76 @@ function CompareTab({ all }) {
   )
 }
 
+// ── Per-video AI analysis — lazy, context-aware ("top" | "latest"), brand-aware ─
+const TONE = { good: GREEN, warn: GOLD, bad: RED, neutral: BLUE }
+
+function VideoAI({ brand, video, context }) {
+  const [open, setOpen] = useState(false)
+  const [ai, setAi] = useState(null)
+  const [loading, setLoading] = useState(false)
+  function toggle() {
+    const n = !open
+    setOpen(n)
+    if (n && !ai && !loading) {
+      setLoading(true)
+      axios.get(`${API}/youtube/video-analysis/${brand}/${video.video_id}?context=${context}`)
+        .then(r => setAi(r.data)).catch(() => setAi({ error: 1 })).finally(() => setLoading(false))
+    }
+  }
+  const btn = context === "latest" ? "How is this performing? — AI analysis" : "Why did this work? — AI analysis"
+  const tone = ai ? (TONE[ai.badge_tone] || BLUE) : BLUE
+  return (
+    <div style={{ borderTop: `0.5px solid ${BORDER}` }}>
+      <button onClick={toggle} style={{ width: "100%", background: "transparent", border: "none", color: GOLD, fontSize: 11, fontWeight: 600, padding: "7px 10px", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit" }}>
+        <Sparkles size={12} /> {open ? "Hide AI analysis" : btn}
+      </button>
+      {open && (
+        <div style={{ padding: "0 12px 12px" }}>
+          {loading || !ai ? <div style={{ color: MUTED, fontSize: 11, padding: "4px 0" }}>Analyzing…</div>
+            : ai.error ? <div style={{ color: RED, fontSize: 11 }}>Analysis failed — try again.</div> : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+                {ai.badge_text && <div><span style={{ background: `${tone}22`, color: tone, fontSize: 10, fontWeight: 800, padding: "3px 8px", borderRadius: 4, letterSpacing: "0.03em" }}>{ai.badge_text}</span></div>}
+                <div style={{ color: TEXT, fontSize: 11.5, lineHeight: 1.5 }}><b style={{ color: "#e2e8f0" }}>What it is:</b> {ai.summary}</div>
+                <div>
+                  <div style={{ ...label, marginBottom: 4 }}>Analysis</div>
+                  <ul style={{ margin: 0, paddingLeft: 16, color: TEXT, fontSize: 11.5, lineHeight: 1.6 }}>
+                    {(ai.points || []).map((x, i) => <li key={i}>{x}</li>)}
+                  </ul>
+                </div>
+                {ai.action && ai.action_label && (
+                  <div style={{ color: TEXT, fontSize: 11.5, lineHeight: 1.5 }}><b style={{ color: GOLD }}>{ai.action_label}:</b> {ai.action}</div>
+                )}
+              </div>
+            )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function VideoCard({ brand, v, context }) {
+  return (
+    <div style={{ border: `0.5px solid ${v.outlier ? GOLD : BORDER}`, borderRadius: 8, background: v.outlier ? "rgba(201,168,76,0.06)" : "transparent" }}>
+      <a href={v.url} target="_blank" rel="noreferrer" style={{ display: "flex", gap: 12, padding: "8px 10px", textDecoration: "none" }}>
+        <img src={v.thumbnail} alt="" style={{ width: 72, height: 40, objectFit: "cover", borderRadius: 4, flexShrink: 0 }} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ color: "white", fontSize: 12, fontWeight: 500, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{v.title}</div>
+          <div style={{ color: MUTED, fontSize: 10, marginTop: 4, display: "flex", gap: 10, flexWrap: "wrap" }}>
+            <span>👁 {fmt(v.views)}</span><span>👍 {fmt(v.likes)}</span><span>💬 {fmt(v.comments)}</span>
+            <span style={{ color: v.engagement_rate >= 3 ? GREEN : TEXT }}>⚡ {v.engagement_rate}%</span>
+          </div>
+          <div style={{ color: MUTED, fontSize: 9.5, marginTop: 3 }}>
+            📅 {dateShort(v.published_at)} · <span style={{ color: GOLD }}>{relativeTime(v.published_at)}</span>
+            {v.is_short && <span style={{ color: PURPLE }}> · Short</span>}
+            {v.outlier && <span style={{ color: GOLD, fontWeight: 700 }}> · OUTLIER</span>}
+          </div>
+        </div>
+      </a>
+      <VideoAI brand={brand} video={v} context={context} />
+    </div>
+  )
+}
+
 // ═══ PERFORMANCE (per competitor deep dive) ══════════════════════════════════
 function PerformanceTab() {
   const [brand, setBrand] = useState("hp")
@@ -330,27 +413,21 @@ function PerformanceTab() {
             </div>
           </div>
 
-          <div style={card}>
-            <SectionTitle icon={Trophy} note="🟡 outlier = ≥2× median views">Top videos</SectionTitle>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {(d.top_videos || []).map((v, i) => (
-                <a key={i} href={v.url} target="_blank" rel="noreferrer" style={{
-                  display: "flex", alignItems: "center", gap: 12, textDecoration: "none", padding: "8px 10px", borderRadius: 8,
-                  background: v.outlier ? "rgba(201,168,76,0.08)" : "transparent", border: `0.5px solid ${v.outlier ? GOLD : BORDER}`,
-                }}>
-                  <img src={v.thumbnail} alt="" style={{ width: 68, height: 38, objectFit: "cover", borderRadius: 4, flexShrink: 0 }} />
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ color: "white", fontSize: 12, fontWeight: 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{v.title}</div>
-                    <div style={{ color: MUTED, fontSize: 10, marginTop: 2, display: "flex", gap: 12 }}>
-                      <span>👁 {fmt(v.views)}</span><span>👍 {fmt(v.likes)}</span><span>💬 {fmt(v.comments)}</span>
-                      <span style={{ color: v.engagement_rate >= 3 ? GREEN : TEXT }}>⚡ {v.engagement_rate}%</span>
-                      {v.is_short && <span style={{ color: PURPLE }}>Short</span>}
-                    </div>
-                  </div>
-                  {v.outlier && <span style={{ background: `${GOLD}22`, color: GOLD, fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 3 }}>OUTLIER</span>}
-                  <ExternalLink size={12} color={MUTED} />
-                </a>
-              ))}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 18 }}>
+            {/* Top videos — dates + per-video AI (why it worked) */}
+            <div style={card}>
+              <SectionTitle icon={Trophy} note="🟡 outlier = ≥2× median · tap a card for AI">Top videos by views</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {(d.top_videos || []).map((v, i) => <VideoCard key={v.video_id || i} brand={brand} v={v} context="top" />)}
+              </div>
+            </div>
+
+            {/* Latest uploads — time-sorted + per-video AI (is it performing?) */}
+            <div style={card}>
+              <SectionTitle icon={Clock} note="newest first · tap a card for AI">Latest uploads</SectionTitle>
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                {(d.latest_videos || []).map((v, i) => <VideoCard key={v.video_id || i} brand={brand} v={v} context="latest" />)}
+              </div>
             </div>
           </div>
         </div>
