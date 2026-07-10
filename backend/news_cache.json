@@ -2,6 +2,60 @@
   "hp": [
     {
       "brand": "hp",
+      "title": "HP's 16\" OmniBook 5 touchscreen laptop with 16GB DDR5 is nearly half-price at Walmart",
+      "description": "This laptop for work and creative projects is an easy recommendation from me",
+      "url": "https://www.techradar.com/pro/hps-16-inch-omnibook-5-laptop-with-ryzen-ai-7-cpu-16gb-ddr5-and-a-1tb-ssd-is-nearly-half-price-at-walmart",
+      "image": "https://cdn.mos.cms.futurecdn.net/r7wpqswzDvBdpu6KUUxTjb-2000-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-09T16:59:57Z"
+    },
+    {
+      "brand": "hp",
+      "title": "Here are 7 of my favorite laptop deals from the latest Best Buy sale - get up to $700 off HP, Acer, Samsung, and more",
+      "description": "These are the top offers I'd buy if you need a new laptop",
+      "url": "https://www.techradar.com/computing/laptops/here-are-7-of-my-favorite-laptop-deals-from-the-latest-best-buy-sale-get-up-to-usd700-off-hp-acer-samsung-and-more",
+      "image": "https://cdn.mos.cms.futurecdn.net/XsRXm8cLwMthw4tUrcebB6-2560-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-09T15:32:47Z"
+    },
+    {
+      "brand": "hp",
+      "title": "New laptop keeps malfunctioning despite repairs, consumer wins Rs 59,000 relief",
+      "description": "The Kangra consumer commission ordered HP India to pay nearly Rs 59,000 to a user whose laptop suffered unresolvable manufacturing defects.",
+      "url": "https://indianexpress.com/article/legal-news/new-laptop-malfunction-repairs-consumer-wins-rs-59000-10778800/",
+      "image": "https://images.indianexpress.com/2026/07/WhatsApp-Image-2026-07-09-at-3.48.22-PM.jpeg",
+      "source": "The Indian Express",
+      "published_at": "2026-07-09T11:30:14Z"
+    },
+    {
+      "brand": "hp",
+      "title": "HP OmniBook 3 17.3-Inch Laptop Is Now Cheaper Than an Entry-Level iPad After Amazon Slashes It to a Record Low",
+      "description": "Make your work a lot easier with this fantastic discount.",
+      "url": "https://gizmodo.com/hp-omnibook-3-17-3-inch-laptop-is-now-cheaper-than-an-entry-level-ipad-after-amazon-slashes-it-to-a-record-low-2000782841",
+      "image": "https://gizmodo.com/app/uploads/2026/07/lapto-deal-1200x675.jpg",
+      "source": "Gizmodo",
+      "published_at": "2026-07-09T10:40:08Z"
+    },
+    {
+      "brand": "hp",
+      "title": "The best HP laptop deal for business with AI and a touchscreen",
+      "description": "Save 48% on the HP 17-inch Touchscreen AI Laptop with a large 17.3-inch display, AI-powered performance, fast multitasking, and a full-size keyboard.",
+      "url": "https://nypost.com/2026/07/08/shopping/the-best-hp-laptop-deal-for-business-with-ai-and-a-touchscreen/",
+      "image": "https://nypost.com/wp-content/uploads/sites/2/2026/07/2000x1333-2026-07-08T111950.071.png?w=1200",
+      "source": "New York Post",
+      "published_at": "2026-07-08T18:35:57Z"
+    },
+    {
+      "brand": "hp",
+      "title": "HP OmniBook 3 16 Review: Big-Screen Budget Laptop With Unbeatable Battery Life",
+      "description": "Powered by a Snapdragon X chip, HP's budget 16-inch laptop can run for nearly a day and a half on a single charge. It's also fairly portable for its size and elegant for its price.",
+      "url": "https://www.cnet.com/tech/computing/hp-omnibook-3-16-laptop-review/",
+      "image": "https://www.cnet.com/a/img/resize/83b2197ad06fa21d756413f28ad3ab057458dabe/hub/2026/05/29/fe33507a-56b8-4bc2-b234-de885d1579f3/hp-omnibook-3-16-snapdragon-x.jpg?auto=webp&fit=crop&height=675&width=1200",
+      "source": "CNET",
+      "published_at": "2026-07-08T16:00:00Z"
+    },
+    {
+      "brand": "hp",
       "title": "HP 14-Inch Copilot AI Laptop at Nearly 60% Off Is Priced Below an Entry-Level iPad, With Microsoft 365 Included",
       "description": "You get one year of Microsoft 365 and an extra 1TB OneDrive cloud storage for absolutely free with your purchase.",
       "url": "https://gizmodo.com/hp-14-inch-copilot-ai-laptop-at-nearly-60-off-is-priced-below-an-entry-level-ipad-with-microsoft-365-included-2000782048",
@@ -31,67 +85,40 @@
       "brand": "hp",
       "title": "HP OMEN 17: A Gaming Laptop Ready to Replace Your Desktop",
       "description": "The gaming laptop market has shifted its focus to 16-inch models, which offer the most balanced compromise between portability and performance.",
-      "url": "https://www.invenglobal.com/valorant/articles/23418/hp-omen-17-a-gaming-laptop-ready-to-replace-your-desktop",
-      "image": "https://static.invenglobal.com/upload/image/2026/07/03/r1783068632829378.png",
-      "source": "InvenGlobal",
-      "published_at": "2026-07-03T08:48:10Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP OMEN 17: A Gaming Laptop Ready to Replace Your Desktop",
-      "description": "The gaming laptop market has shifted its focus to 16-inch models, which offer the most balanced compromise between portability and performance.",
-      "url": "https://www.invenglobal.com/lol/articles/23418/hp-omen-17-a-gaming-laptop-ready-to-replace-your-desktop",
-      "image": "https://static.invenglobal.com/upload/image/2026/07/03/r1783068632829378.png",
-      "source": "InvenGlobal",
-      "published_at": "2026-07-03T08:48:10Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP OMEN 17: A Gaming Laptop Ready to Replace Your Desktop",
-      "description": "The gaming laptop market has shifted its focus to 16-inch models, which offer the most balanced compromise between portability and performance.",
       "url": "https://www.invenglobal.com/articles/23418/hp-omen-17-a-gaming-laptop-ready-to-replace-your-desktop",
       "image": "https://static.invenglobal.com/upload/image/2026/07/03/r1783068632829378.png",
       "source": "InvenGlobal",
       "published_at": "2026-07-03T08:48:10Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP Launches HyperX OMEN 16 VALORANT Edition Laptop in India Starting at ₹2.25 Lakh",
-      "description": "The HyperX OMEN 16 VALORANT Edition brings together premium specifications and exclusive in-game-inspired design in a package built specifically for competitive players.",
-      "url": "https://www.republicworld.com/tech/hp-launches-hyperx-omen-16-valorant-edition-laptop-in-india-starting-at-224-lakh-2026-07-02-130996",
-      "image": "https://img.republicworld.com/all_images/2026/07/hp-1783007239185-1280x720.webp",
-      "source": "Republic World",
-      "published_at": "2026-07-02T15:47:26Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP launches first-ever HyperX Omen 16 Valorant gaming laptop in India, price starts at Rs 2,24,999",
-      "description": "Laptops & PC News: HP has announced the HyperX Omen 16 Valorant Limited Edition, the first gaming laptop in India designed specifically for fans of Riot Games’ hit title.",
-      "url": "https://timesofindia.indiatimes.com/technology/laptops-pc/hp-launches-first-ever-hyperx-omen-16-valorant-gaming-laptop-in-india-price-starts-at-rs-224999/articleshow/132140339.cms",
-      "image": "https://static.toiimg.com/thumb/msid-132140333,width-1280,height-720,resizemode-6,overlay-toi_sw,pt-32,y_pad-600/photo.jpg",
-      "source": "Times of India",
-      "published_at": "2026-07-02T13:41:00Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP's $550 OmniBook 3 is a terrific MacBook Air alternative",
-      "description": "It's the perfect day-to-day laptop for students and remote or hybrid professionals",
-      "url": "https://www.techradar.com/pro/who-needs-a-macbook-air-this-usd550-hp-omnibook-3-deal-packs-ai-features-and-up-to-32-hours-of-battery-life",
-      "image": "https://cdn.mos.cms.futurecdn.net/NZhzuoEUpNo9cZecuRsuqG-2000-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-07-02T12:15:47Z"
-    },
-    {
-      "brand": "hp",
-      "title": "Walmart Deals of the Day: This Palm-Sized Bose Speaker Just Hit Its Lowest Price Ever",
-      "description": "Plus, almost half off a top-rated HP laptop and $50 off a two-in-one Hamilton Beach coffee maker.",
-      "url": "https://www.cnet.com/deals/walmart-deals-of-the-day-july-1-26/",
-      "image": "https://www.cnet.com/a/img/resize/37b1de219b42ed5e98b3b25b76052f56cf12c432/hub/2026/07/01/f18b9cee-1854-4fe9-b299-b88785da3420/walmart-dotd-july-1.jpg?auto=webp&fit=crop&height=675&width=1200",
-      "source": "CNET",
-      "published_at": "2026-07-01T17:28:00Z"
     }
   ],
   "lenovo": [
+    {
+      "brand": "lenovo",
+      "title": "Save a massive $345 on Lenovo's Ryzen 7-powered IdeaPad Slim 3 laptop",
+      "description": "With Ryzen 7 chip, 16GB of DDR5 RAM, and a 512GB SSD, this laptop is an easy recommendation from me for students and remote workers",
+      "url": "https://www.techradar.com/pro/lenovos-ryzen-7-ideapad-slim-3-touchscreen-laptop-is-a-usd655-back-to-school-and-wfh-steal-with-a-usd345-price-cut-at-best-buy-right-now",
+      "image": "https://cdn.mos.cms.futurecdn.net/xPdp3T97nmqAs4Zyd9F84a-2000-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-09T14:10:00Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Lenovo IdeaPad Slim 5x Gen 11 Review: Solid ARM at a Budget Price",
+      "description": "You're in for some comfortable workdays with this laptop’s long battery life and bouncy keyboard.",
+      "url": "https://gizmodo.com/lenovo-ideapad-slim-5x-gen-11-review-solid-arm-at-a-budget-price-2000781708",
+      "image": "https://gizmodo.com/app/uploads/2026/06/Lenovo-IdeaPad-Slim-5X-review-12-1200x675.jpg",
+      "source": "Gizmodo",
+      "published_at": "2026-07-09T13:00:46Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Lenovo Legion 9i Gen 10 Laptop Review: An 18-Inch Gaming Monster in Performance and Size",
+      "description": "The Legion 9i Gen 10 has extreme performance, relatively low weight and an unavoidably big price.",
+      "url": "https://www.cnet.com/tech/computing/lenovo-legion-9i-gen-10-laptop-review/",
+      "image": "https://www.cnet.com/a/img/resize/3f19abf1a0825b148714b7328b54e77d001d85af/hub/2026/06/28/c26b864f-83d1-4a7a-8662-a5e397b79215/legion-9i-gen-10-5-of-6.jpg?auto=webp&fit=crop&height=675&width=1200",
+      "source": "CNET",
+      "published_at": "2026-07-09T12:01:07Z"
+    },
     {
       "brand": "lenovo",
       "title": "Lenovo Legion 7i Gaming Laptop Review: It Has the Looks, but Not Quite the Value",
@@ -154,36 +181,18 @@
       "image": "https://hothardware.com/contentimages/Article/3617/content/16x9_2133x1200_highres-lenovo-wildcat-lake-laptop.jpg",
       "source": "Hot Hardware",
       "published_at": "2026-06-29T18:00:00Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "'Lenovo Legion 7i': A White-Themed Laptop That Dominates the QHD Environment",
-      "description": "'Lenovo Legion' has become a brand with such strong recognition that it is impossible to talk about gaming laptops without mentioning it.",
-      "url": "https://www.invenglobal.com/valorant/articles/23233/lenovo-legion-7i-a-white-themed-laptop-that-dominates-the-qhd-environment",
-      "image": "https://static.invenglobal.com/upload/image/2026/06/29/r1782705811485715.png",
-      "source": "InvenGlobal",
-      "published_at": "2026-06-29T04:01:38Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "'Lenovo Legion 7i': A White-Themed Laptop That Dominates the QHD Environment",
-      "description": "'Lenovo Legion' has become a brand with such strong recognition that it is impossible to talk about gaming laptops without mentioning it.",
-      "url": "https://www.invenglobal.com/articles/23233/lenovo-legion-7i-a-white-themed-laptop-that-dominates-the-qhd-environment",
-      "image": "https://static.invenglobal.com/upload/image/2026/06/29/r1782705811485715.png",
-      "source": "InvenGlobal",
-      "published_at": "2026-06-29T04:01:38Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "'Lenovo Legion 7i': A White-Themed Laptop That Dominates the QHD Environment",
-      "description": "'Lenovo Legion' has become a brand with such strong recognition that it is impossible to talk about gaming laptops without mentioning it.",
-      "url": "https://www.invenglobal.com/lol/articles/23233/lenovo-legion-7i-a-white-themed-laptop-that-dominates-the-qhd-environment",
-      "image": "https://static.invenglobal.com/upload/image/2026/06/29/r1782705811485715.png",
-      "source": "InvenGlobal",
-      "published_at": "2026-06-29T04:01:38Z"
     }
   ],
   "acer": [
+    {
+      "brand": "acer",
+      "title": "Here are 7 of my favorite laptop deals from the latest Best Buy sale - get up to $700 off HP, Acer, Samsung, and more",
+      "description": "These are the top offers I'd buy if you need a new laptop",
+      "url": "https://www.techradar.com/computing/laptops/here-are-7-of-my-favorite-laptop-deals-from-the-latest-best-buy-sale-get-up-to-usd700-off-hp-acer-samsung-and-more",
+      "image": "https://cdn.mos.cms.futurecdn.net/XsRXm8cLwMthw4tUrcebB6-2560-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-09T15:32:47Z"
+    },
     {
       "brand": "acer",
       "title": "Never mind the RAM crisis, this Acer gaming laptop comes with 32GB memory and an RTX 5070 Ti for $300 off",
@@ -264,18 +273,45 @@
       "image": "https://s.hdnux.com/photos/01/66/52/23/31106297/3/rawImage.jpg",
       "source": "SFGATE",
       "published_at": "2026-06-25T12:30:00Z"
-    },
-    {
-      "brand": "acer",
-      "title": "Best Prime Day Laptop Deals From Lenovo, Apple, Acer and More",
-      "description": "Day 3 of Prime Day brings more exciting laptop deals, helping you upgrade while saving up to 60% on top brands.",
-      "url": "https://www.cnet.com/deals/best-prime-day-laptop-deals-2026-06-25/",
-      "image": "https://www.cnet.com/a/img/resize/f1892e3f603456a8691ecb1d64711df5ec01bde5/hub/2026/06/11/6e8447fb-86a8-44fa-a89d-4ee9320f5562/prime-day-laptop-deals.jpg?auto=webp&fit=crop&height=675&width=1200",
-      "source": "CNET",
-      "published_at": "2026-06-25T10:00:00Z"
     }
   ],
   "dell": [
+    {
+      "brand": "dell",
+      "title": "I'm a Windows user who installed Linux for the first time - here's how the experience changed me",
+      "description": "I put Ubuntu on an old Dell laptop to see if Linux could really replace Windows 11. See why my final destination was so worth the speed bumps.",
+      "url": "https://www.zdnet.com/article/windows-user-installed-linux-for-the-first-time/",
+      "image": "https://www.zdnet.com/a/img/resize/d730f18e567ee58b3137e3771ed93181ed47241c/2026/04/13/275c5ae0-fb62-450f-bd76-4da5283b783c/ubuntu.jpg?auto=webp&fit=crop&height=675&width=1200",
+      "source": "ZDNet",
+      "published_at": "2026-07-09T18:00:00Z"
+    },
+    {
+      "brand": "dell",
+      "title": "Save $530 on Dell's 14-inch Core 7 laptop with 16GB RAM and 1TB SSD",
+      "description": "Priced at a staggering $699.99, this is Dell's lowest priced 14-inch laptop right now",
+      "url": "https://www.techradar.com/pro/im-a-computer-expert-so-trust-me-when-i-say-this-dell-14-laptop-deal-is-unmissable-save-usd530-on-a-core-7-model-with-16gb-ram-and-a-1tb-ssd",
+      "image": "https://cdn.mos.cms.futurecdn.net/42KjXd7gMunoeZjpJxRugN-2000-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-08T17:02:07Z"
+    },
+    {
+      "brand": "dell",
+      "title": "Over eight hundred reviews say this laptop is perfect, and with its snappy performance and high-quality features that's now 15% off, it's easy to see why",
+      "description": "The Dell Pro 16 is a highly regarded productivity laptop, garnering over a thousand positive reviews on Dell's website, gushing over its Intel Core Ultra 5 235U vPro CPU and 16GB of RAM, and other features that are now 15% off",
+      "url": "https://www.windowscentral.com/hardware/laptops/over-eight-hundred-reviews-say-this-laptop-is-perfect-and-with-its-snappy-performance-and-high-quality-features-thats-now-15-percent-off-its-easy-to-see-why",
+      "image": "https://cdn.mos.cms.futurecdn.net/Yh77wX2QNjrKaz97oi29AF-2560-80.jpg",
+      "source": "Windows Central",
+      "published_at": "2026-07-08T14:28:25Z"
+    },
+    {
+      "brand": "dell",
+      "title": "11 back to school laptop deals - get up to 42% off MacBooks, Dell, Chromebooks and more",
+      "description": "Back to school laptop deals are happening now! Check out the best savings on laptops from across the web.",
+      "url": "https://www.tomsguide.com/computing/laptops/11-back-to-school-laptop-deals-get-up-to-42-percent-off-macbooks-dell-chromebooks-and-more",
+      "image": "https://cdn.mos.cms.futurecdn.net/jxva9kHTNv32ciemQoFVXb-2000-80.jpg",
+      "source": "Tom's Guide",
+      "published_at": "2026-07-08T12:01:03Z"
+    },
     {
       "brand": "dell",
       "title": "Dell's huge back-to-school sale is live - here are the 6 laptop deals I'd buy for college students, gamers, and working from home",
@@ -329,45 +365,27 @@
       "image": "https://images.news18.com/ibnlive/uploads/2026/07/image-2026-07-3b5200549ebbf9c8d6530e9f97a2187d-1200x675.jpg",
       "source": "News18",
       "published_at": "2026-07-01T03:16:57Z"
-    },
-    {
-      "brand": "dell",
-      "title": "This $550 Dell 15 Laptop deal genuinely surprised me",
-      "description": "For my money, the Dell 15 Laptop is perfectly priced for professionals and students",
-      "url": "https://www.techradar.com/pro/this-usd550-dell-15-laptop-deal-genuinely-surprised-me-a-well-rounded-everyday-laptop-for-business-professionals-and-students-with-a-massive-usd250-off",
-      "image": "https://cdn.mos.cms.futurecdn.net/hax8QSp3auSGm8rqgVfNun-2000-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-06-30T17:17:28Z"
-    },
-    {
-      "brand": "dell",
-      "title": "This year's 'Back to School' laptop deals are already live - here are 9 options from Dell, Lenovo, and HP that can save you up to $530",
-      "description": "Options for all budgets this week",
-      "url": "https://www.techradar.com/computing/windows-laptops/this-years-back-to-school-laptop-deals-are-already-live-here-are-9-options-from-dell-lenovo-and-hp-that-can-save-you-up-to-usd530",
-      "image": "https://cdn.mos.cms.futurecdn.net/FEaE5YRh4qUWDYqih25kGn-2560-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-06-30T10:30:53Z"
-    },
-    {
-      "brand": "dell",
-      "title": "Dell back to school sale is live: 5 laptop deals I'd buy with my own money",
-      "description": "Dell's back to school sale is officially live. Here are the 5 laptop deals I'd spend my own money on, including an epic deal on the Editor's Choice XPS 13.",
-      "url": "https://www.tomsguide.com/computing/dell-back-to-school-sale-is-live-5-laptop-deals-id-buy-with-my-own-money",
-      "image": "https://cdn.mos.cms.futurecdn.net/sB9ZeW6yUCu5egSR25gc8U-2000-80.jpg",
-      "source": "Tom's Guide",
-      "published_at": "2026-06-30T06:12:34Z"
-    },
-    {
-      "brand": "dell",
-      "title": "How to Choose the Right Dell AI Laptop for Your Workflow",
-      "description": "Copilot+ PCs bring dedicated AI hardware to everyday tasks. Here's what that means for battery life, productivity and choosing the right laptop.",
-      "url": "https://www.cnet.com/paid-content/news/how-to-choose-the-right-dell-ai-laptop-for-your-workflow/",
-      "image": "https://www.cnet.com/a/img/resize/ff396626f29b192d2d26edd0bc57af1ff7ee4f5c/hub/2026/06/26/9c522e13-bc3f-459e-b52c-cd7d0ef7e383/cnet-lead-image.png?auto=webp&fit=crop&height=675&width=1200",
-      "source": "CNET",
-      "published_at": "2026-06-29T15:17:00Z"
     }
   ],
   "asus": [
+    {
+      "brand": "asus",
+      "title": "Asus Vivobook 15 with Intel Core 5 Series 3 processor, 16GB RAM, and 15.6-inch FHD anti-glare display launched in India",
+      "description": "Tech News News: Asus has launched the Vivobook 15 in India, marking the first laptop in the country to run on Intel's new Core 5 Series 3 processor. The company is po.",
+      "url": "https://timesofindia.indiatimes.com/technology/tech-news/asus-vivobook-15-with-intel-core-5-series-3-processor-16gb-ram-and-15-6-inch-fhd-anti-glare-display-launched-in-india/articleshow/132285152.cms",
+      "image": "https://static.toiimg.com/thumb/msid-132285249,width-1280,height-720,resizemode-6,overlay-toi_sw,pt-32,y_pad-600/photo.jpg",
+      "source": "Times of India",
+      "published_at": "2026-07-09T11:24:00Z"
+    },
+    {
+      "brand": "asus",
+      "title": "Asus Zenbook S14 (UX5406AA) Review: A Thin Laptop That Does Not Cut Corners",
+      "description": "The Asus Zenbook S14 UX5406AA delivers a premium thin-and-light experience with a 3K OLED display, strong performance and impressive thermal management. Its 1.2kg Ceraluminum body feels durable, while battery life reaches 14–18 hours in real-world use. However, audio quality and low-light face recognition leave some room for improvement.",
+      "url": "https://www.freepressjournal.in/tech/asus-zenbook-s14-ux5406aa-review-a-thin-laptop-that-does-not-cut-corners",
+      "image": "https://media.assettype.com/freepressjournal/2026-07-08/k7qd600j/asuszenbooks14.jpg",
+      "source": "Free Press Journal",
+      "published_at": "2026-07-09T02:30:00Z"
+    },
     {
       "brand": "asus",
       "title": "Asus ROG Zephyrus G16 (2026) review: Improved (and much more expensive)",
@@ -439,25 +457,7 @@
       "image": "https://images.news18.com/ibnlive/uploads/2026/06/image-2026-06-9af82b00b44d5bc945d8a20aa2ca95e0-1200x675.jpg",
       "source": "News18",
       "published_at": "2026-06-29T02:20:09Z"
-    },
-    {
-      "brand": "asus",
-      "title": "13 Prime Day laptop deals still available - save up to $600 off Asus, HP, Acer and more",
-      "description": "Amazon Prime Day might officially be over, but there are still plenty of ongoing laptop deals to take advantage of. Here are some of the best deals now.",
-      "url": "https://www.tomsguide.com/computing/laptops/13-prime-day-laptop-deals-still-available-save-up-to-usd600-off-asus-hp-acer-and-more",
-      "image": "https://cdn.mos.cms.futurecdn.net/xf862mtCq6eeU4d45AiFrP-2000-80.jpg",
-      "source": "Tom's Guide",
-      "published_at": "2026-06-27T09:30:00Z"
-    },
-    {
-      "brand": "asus",
-      "title": "Grab the best laptop deals before Prime Day shuts down tonight",
-      "description": "Shop the best Prime Day laptop deals on MacBooks, Surface laptops, gaming laptops, Chromebooks and budget-friendly picks from Apple, Microsoft, Dell, ASUS, LG and more.",
-      "url": "https://nypost.com/shopping/best-amazon-prime-day-laptop-deals-2026/",
-      "image": "https://nypost.com/wp-content/uploads/sites/2/2026/06/laptop-hero.jpg?quality=75&strip=all&w=1200",
-      "source": "New York Post",
-      "published_at": "2026-06-27T00:42:00Z"
     }
   ],
-  "last_updated": "2026-07-08T07:15:16.945486+00:00"
+  "last_updated": "2026-07-10T07:02:27.973930+00:00"
 }

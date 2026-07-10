@@ -1,0 +1,33 @@
+{
+  "snapshots": [
+    {
+      "date": "2026-07-10",
+      "brands": {
+        "hp": {
+          "followers": 239000,
+          "posts": 1599
+        },
+        "lenovo": {
+          "followers": 597000,
+          "posts": 3530
+        },
+        "acer": {
+          "followers": 221000,
+          "posts": 4570
+        },
+        "dell": {
+          "followers": 369000,
+          "posts": 2831
+        },
+        "asus": {
+          "followers": 851000,
+          "posts": 6781
+        },
+        "primebook": {
+          "followers": 45000,
+          "posts": 758
+        }
+      }
+    }
+  ]
+}
