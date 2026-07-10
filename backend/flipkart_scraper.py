@@ -360,7 +360,7 @@ async def scrape_flipkart():
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            headless=False,
+            headless=(os.environ.get("SCRAPE_HEADLESS", "0") == "1"),
             args=["--no-sandbox", "--disable-blink-features=AutomationControlled"]
         )
 

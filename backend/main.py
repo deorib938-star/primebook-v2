@@ -2376,3 +2376,238 @@ Percentages must sum to 100. Give 3-5 pain_points, 3-4 praise, 4-5 themes."""
     return result
 
     
+
+# ================================================================
+# INSTAGRAM ANALYTICS  (mirror of the YouTube dashboard, within IG data limits)
+# Available: followers/following/total-posts + up to 12 recent posts
+#   (thumbnail, partial caption via `alt`, reel/post type).
+# NOT available: per-post likes/comments/views/dates, comments, history.
+# ================================================================
+IG_HISTORY_FILE = "instagram_history.json"
+
+
+def _ig_posts(bc):
+    return bc.get("recent_posts", []) or []
+
+
+def _ig_metrics(bid, bc):
+    st = bc.get("stats", {}) or {}
+    posts = _ig_posts(bc)
+    reels = len([p for p in posts if p.get("type") == "reel"])
+    followers = st.get("followers", 0) or 0
+    total_posts = st.get("posts", 0) or 0
+    likes_list = [p.get("likes") for p in posts if isinstance(p.get("likes"), (int, float))]
+    avg_likes = round(sum(likes_list) / len(likes_list)) if likes_list else None
+    engagement = round(avg_likes / followers * 100, 2) if avg_likes and followers else None
+    return {
+        "brand_id": bid,
+        "name": bc.get("name", bid),
+        "handle": bc.get("handle", ""),
+        "profile_pic": bc.get("profile_pic", ""),
+        "followers": followers,
+        "following": st.get("following", 0) or 0,
+        "posts": total_posts,
+        "followers_per_post": round(followers / total_posts) if total_posts else 0,
+        "sample_size": len(posts),
+        "reels": reels,
+        "images": len(posts) - reels,
+        "reel_share": round(reels / len(posts) * 100) if posts else 0,
+        "avg_likes": avg_likes,          # None until posts are enriched with likes
+        "engagement_rate": engagement,   # avg likes / followers, None until enriched
+    }
+
+
+@app.get("/instagram/analytics/all")
+def instagram_analytics_all():
+    cache = _load_instagram_cache()
+    brands = cache.get("brands", {})
+    out = {bid: _ig_metrics(bid, brands[bid]) for bid in INSTAGRAM_BRANDS if brands.get(bid)}
+    return {"last_updated": cache.get("last_updated"), "brands": out}
+
+
+@app.get("/instagram/analytics/{brand_id}")
+def instagram_analytics_brand(brand_id: str):
+    brand_id = brand_id.lower()
+    bc = _load_instagram_cache().get("brands", {}).get(brand_id)
+    if not bc:
+        return {"error": "Not cached yet. Run: python instagram_cache_builder.py"}
+    m = _ig_metrics(brand_id, bc)
+    m["recent_posts"] = [
+        {"index": i, "url": p.get("url"), "thumbnail": p.get("thumbnail"),
+         "caption": p.get("alt", ""), "type": p.get("type", "post"),
+         "likes": p.get("likes"), "taken_at": p.get("taken_at")}
+        for i, p in enumerate(_ig_posts(bc))
+    ]
+    return m
+
+
+IG_CONTENT_CACHE = {}
+
+
+@app.get("/instagram/content-strategy")
+async def instagram_content_strategy():
+    global IG_CONTENT_CACHE
+    c = IG_CONTENT_CACHE
+    if c.get("result") and c.get("time") and (datetime.now() - c["time"]).total_seconds() / 3600 < 24:
+        return c["result"]
+
+    cache = _load_instagram_cache()
+    brands = cache.get("brands", {})
+    if not brands:
+        return {"error": "No Instagram cache. Run: python instagram_cache_builder.py"}
+
+    lines = []
+    for bid in INSTAGRAM_BRANDS:
+        bc = brands.get(bid)
+        if not bc:
+            continue
+        m = _ig_metrics(bid, bc)
+        caps = [(p.get("alt") or "").replace("\n", " ")[:90] for p in _ig_posts(bc)][:5]
+        lines.append(
+            f"{m['name']}: {m['followers']:,} followers, {m['posts']:,} posts, "
+            f"{m['reel_share']}% reels, {m['followers_per_post']} followers/post\n"
+            f"  Recent captions: " + " | ".join(caps)
+        )
+
+    prompt = f"""You are an Instagram content strategist for Primebook India (Android 15 budget laptops, Rs. 10,000-40,000).
+
+Analyze the competitor Instagram presence below and produce a content strategy for Primebook.
+NOTE: only follower/post counts, reel share, and short captions are available (no per-post likes/views).
+
+DATA:
+{chr(10).join(lines)}
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "caption_patterns": [{{"pattern": "short phrase", "detail": "1 sentence with evidence"}}],
+  "hashtag_themes": [{{"theme": "2-3 words", "note": "1 sentence"}}],
+  "format_mix": [{{"format": "Reels|Carousels|Static posts|Stories", "note": "who leans on it and why it works"}}],
+  "content_gaps": [{{"gap": "topic competitors ignore", "why_primebook": "why it fits Primebook"}}],
+  "swot": {{"strengths": ["..."], "weaknesses": ["..."], "opportunities": ["..."], "threats": ["..."]}},
+  "content_ideas": [{{"idea": "ready-to-post idea", "format": "Reel|Carousel|Static", "why": "1 sentence"}}],
+  "optimal_cadence": {{"posts_per_week": "number or range", "reel_ratio": "e.g. 60% reels", "rationale": "1 sentence"}}
+}}
+Give 4-5 items in each array and 6 content_ideas. Base everything on the data above."""
+
+    result = await _groq_json(prompt, 3000)
+    if "error" not in result:
+        IG_CONTENT_CACHE = {"result": result, "time": datetime.now()}
+    return result
+
+
+IG_POST_CACHE = {}
+
+
+@app.get("/instagram/post-analysis/{brand_id}")
+async def instagram_post_analysis(brand_id: str, i: int = Query(default=0)):
+    brand_id = brand_id.lower()
+    bc = _load_instagram_cache().get("brands", {}).get(brand_id)
+    if not bc:
+        return {"error": "Not cached yet"}
+    posts = _ig_posts(bc)
+    if i < 0 or i >= len(posts):
+        return {"error": "Post not found"}
+    p = posts[i]
+
+    ckey = f"{brand_id}:{i}"
+    cached = IG_POST_CACHE.get(ckey)
+    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 168:
+        return cached["result"]
+
+    is_ours = brand_id == "primebook"
+    name = bc.get("name", brand_id)
+    caption = (p.get("alt") or "").replace("\n", " ")[:150]
+    ptype = "Reel" if p.get("type") == "reel" else "Static/Carousel post"
+
+    if is_ours:
+        action_label = "Improvements"
+        task = ("This is one of PRIMEBOOK's OWN recent posts. Judge whether the content angle and caption are strong "
+                "for reach and likes. In 3 points say what is working or weak. badge_text = STRONG / OK / WEAK, "
+                "badge_tone = good / neutral / warn. action = concrete improvements to get more reach and likes. "
+                "Do NOT suggest copying our own post.")
+    else:
+        action_label = "Primebook move"
+        task = ("This is a COMPETITOR post. In 3 points explain what kind of content it is and why this format/angle "
+                "tends to work on Instagram. badge_text = MAKE THIS / ADAPT IT / SKIP IT (should Primebook make this "
+                "type), badge_tone = good / warn / bad. action = what Primebook can do, related to this post, to gain "
+                "reach and likes fast.")
+
+    prompt = f"""You are an Instagram strategist for Primebook India (Android 15 budget laptops, Rs. 10,000-40,000).
+
+Channel: {name} {"(OUR OWN account)" if is_ours else "(competitor)"}
+Post type: {ptype}
+Caption (partial): "{caption}"
+
+TASK: {task}
+Note: exact likes/views are NOT available, so judge by content angle, format and caption, not by numbers.
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "summary": "1-2 sentence description of what this post most likely is",
+  "badge_text": "short label as instructed",
+  "badge_tone": "good|warn|bad|neutral",
+  "points": ["point 1", "point 2", "point 3"],
+  "action": "text as instructed"
+}}"""
+
+    result = await _groq_json(prompt, 1100)
+    if "error" not in result:
+        result["action_label"] = action_label
+        IG_POST_CACHE[ckey] = {"result": result, "time": datetime.now()}
+    return result
+
+
+# ─── Instagram follower growth over time (accumulated snapshots) ──────────────
+def _load_ig_history():
+    if not os.path.exists(IG_HISTORY_FILE):
+        return {"snapshots": []}
+    try:
+        with open(IG_HISTORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"snapshots": []}
+
+
+def _record_ig_snapshot():
+    brands = _load_instagram_cache().get("brands", {})
+    if not brands:
+        return {"recorded": False, "reason": "no instagram cache yet"}
+    today = datetime.now(timezone.utc).date().isoformat()
+    hist = _load_ig_history()
+    snaps = [s for s in hist.get("snapshots", []) if s.get("date") != today]
+    entry = {"date": today, "brands": {}}
+    for bid in INSTAGRAM_BRANDS:
+        st = brands.get(bid, {}).get("stats", {})
+        if st:
+            entry["brands"][bid] = {"followers": st.get("followers", 0), "posts": st.get("posts", 0)}
+    snaps.append(entry)
+    snaps.sort(key=lambda s: s["date"])
+    hist["snapshots"] = snaps
+    with open(IG_HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(hist, f, indent=2)
+    return {"recorded": True, "date": today, "total_snapshots": len(snaps)}
+
+
+@app.get("/instagram/growth/record")
+def instagram_growth_record():
+    return _record_ig_snapshot()
+
+
+@app.get("/instagram/growth/history")
+def instagram_growth_history():
+    hist = _load_ig_history()
+    snaps = hist.get("snapshots", [])
+    brands = {}
+    for bid in INSTAGRAM_BRANDS:
+        series = [{"date": s["date"], **s["brands"].get(bid, {})} for s in snaps if bid in s.get("brands", {})]
+        d = {"series": series}
+        if len(series) >= 2:
+            d["followers_change"] = series[-1].get("followers", 0) - series[0].get("followers", 0)
+        brands[bid] = d
+    return {
+        "count": len(snaps),
+        "brands": brands,
+        "collecting": len(snaps) < 2,
+        "message": ("Only one snapshot so far — follower trends populate as more weekly snapshots accumulate."
+                    if len(snaps) < 2 else f"Tracking {len(snaps)} snapshots."),
+    }
