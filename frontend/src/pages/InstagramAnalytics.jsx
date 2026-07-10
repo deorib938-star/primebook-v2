@@ -418,10 +418,47 @@ function GrowthTab() {
   )
 }
 
+// ═══ AUDIENCE (content mix = real · demographics = AI estimate) ═══════════════
+function AudienceTab() {
+  const [brand, setBrand] = useState("primebook")
+  const [d, setD] = useState(null)
+  useEffect(() => { setD(null); axios.get(`${API}/instagram/audience/${brand}`).then(r => setD(r.data)).catch(() => setD({ error: 1 })) }, [brand])
+  const dm = d?.demographics || {}
+  return (
+    <div>
+      <BrandPicker value={brand} onChange={setBrand} includeOurs />
+      {!d ? <Loading what="audience (AI)" /> : d.error ? <div style={{ color: RED, padding: 20 }}>Not cached.</div> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={card}><SectionTitle icon={Grid3x3} note="real — reel vs static share">Content mix they post</SectionTitle>
+            <Bar labels={(d.content_mix || []).map(c => c.type)} values={(d.content_mix || []).map(c => c.share_pct)} colors={[PURPLE, BLUE]} horizontal height={140} valueFmt={v => v + "%"} /></div>
+
+          <div style={{ ...card, background: "rgba(59,130,246,0.06)", borderColor: BLUE, color: TEXT, fontSize: 12, lineHeight: 1.5 }}>
+            <b style={{ color: "#e2e8f0" }}>AI estimate.</b> Age & profession aren't published for other accounts — inferred from content, not measured. Instagram also hides per-post views, so formats can't be ranked by views here.
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+            <div style={card}><SectionTitle icon={Users} note="estimated">Age distribution</SectionTitle>
+              <Bar labels={(dm.age || []).map(a => a.band)} values={(dm.age || []).map(a => a.pct)} colors={(dm.age || []).map(() => PURPLE)} horizontal height={200} valueFmt={v => v + "%"} /></div>
+            <div style={card}><SectionTitle icon={Users} note="estimated">Who follows & why</SectionTitle>
+              {(dm.profession || []).map((p, i) => (
+                <div key={i} style={{ marginBottom: 10 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "white", fontSize: 12, fontWeight: 600 }}>{p.label}</span><span style={{ color: GOLD, fontWeight: 700, fontSize: 12 }}>{p.pct}%</span></div>
+                  <div style={{ color: TEXT, fontSize: 11 }}>{p.why}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {dm.summary && <div style={card}><div style={{ ...label, color: GOLD }}>Why this audience</div><div style={{ color: "white", fontSize: 13, marginTop: 6 }}>{dm.summary}</div></div>}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ═══ SHELL ═══════════════════════════════════════════════════════════════════
 const TABS = [
   { id: "compare", label: "Compare", icon: Crown },
   { id: "posts", label: "Posts", icon: Grid3x3 },
+  { id: "audience", label: "Audience", icon: Users },
   { id: "content", label: "Content Strategy AI", icon: Lightbulb },
   { id: "growth", label: "Growth", icon: TrendingUp },
 ]
@@ -450,6 +487,7 @@ export default function InstagramAnalytics() {
 
       {tab === "compare" && <CompareTab all={all} />}
       {tab === "posts" && <PostsTab />}
+      {tab === "audience" && <AudienceTab />}
       {tab === "content" && <ContentTab />}
       {tab === "growth" && <GrowthTab />}
 

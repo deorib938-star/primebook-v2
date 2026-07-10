@@ -694,10 +694,90 @@ function SentimentTab() {
   )
 }
 
+// ═══ AUDIENCE (content types = real data · demographics = AI estimate) ════════
+function AudienceTab() {
+  const [brand, setBrand] = useState("hp")
+  const [d, setD] = useState(null)
+  useEffect(() => { setD(null); axios.get(`${API}/youtube/audience/${brand}`).then(r => setD(r.data)).catch(() => setD({ error: 1 })) }, [brand])
+  const [play, setPlay] = useState(null)
+  useEffect(() => { axios.get(`${API}/youtube/content-ai`).then(r => setPlay(r.data)).catch(() => setPlay({ error: 1 })) }, [])
+  const dm = d?.demographics || {}
+  const V = { lead: [GREEN, "LEAD"], even: [BLUE, "EVEN"], lag: [RED, "BEHIND"], not_posting: [GOLD, "NOT POSTING"], na: [MUTED, "—"] }
+  return (
+    <div>
+      <BrandPicker value={brand} onChange={setBrand} includeOurs />
+      {!d ? <Loading what="audience (AI)" /> : d.error ? <div style={{ color: RED, padding: 20 }}>Not cached.</div> : (
+        <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+          {/* Content types — DATA-DRIVEN */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+            <div style={card}><SectionTitle icon={BarChart3} note="share of uploads">Content types they post</SectionTitle>
+              <Bar labels={(d.content_types || []).map(c => c.type)} values={(d.content_types || []).map(c => c.share_pct)} colors={(d.content_types || []).map(() => BLUE)} horizontal height={240} valueFmt={v => v + "%"} /></div>
+            <div style={card}><SectionTitle icon={Eye} note="real views — which type wins">Avg views by content type</SectionTitle>
+              <Bar labels={(d.content_types || []).map(c => c.type)} values={(d.content_types || []).map(c => c.avg_views)} colors={(d.content_types || []).map(c => c.type === d.most_viewed_type ? GOLD : BLUE)} horizontal height={240} /></div>
+          </div>
+          {d.most_viewed_type && (
+            <div style={{ ...card, borderColor: GOLD }}>
+              <span style={{ color: GOLD, fontWeight: 700 }}>Best-performing format: {d.most_viewed_type}</span>
+              <span style={{ color: TEXT, fontSize: 12 }}> — highest average views for this channel (from real view data).</span>
+            </div>
+          )}
+
+          {/* Content-type playbook — Primebook vs competitors (real numbers + AI why/fix) */}
+          <div style={card}>
+            <SectionTitle icon={Sparkles} note="Primebook vs competitor avg · real views + AI why & fix">Content-type playbook</SectionTitle>
+            {!play ? <div style={{ color: MUTED, fontSize: 12 }}>Analyzing…</div>
+              : play.error ? <div style={{ color: RED, fontSize: 12 }}>Analysis failed.</div> : (
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {(play.by_type || []).map((r, i) => {
+                    const [vc, vt] = V[r.verdict] || V.na
+                    return (
+                      <div key={i} style={{ border: `0.5px solid ${BORDER}`, borderLeft: `3px solid ${vc}`, borderRadius: 8, padding: "10px 12px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                          <span style={{ color: "white", fontSize: 13, fontWeight: 700 }}>{r.type}</span>
+                          <span style={{ background: `${vc}22`, color: vc, fontSize: 10, fontWeight: 800, padding: "2px 7px", borderRadius: 4 }}>{vt}</span>
+                          <span style={{ color: MUTED, fontSize: 11, marginLeft: "auto" }}>
+                            Primebook <b style={{ color: GOLD }}>{r.primebook_avg != null ? fmt(r.primebook_avg) : "—"}</b> vs competitors <b style={{ color: TEXT }}>{r.competitor_avg != null ? fmt(r.competitor_avg) : "—"}</b> avg views
+                          </span>
+                        </div>
+                        {r.why && <div style={{ color: TEXT, fontSize: 11.5, marginTop: 6 }}><b style={{ color: "#e2e8f0" }}>Why:</b> {r.why}</div>}
+                        {r.improvement && <div style={{ color: TEXT, fontSize: 11.5, marginTop: 3 }}><b style={{ color: GOLD }}>Fix:</b> {r.improvement}</div>}
+                      </div>
+                    )
+                  })}
+                  {play.summary && <div style={{ ...card, borderColor: GOLD, marginTop: 4 }}><div style={{ ...label, color: GOLD }}>Priority</div><div style={{ color: "white", fontSize: 13, marginTop: 6 }}>{play.summary}</div></div>}
+                </div>
+              )}
+          </div>
+
+          {/* Demographics — AI ESTIMATE */}
+          <div style={{ ...card, background: "rgba(59,130,246,0.06)", borderColor: BLUE, display: "flex", gap: 10 }}>
+            <AlertTriangle size={16} color={BLUE} style={{ flexShrink: 0, marginTop: 2 }} />
+            <div style={{ color: TEXT, fontSize: 12 }}><b style={{ color: "#e2e8f0" }}>AI estimate.</b> Age & profession aren't published for other channels — these are inferred from content & positioning, not measured analytics.</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+            <div style={card}><SectionTitle icon={Users} note="estimated">Age distribution</SectionTitle>
+              <Bar labels={(dm.age || []).map(a => a.band)} values={(dm.age || []).map(a => a.pct)} colors={(dm.age || []).map(() => PURPLE)} horizontal height={200} valueFmt={v => v + "%"} /></div>
+            <div style={card}><SectionTitle icon={Users} note="estimated">Who watches & why</SectionTitle>
+              {(dm.profession || []).map((p, i) => (
+                <div key={i} style={{ marginBottom: 10 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><span style={{ color: "white", fontSize: 12, fontWeight: 600 }}>{p.label}</span><span style={{ color: GOLD, fontWeight: 700, fontSize: 12 }}>{p.pct}%</span></div>
+                  <div style={{ color: TEXT, fontSize: 11 }}>{p.why}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {dm.summary && <div style={card}><div style={{ ...label, color: GOLD }}>Why this audience</div><div style={{ color: "white", fontSize: 13, marginTop: 6 }}>{dm.summary}</div></div>}
+        </div>
+      )}
+    </div>
+  )
+}
+
 // ═══ SHELL ═══════════════════════════════════════════════════════════════════
 const TABS = [
   { id: "compare", label: "Compare", icon: Crown },
   { id: "performance", label: "Performance", icon: TrendingUp },
+  { id: "audience", label: "Audience", icon: Users },
   { id: "benchmark", label: "Benchmark", icon: Target },
   { id: "growth", label: "Growth", icon: BarChart3 },
   { id: "content", label: "Content Strategy AI", icon: Lightbulb },
@@ -728,6 +808,7 @@ export default function YouTubeAnalytics() {
 
       {tab === "compare" && <CompareTab all={all} />}
       {tab === "performance" && <PerformanceTab />}
+      {tab === "audience" && <AudienceTab />}
       {tab === "benchmark" && <BenchmarkTab all={all} />}
       {tab === "growth" && <GrowthTab />}
       {tab === "content" && <ContentTab />}

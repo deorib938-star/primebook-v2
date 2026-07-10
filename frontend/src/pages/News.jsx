@@ -3,14 +3,21 @@ import axios from "axios"
 
 const API = (import.meta.env.VITE_API_URL || `http://${location.hostname}:8000`)
 
+const GOLD = "#C9A84C", CARD = "#1e293b", PANEL = "#0f172a", BORDER = "#334155", MUTED = "#64748b", TEXT = "#94a3b8"
+const GREEN = "#22c55e", BLUE = "#3b82f6", RED = "#ef4444", ORANGE = "#f97316"
+
 const BRANDS = [
-  { id: "hp",     label: "HP",     color: "#0096D6" },
+  { id: "hp", label: "HP", color: "#0096D6" },
   { id: "lenovo", label: "Lenovo", color: "#E2231A" },
-  { id: "acer",   label: "Acer",   color: "#83B81A" },
-  { id: "dell",   label: "Dell",   color: "#007DB8" },
-  { id: "asus",   label: "Asus",   color: "#FF6600" },
+  { id: "acer", label: "Acer", color: "#83B81A" },
+  { id: "dell", label: "Dell", color: "#007DB8" },
+  { id: "asus", label: "Asus", color: "#FF6600" },
 ]
 const BRAND_MAP = Object.fromEntries(BRANDS.map(b => [b.id, b]))
+
+const card = { background: CARD, border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: 18 }
+const label = { color: MUTED, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }
+const sentColor = s => /pos/i.test(s) ? GREEN : /neg/i.test(s) ? RED : BLUE
 
 function timeAgo(dateStr) {
   if (!dateStr) return ""
@@ -20,156 +27,252 @@ function timeAgo(dateStr) {
   if (diff < 2592000) return `${Math.floor(diff / 86400)}d ago`
   return `${Math.floor(diff / 2592000)}mo ago`
 }
+function Section({ children, note }) {
+  return <div style={{ display: "flex", alignItems: "baseline", gap: 10, marginBottom: 12 }}>
+    <span style={{ color: "#f1f5f9", fontSize: 13, fontWeight: 700 }}>{children}</span>
+    {note && <span style={{ color: MUTED, fontSize: 11 }}>· {note}</span>}
+  </div>
+}
 
-function NewsCard({ article }) {
-  const brand = BRAND_MAP[article.brand]
+// ── per-article AI (lazy) ─────────────────────────────────────────────────────
+function NewsAI({ brand, idx }) {
+  const [open, setOpen] = useState(false)
+  const [ai, setAi] = useState(null)
+  const [loading, setLoading] = useState(false)
+  function toggle() {
+    const n = !open; setOpen(n)
+    if (n && !ai && !loading) {
+      setLoading(true)
+      axios.get(`${API}/news/ai/article?brand=${brand}&i=${idx}`)
+        .then(r => setAi(r.data)).catch(() => setAi({ error: 1 })).finally(() => setLoading(false))
+    }
+  }
   return (
-    <a href={article.url} target="_blank" rel="noreferrer" style={{ textDecoration: "none" }}>
-      <div style={{
-        display: "flex", gap: 14, padding: "14px 16px",
-        border: "0.5px solid #334155", borderRadius: 10, marginBottom: 10,
-        cursor: "pointer", transition: "border-color 0.15s",
-      }}
-        onMouseEnter={e => e.currentTarget.style.borderColor = "#475569"}
-        onMouseLeave={e => e.currentTarget.style.borderColor = "#334155"}
-      >
-        <div style={{ width: 100, height: 72, borderRadius: 6, flexShrink: 0, overflow: "hidden", background: "#0f172a" }}>
-          {article.image
-            ? <img src={article.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />
-            : null
-          }
+    <div style={{ borderTop: `0.5px solid ${BORDER}`, marginTop: 10 }}>
+      <button onClick={toggle} style={{ width: "100%", textAlign: "left", background: "transparent", border: "none", color: GOLD, fontSize: 11, fontWeight: 600, padding: "7px 0", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, fontFamily: "inherit" }}>
+        🧠 {open ? "Hide AI analysis" : "AI analysis — summary, sentiment & emotion"}
+      </button>
+      {open && (
+        <div style={{ paddingBottom: 10 }}>
+          {loading || !ai ? <div style={{ color: MUTED, fontSize: 11 }}>Analyzing…</div>
+            : ai.error ? <div style={{ color: RED, fontSize: 11 }}>Analysis failed — try again.</div> : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                  <span style={{ background: `${sentColor(ai.sentiment)}22`, color: sentColor(ai.sentiment), fontSize: 10, fontWeight: 800, padding: "2px 8px", borderRadius: 4 }}>{ai.sentiment}</span>
+                  {ai.emotion && <span style={{ background: "rgba(148,163,184,0.15)", color: TEXT, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>{ai.emotion}</span>}
+                  {ai.topic && <span style={{ background: `${GOLD}22`, color: GOLD, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>{ai.topic}</span>}
+                </div>
+                <div style={{ color: TEXT, fontSize: 12, lineHeight: 1.55 }}>{ai.summary}</div>
+                {ai.primebook_angle && <div style={{ color: TEXT, fontSize: 11.5, lineHeight: 1.5 }}><b style={{ color: GOLD }}>Primebook angle:</b> {ai.primebook_angle}</div>}
+              </div>
+            )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function ArticleCard({ a }) {
+  const brand = BRAND_MAP[a.brand]
+  return (
+    <div style={{ border: `0.5px solid ${BORDER}`, borderRadius: 10, marginBottom: 10, padding: "14px 16px" }}>
+      <a href={a.url} target="_blank" rel="noreferrer" style={{ display: "flex", gap: 14, textDecoration: "none" }}>
+        <div style={{ width: 100, height: 72, borderRadius: 6, flexShrink: 0, overflow: "hidden", background: PANEL }}>
+          {a.image && <img src={a.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", lineHeight: 1.4, marginBottom: 5 }}>
-            {article.title}
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", lineHeight: 1.4, marginBottom: 5 }}>{a.title}</div>
+          <div style={{ fontSize: 12, color: TEXT, lineHeight: 1.5, marginBottom: 8, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{a.description}</div>
+          <div style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 11, color: MUTED }}>
+            <span style={{ background: `${brand?.color || GOLD}22`, color: brand?.color || GOLD, padding: "2px 8px", borderRadius: 4, fontWeight: 700, fontSize: 10 }}>{brand?.label || a.brand}</span>
+            <span>{a.source}</span><span>{timeAgo(a.published_at)}</span>
           </div>
-          <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.5, marginBottom: 8, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
-            {article.description}
+        </div>
+      </a>
+      <NewsAI brand={a.brand} idx={a._idx} />
+    </div>
+  )
+}
+
+// ── Intelligence view ─────────────────────────────────────────────────────────
+function IntelligenceView() {
+  const [d, setD] = useState(null)
+  useEffect(() => { axios.get(`${API}/news/ai/intelligence`).then(r => setD(r.data)).catch(() => setD({ error: 1 })) }, [])
+  if (!d) return <div style={{ color: MUTED, padding: 40, textAlign: "center" }}>🧠 Generating news intelligence…</div>
+  if (d.error) return <div style={{ color: RED, padding: 20 }}>AI error: {String(d.error).slice(0, 160)}</div>
+  const s = d.sentiment || {}
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      {/* Executive summary */}
+      <div style={{ ...card, borderColor: GOLD }}>
+        <div style={{ ...label, color: GOLD }}>Executive summary</div>
+        <div style={{ color: "#e2e8f0", fontSize: 13, lineHeight: 1.6, marginTop: 8 }}>{d.executive_summary}</div>
+      </div>
+
+      {/* Sentiment + topics */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={card}>
+          <Section note={s.label}>Overall sentiment</Section>
+          <div style={{ display: "flex", height: 16, borderRadius: 4, overflow: "hidden" }}>
+            <div style={{ width: `${s.positive || 0}%`, background: GREEN }} />
+            <div style={{ width: `${s.neutral || 0}%`, background: MUTED }} />
+            <div style={{ width: `${s.negative || 0}%`, background: RED }} />
           </div>
-          <div style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 11, color: "#64748b" }}>
-            <span style={{
-              background: `${brand?.color || "#C9A84C"}22`,
-              color: brand?.color || "#C9A84C",
-              padding: "2px 8px", borderRadius: 4, fontWeight: 700, fontSize: 10,
-            }}>{brand?.label || article.brand}</span>
-            <span>{article.source}</span>
-            <span>{timeAgo(article.published_at)}</span>
+          <div style={{ display: "flex", justifyContent: "space-between", marginTop: 6, fontSize: 11 }}>
+            <span style={{ color: GREEN }}>😊 {s.positive}% pos</span>
+            <span style={{ color: MUTED }}>😐 {s.neutral}% neu</span>
+            <span style={{ color: RED }}>😞 {s.negative}% neg</span>
+          </div>
+        </div>
+        <div style={card}>
+          <Section note="sentiment by topic">Emotion by topic</Section>
+          {(d.topics || []).map((t, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+              <span style={{ width: 74, color: "#e2e8f0", fontSize: 12, fontWeight: 600 }}>{t.topic}</span>
+              <span style={{ background: `${sentColor(t.sentiment)}22`, color: sentColor(t.sentiment), fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 3 }}>{(t.sentiment || "").toUpperCase()}</span>
+              <span style={{ color: TEXT, fontSize: 11, flex: 1 }}>{t.note}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Anomalies */}
+      <div style={{ ...card, borderColor: (d.anomalies || []).length ? RED : BORDER }}>
+        <Section note="sudden negative / volume spikes">⚠ Anomaly detection</Section>
+        {(d.anomalies || []).length === 0
+          ? <div style={{ color: GREEN, fontSize: 12 }}>No unusual negative or volume spikes detected in the current news set.</div>
+          : (d.anomalies).map((a, i) => (
+            <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "flex-start" }}>
+              <span style={{ background: `${RED}22`, color: RED, fontSize: 9, fontWeight: 800, padding: "2px 6px", borderRadius: 3, whiteSpace: "nowrap" }}>{(a.signal || "SPIKE").toUpperCase()}</span>
+              <span style={{ color: TEXT, fontSize: 12 }}><b style={{ color: "#e2e8f0" }}>{a.brand}:</b> {a.detail}</span>
+            </div>
+          ))}
+      </div>
+
+      {/* Emerging trends */}
+      <div style={card}>
+        <Section note="topics gaining momentum across competitors">Emerging trends</Section>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(230px, 1fr))", gap: 12 }}>
+          {(d.emerging_trends || []).map((t, i) => (
+            <div key={i} style={{ background: PANEL, borderRadius: 8, padding: 12 }}>
+              <div style={{ color: "#f1f5f9", fontSize: 12, fontWeight: 700 }}>📈 {t.trend}</div>
+              <div style={{ display: "flex", gap: 4, flexWrap: "wrap", margin: "6px 0" }}>
+                {(t.brands || []).map((b, j) => <span key={j} style={{ background: "rgba(148,163,184,0.15)", color: TEXT, fontSize: 9, fontWeight: 700, padding: "1px 6px", borderRadius: 3 }}>{b}</span>)}
+              </div>
+              <div style={{ color: TEXT, fontSize: 11, lineHeight: 1.5 }}>{t.note}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Competitive intelligence */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+        <div style={card}>
+          <Section note="how each brand frames itself in the news">Positioning</Section>
+          {(d.positioning || []).map((p, i) => {
+            const b = BRANDS.find(x => x.label.toLowerCase() === (p.brand || "").toLowerCase()) || {}
+            return (
+              <div key={i} style={{ marginBottom: 8 }}>
+                <span style={{ color: b.color || GOLD, fontSize: 12, fontWeight: 700 }}>{p.brand}</span>
+                <span style={{ color: TEXT, fontSize: 11.5 }}> — {p.point}</span>
+              </div>
+            )
+          })}
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <div style={card}>
+            <Section note="who reacts fastest to market events">Speed of response</Section>
+            <div style={{ color: TEXT, fontSize: 12, lineHeight: 1.55 }}>{d.response_speed}</div>
+          </div>
+          <div style={card}>
+            <Section>Innovation signals</Section>
+            <ul style={{ margin: 0, paddingLeft: 16, color: TEXT, fontSize: 12, lineHeight: 1.7 }}>
+              {(d.innovation_signals || []).map((x, i) => <li key={i}>{x}</li>)}
+            </ul>
           </div>
         </div>
       </div>
-    </a>
+    </div>
+  )
+}
+
+// ── Feed view ─────────────────────────────────────────────────────────────────
+function FeedView({ newsData }) {
+  const [brand, setBrand] = useState("all")
+  const byBrand = newsData?.by_brand || {}
+  // GNews queries ("HP laptop") sometimes return articles about other brands;
+  // on a brand tab, keep only articles that actually mention that brand.
+  const mentions = (a, bid) => {
+    const name = (BRAND_MAP[bid]?.label || bid).toLowerCase()
+    return `${a.title || ""} ${a.description || ""}`.toLowerCase().includes(name)
+  }
+  let feed
+  if (brand === "all") {
+    feed = Object.entries(byBrand).flatMap(([bid, arr]) => (arr || []).map((a, idx) => ({ ...a, brand: bid, _idx: idx })))
+      .sort((a, b) => new Date(b.published_at) - new Date(a.published_at))
+  } else {
+    const tagged = (byBrand[brand] || []).map((a, idx) => ({ ...a, brand, _idx: idx }))
+    const filtered = tagged.filter(a => mentions(a, brand))
+    feed = filtered.length ? filtered : tagged   // fall back to unfiltered if nothing matches
+  }
+
+  return (
+    <div>
+      <div style={{ display: "flex", gap: 0, marginBottom: 18, borderBottom: `1px solid ${PANEL}`, flexWrap: "wrap" }}>
+        {[{ id: "all", label: "All brands", color: GOLD }, ...BRANDS].map(b => (
+          <button key={b.id} onClick={() => setBrand(b.id)} style={{
+            padding: "10px 18px", fontSize: 13, cursor: "pointer", background: "none", border: "none", fontFamily: "inherit",
+            color: brand === b.id ? "#f1f5f9" : MUTED,
+            borderBottom: `2px solid ${brand === b.id ? b.color : "transparent"}`, marginBottom: -1,
+          }}>{b.label}</button>
+        ))}
+      </div>
+      {feed.length === 0 ? <div style={{ textAlign: "center", padding: 50, color: "#475569" }}>No news found</div>
+        : feed.map((a, i) => <ArticleCard key={a.url || i} a={a} />)}
+    </div>
   )
 }
 
 export default function News() {
-  const [activeTab, setActiveTab] = useState("all")
+  const [tab, setTab] = useState("intel")
   const [newsData, setNewsData] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [summary, setSummary] = useState(null)
-  const [summaryLoading, setSummaryLoading] = useState(true)
   useEffect(() => {
-    setLoading(true)
-    axios.get(`${API}/news`)
-      .then(res => setNewsData(res.data))
-      .catch(() => setError("Could not load news"))
-      .finally(() => setLoading(false))
-
-    setSummaryLoading(true)
-    axios.get(`${API}/news/ai-summary`)
-      .then(res => {
-        if (!res.data.error) setSummary(res.data)
-      })
-      .catch(() => {})
-      .finally(() => setSummaryLoading(false))
+    axios.get(`${API}/news`).then(res => setNewsData(res.data)).catch(() => setError("Could not load news"))
   }, [])
-
-  const articles = activeTab === "all"
-    ? (newsData?.all || [])
-    : (newsData?.by_brand?.[activeTab] || [])
 
   return (
     <div style={{ padding: "28px 32px", minHeight: "100vh", background: "#0f1117", color: "#e2e8f0" }}>
-
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9" }}>News & Insights</div>
-        <div style={{ fontSize: 13, color: "#64748b", marginTop: 2 }}>
-          Competitor laptop news — HP, Lenovo, Acer, Dell, Asus
-          {newsData?.last_updated && (
-            <span> · Updated {timeAgo(newsData.last_updated)}</span>
-          )}
+      <div style={{ marginBottom: 18 }}>
+        <div style={{ fontSize: 22, fontWeight: 700, color: "#f1f5f9" }}>News & Intelligence</div>
+        <div style={{ fontSize: 13, color: MUTED, marginTop: 2 }}>
+          Competitor laptop news — HP · Lenovo · Acer · Dell · Asus
+          {newsData?.last_updated && <span> · Updated {timeAgo(newsData.last_updated)}</span>}
         </div>
       </div>
-{/* AI News Summary */}
-      {summaryLoading ? (
-        <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, padding: "16px 20px", marginBottom: 20, fontSize: 13, color: "#64748b" }}>
-          Groq AI summarizing this week's news...
-        </div>
-      ) : summary ? (
-        <div style={{ background: "#1e293b", border: "1px solid #334155", borderRadius: 12, overflow: "hidden", marginBottom: 20 }}>
-          <div style={{ padding: "14px 16px", borderBottom: "1px solid #334155", display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ fontSize: 16 }}>🧠</span>
-            <span style={{ fontSize: 13, fontWeight: 600, color: "#f1f5f9" }}>{summary.headline}</span>
-            <span style={{ fontSize: 11, color: "#475569", marginLeft: "auto" }}>Groq LLaMA 3.3 70B</span>
-          </div>
-          <div style={{ padding: 16 }}>
-            {(summary.summary_points || []).map((point, i) => (
-              <div key={i} style={{ display: "flex", gap: 10, padding: "8px 0", borderBottom: i < summary.summary_points.length - 1 ? "0.5px solid #1e293b" : "none" }}>
-                <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#C9A84C", flexShrink: 0, marginTop: 6 }}></div>
-                <div style={{ fontSize: 12, color: "#94a3b8", lineHeight: 1.6 }}>{point}</div>
-              </div>
-            ))}
 
-            {summary.brand_highlights && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 10, marginTop: 14, paddingTop: 14, borderTop: "0.5px solid #1e293b" }}>
-                {BRANDS.map(b => {
-                  const text = summary.brand_highlights[b.id]
-                  if (!text) return null
-                  return (
-                    <div key={b.id} style={{ background: "#0f172a", borderRadius: 8, padding: "10px 12px" }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: b.color, marginBottom: 4 }}>{b.label}</div>
-                      <div style={{ fontSize: 11, color: "#94a3b8", lineHeight: 1.5 }}>{text}</div>
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        </div>
-      ) : null}
-      {/* Tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1e293b" }}>
-        <button onClick={() => setActiveTab("all")} style={{
-          padding: "10px 18px", fontSize: 13, cursor: "pointer",
-          background: "none", border: "none",
-          color: activeTab === "all" ? "#f1f5f9" : "#64748b",
-          borderBottom: `2px solid ${activeTab === "all" ? "#C9A84C" : "transparent"}`,
-          marginBottom: "-1px",
-        }}>All brands</button>
-        {BRANDS.map(b => (
-          <button key={b.id} onClick={() => setActiveTab(b.id)} style={{
-            padding: "10px 18px", fontSize: 13, cursor: "pointer",
-            background: "none", border: "none",
-            color: activeTab === b.id ? "#f1f5f9" : "#64748b",
-            borderBottom: `2px solid ${activeTab === b.id ? b.color : "transparent"}`,
-            marginBottom: "-1px",
-          }}>{b.label}</button>
-        ))}
+      {error && <div style={{ background: "#450a0a20", border: "1px solid #7f1d1d", color: "#fca5a5", padding: "14px 18px", borderRadius: 10, fontSize: 13, marginBottom: 16 }}>{error}</div>}
+
+      <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
+        {[{ id: "intel", label: "Intelligence" }, { id: "feed", label: "Article feed" }].map(t => {
+          const on = tab === t.id
+          return (
+            <button key={t.id} onClick={() => setTab(t.id)} style={{
+              padding: "9px 16px", fontSize: 12, borderRadius: 9, cursor: "pointer", fontFamily: "inherit",
+              border: `1px solid ${on ? GOLD : BORDER}`, background: on ? "rgba(201,168,76,0.12)" : "transparent",
+              color: on ? GOLD : TEXT, fontWeight: on ? 600 : 500,
+            }}>{t.label}</button>
+          )
+        })}
       </div>
 
-      {loading ? (
-        <div style={{ textAlign: "center", padding: "60px 0", color: "#475569" }}>Loading news...</div>
-      ) : error ? (
-        <div style={{ background: "#450a0a20", border: "1px solid #7f1d1d", color: "#fca5a5", padding: "16px 20px", borderRadius: 10, fontSize: 13 }}>
-          {error}
-        </div>
-      ) : articles.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "60px 0", color: "#475569" }}>No news found</div>
-      ) : (
-        <div>
-          {articles.map((a, i) => <NewsCard key={i} article={a} />)}
-        </div>
-      )}
+      {tab === "intel" && <IntelligenceView />}
+      {tab === "feed" && <FeedView newsData={newsData} />}
+
+      <div style={{ marginTop: 20, color: MUTED, fontSize: 10, lineHeight: 1.5 }}>
+        AI summaries & sentiment are generated from article headlines + snippets (GNews free tier has no full article text). Anomaly detection works over the current news set, not a long history.
+      </div>
     </div>
   )
 }

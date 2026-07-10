@@ -853,7 +853,7 @@ IMPORTANT RULES:
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "llama-3.3-70b-versatile",
+                    "model": GROQ_MODEL,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.3,
                     "max_tokens": 3000,
@@ -1116,7 +1116,7 @@ IMPORTANT:
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "llama-3.3-70b-versatile",
+                    "model": GROQ_MODEL,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.3,
                     "max_tokens": 3000,
@@ -1733,7 +1733,7 @@ IMPORTANT:
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "llama-3.3-70b-versatile",
+                    "model": GROQ_MODEL,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.4,
                     "max_tokens": 1500,
@@ -1900,7 +1900,7 @@ IMPORTANT:
                     "Content-Type": "application/json"
                 },
                 json={
-                    "model": "llama-3.3-70b-versatile",
+                    "model": GROQ_MODEL,
                     "messages": [{"role": "user", "content": prompt}],
                     "temperature": 0.4,
                     "max_tokens": 3000,
@@ -1950,7 +1950,7 @@ YT_HISTORY_FILE  = "youtube_history.json"
 YT_COMMENTS_FILE = "youtube_comments.json"
 GROQ_API_KEY     = os.environ.get("GROQ_API_KEY", "")
 GROQ_URL         = "https://api.groq.com/openai/v1/chat/completions"
-GROQ_MODEL       = "llama-3.3-70b-versatile"
+GROQ_MODEL       = os.environ.get("GROQ_MODEL", "llama-3.1-8b-instant")
 DOW_LABELS       = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
 
@@ -2611,3 +2611,535 @@ def instagram_growth_history():
         "message": ("Only one snapshot so far — follower trends populate as more weekly snapshots accumulate."
                     if len(snaps) < 2 else f"Tracking {len(snaps)} snapshots."),
     }
+
+
+# ================================================================
+# AUDIENCE & CONTENT-TYPE ANALYSIS  (YouTube + Instagram)
+# Content-type split + avg views per type = DATA-DRIVEN (we have YouTube views).
+# Age / profession demographics = AI ESTIMATE — platforms do not expose competitor
+# audience analytics publicly; only a channel owner sees real demographics.
+# ================================================================
+from collections import defaultdict as _defaultdict
+
+AGE_BANDS = ["Under 18", "18-24", "25-34", "35-44", "45+"]
+
+
+def _yt_content_type(v):
+    t = (v.get("title") or "").lower()
+    if v.get("is_short"):
+        return "Shorts"
+    if any(w in t for w in [" vs ", "vs.", "comparison", "compare"]):
+        return "Comparison"
+    if any(w in t for w in ["review", "worth it", "honest"]):
+        return "Review"
+    if any(w in t for w in ["unbox"]):
+        return "Unboxing"
+    if any(w in t for w in ["how to", "tutorial", "guide", " tips", "setup", "settings", "install"]):
+        return "Tutorial"
+    if any(w in t for w in ["launch", "unveil", "introducing", "first look", "teaser", "reveal"]):
+        return "Launch/Reveal"
+    if any(w in t for w in ["gaming", "gameplay", "fps", " game"]):
+        return "Gaming"
+    return "Brand/Promo"
+
+
+def _yt_content_breakdown(vids):
+    g = _defaultdict(list)
+    for v in vids:
+        if (v.get("views", 0) or 0) > 0:
+            g[_yt_content_type(v)].append(v["views"])
+    total = sum(len(x) for x in g.values()) or 1
+    out = [{"type": t, "count": len(views), "share_pct": round(len(views) / total * 100),
+            "avg_views": int(sum(views) / len(views))} for t, views in g.items()]
+    out.sort(key=lambda x: x["avg_views"], reverse=True)
+    return out
+
+
+async def _demographics(name, kind, signal):
+    """AI-estimated audience demographics + why. kind = 'YouTube' | 'Instagram'."""
+    prompt = f"""You are a media analyst for Primebook India (Android 15 budget laptops, Rs. 10,000-40,000).
+
+Estimate the likely {kind} AUDIENCE of {name} based on this signal:
+{signal}
+
+These are informed ESTIMATES (real demographics are private), so keep them reasonable.
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "age": [{{"band": "Under 18", "pct": 0}}, {{"band": "18-24", "pct": 0}}, {{"band": "25-34", "pct": 0}}, {{"band": "35-44", "pct": 0}}, {{"band": "45+", "pct": 0}}],
+  "profession": [{{"label": "e.g. Students", "pct": 0, "why": "1 sentence why this group over-indexes"}}],
+  "summary": "2 sentences: why the audience skews the way it does, and what it means for how Primebook should target them"
+}}
+Age pcts must sum to 100. Give 4-5 profession groups with pcts summing to about 100 (Students, College grads, IT professionals, Gamers, Creators, Parents, Small-business owners, etc.)."""
+    return await _groq_json(prompt, 1600)
+
+
+YT_AUDIENCE_CACHE = {}
+
+@app.get("/youtube/audience/{brand_id}")
+async def youtube_audience(brand_id: str):
+    brand_id = brand_id.lower()
+    b = _brand_cache(brand_id)
+    if not b:
+        return {"error": "Not cached yet"}
+    vids = _yt_all_videos(b)
+    content = _yt_content_breakdown(vids)          # data-driven
+    most_viewed_type = content[0]["type"] if content else None
+
+    cached = YT_AUDIENCE_CACHE.get(brand_id)
+    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 24:
+        demo = cached["result"]
+    else:
+        name = b.get("stats", {}).get("name", brand_id)
+        top_titles = " | ".join((v.get("title") or "")[:55] for v in sorted(vids, key=lambda v: v.get("views", 0), reverse=True)[:10])
+        signal = (f"Channel: {name}. Subscribers: {b.get('stats', {}).get('subscribers', 0):,}. "
+                  f"Top video titles: {top_titles}. "
+                  f"Content types by avg views: " + ", ".join(f"{c['type']} ({c['avg_views']:,})" for c in content[:6]))
+        demo = await _demographics(name, "YouTube", signal)
+        if "error" not in demo:
+            YT_AUDIENCE_CACHE[brand_id] = {"result": demo, "time": datetime.now()}
+
+    return {"brand_id": brand_id, "estimated": True,
+            "content_types": content, "most_viewed_type": most_viewed_type,
+            "demographics": demo}
+
+
+IG_AUDIENCE_CACHE = {}
+
+@app.get("/instagram/audience/{brand_id}")
+async def instagram_audience(brand_id: str):
+    brand_id = brand_id.lower()
+    bc = _load_instagram_cache().get("brands", {}).get(brand_id)
+    if not bc:
+        return {"error": "Not cached yet"}
+    posts = _ig_posts(bc)
+    reels = len([p for p in posts if p.get("type") == "reel"])
+    static = len(posts) - reels
+    tot = len(posts) or 1
+    content_mix = [
+        {"type": "Reels", "count": reels, "share_pct": round(reels / tot * 100)},
+        {"type": "Static / Carousel", "count": static, "share_pct": round(static / tot * 100)},
+    ]
+
+    cached = IG_AUDIENCE_CACHE.get(brand_id)
+    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 24:
+        demo = cached["result"]
+    else:
+        name = bc.get("name", brand_id)
+        caps = [(p.get("alt") or "").replace("\n", " ")[:70] for p in posts][:6]
+        signal = (f"Account: {name}. Followers: {bc.get('stats', {}).get('followers', 0):,}. "
+                  f"Post mix: {reels} reels vs {static} static of {len(posts)} recent. "
+                  f"Recent captions: " + " | ".join(caps))
+        demo = await _demographics(name, "Instagram", signal)
+        if "error" not in demo:
+            IG_AUDIENCE_CACHE[brand_id] = {"result": demo, "time": datetime.now()}
+
+    return {"brand_id": brand_id, "estimated": True,
+            "content_mix": content_mix, "demographics": demo}
+
+
+# ================================================================
+# CONTENT-TYPE PLAYBOOK — Primebook vs competitors, per content type.
+# Numbers (avg views per type) are REAL; the why + improvement is AI.
+# ================================================================
+CONTENT_AI_CACHE = {}
+
+
+@app.get("/youtube/content-ai")
+async def youtube_content_ai():
+    cache = _load_cache()
+    brands = cache.get("brands", {})
+    if not brands:
+        return {"error": "No YouTube cache"}
+
+    per_brand = {}
+    for bid in BRAND_CHANNELS:
+        b = brands.get(bid)
+        if b:
+            per_brand[bid] = {c["type"]: c["avg_views"] for c in _yt_content_breakdown(_yt_all_videos(b))}
+
+    comp_ids = [b for b in BRAND_CHANNELS if b != "primebook"]
+    types = sorted({t for m in per_brand.values() for t in m},
+                   key=lambda t: -max((per_brand.get(c, {}).get(t, 0) for c in comp_ids), default=0))
+
+    rows = []
+    for t in types:
+        pb = per_brand.get("primebook", {}).get(t)
+        comps = [per_brand[c][t] for c in comp_ids if t in per_brand.get(c, {})]
+        comp_avg = int(sum(comps) / len(comps)) if comps else None
+        # objective verdict from the real numbers
+        if pb is None:
+            verdict = "not_posting"
+        elif comp_avg is None:
+            verdict = "na"
+        elif pb >= comp_avg:
+            verdict = "lead"
+        elif pb >= 0.6 * comp_avg:
+            verdict = "even"
+        else:
+            verdict = "lag"
+        rows.append({"type": t, "primebook_avg": pb, "competitor_avg": comp_avg, "verdict": verdict})
+
+    cached = CONTENT_AI_CACHE.get("result")
+    if cached and (datetime.now() - CONTENT_AI_CACHE.get("time", datetime.min)).total_seconds() / 3600 < 24:
+        ai = cached
+    else:
+        table = "\n".join(
+            f"- {r['type']}: Primebook avg {r['primebook_avg'] if r['primebook_avg'] is not None else 'DOES NOT POST'} views | "
+            f"Competitors avg {r['competitor_avg'] if r['competitor_avg'] is not None else 'n/a'} views ({r['verdict']})"
+            for r in rows
+        )
+        prompt = f"""You are a YouTube content strategist for Primebook India (Android 15 budget laptops, Rs. 10,000-40,000).
+
+Average views per content type — Primebook vs the average of 5 competitors (HP, Lenovo, Acer, Dell, Asus):
+{table}
+
+For EACH content type above, explain to Primebook WHY the gap or lead exists and ONE concrete improvement.
+When Primebook DOES NOT POST a type that competitors win on, say whether Primebook should start and how.
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "by_type": [{{"type": "exact type name from the list", "why": "1-2 sentences", "improvement": "1 concrete action"}}],
+  "summary": "2 sentences: the 2 content types Primebook should prioritize next and why"
+}}
+Include every content type from the list."""
+        ai = await _groq_json(prompt, 2600)
+        if "error" not in ai:
+            CONTENT_AI_CACHE["result"] = ai
+            CONTENT_AI_CACHE["time"] = datetime.now()
+
+    ai_by_type = {x.get("type"): x for x in (ai.get("by_type", []) if isinstance(ai, dict) else [])}
+    merged = [{**r, "why": ai_by_type.get(r["type"], {}).get("why", ""),
+               "improvement": ai_by_type.get(r["type"], {}).get("improvement", "")} for r in rows]
+    return {"by_type": merged, "summary": ai.get("summary", "") if isinstance(ai, dict) else ""}
+
+
+# ================================================================
+# NEWS INTELLIGENCE  (summarization, sentiment/emotion by topic,
+# competitive intel, trend detection, negative-spike anomaly)
+# Note: only headline + 1-line description per article (GNews free tier),
+# and no long history — analyses are grounded in the current ~50 articles.
+# ================================================================
+NEWS_INTEL_CACHE = {"result": None, "fp": None, "time": None}
+NEWS_ARTICLE_CACHE = {}
+_NEWS_ORDER = ["hp", "lenovo", "acer", "dell", "asus"]
+
+
+def _news_articles():
+    cache = _load_news_cache()
+    arts = []
+    for bid in _NEWS_ORDER:
+        for idx, a in enumerate(cache.get(bid, []) or []):
+            arts.append({**a, "brand_id": bid, "idx": idx,
+                         "brand_name": competitors.get(bid, {}).get("name", bid)})
+    return arts
+
+
+@app.get("/news/ai/intelligence")
+async def news_intelligence():
+    arts = _news_articles()
+    if not arts:
+        return {"error": "No news cached. Hit /news/refresh first."}
+
+    fp = "|".join(sorted(a.get("title", "") for a in arts))
+    c = NEWS_INTEL_CACHE
+    if c["result"] and c["fp"] == fp and c["time"] and (datetime.now() - c["time"]).total_seconds() / 3600 < 24:
+        return c["result"]
+
+    now = datetime.now(timezone.utc)
+    def recent48(a):
+        dt = _parse_dt(a.get("published_at"))
+        return bool(dt and (now - dt).total_seconds() <= 48 * 3600)
+
+    blocks = []
+    for bid in _NEWS_ORDER:
+        b = [a for a in arts if a["brand_id"] == bid]
+        if not b:
+            continue
+        r48 = sum(1 for a in b if recent48(a))
+        head = f"{competitors.get(bid, {}).get('name', bid)} — {len(b)} articles ({r48} in last 48h):"
+        rows = "\n".join(f"  - {a.get('title','')} [{a.get('source','')}, {(a.get('published_at') or '')[:10]}] {a.get('description','')[:70]}" for a in b[:6])
+        blocks.append(head + "\n" + rows)
+
+    prompt = f"""You are a market-intelligence analyst for Primebook India (Android 15 budget laptops, Rs. 10,000-40,000).
+
+Below is recent laptop news for 5 competitors (HP, Lenovo, Acer, Dell, Asus). Each line is a headline + source + date + snippet.
+
+{chr(10).join(blocks)}
+
+Analyze across all brands and return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "executive_summary": "one tight paragraph summarizing the overall competitor news landscape and what matters for Primebook",
+  "sentiment": {{"positive": <int %>, "neutral": <int %>, "negative": <int %>, "label": "Positive|Mixed|Negative"}},
+  "topics": [
+    {{"topic": "Product", "sentiment": "positive|neutral|negative", "note": "1 sentence"}},
+    {{"topic": "Leadership", "sentiment": "positive|neutral|negative", "note": "1 sentence"}},
+    {{"topic": "Finance", "sentiment": "positive|neutral|negative", "note": "1 sentence"}}
+  ],
+  "positioning": [{{"brand": "HP", "point": "how they are positioning in the news, 1 sentence"}}],
+  "response_speed": "1-2 sentences on which brands react fastest to market events (launches, price moves)",
+  "innovation_signals": ["signal 1", "signal 2", "signal 3"],
+  "emerging_trends": [{{"trend": "2-4 words", "brands": ["HP", "Dell"], "note": "1 sentence"}}],
+  "anomalies": [{{"brand": "brand name", "signal": "negative spike|volume spike", "detail": "1 sentence, only if genuinely notable"}}]
+}}
+Sentiment percentages must sum to 100. Give one positioning entry per brand, 3-5 innovation_signals, 3-5 emerging_trends. Only include anomalies that are real; use an empty array if none."""
+
+    result = await _groq_json(prompt, 2200)
+    if "error" not in result:
+        NEWS_INTEL_CACHE.update({"result": result, "fp": fp, "time": datetime.now()})
+    return result
+
+
+@app.get("/news/ai/article")
+async def news_article_ai(brand: str, i: int = 0):
+    brand = brand.lower()
+    arr = _load_news_cache().get(brand, []) or []
+    if i < 0 or i >= len(arr):
+        return {"error": "Article not found"}
+    a = arr[i]
+    key = a.get("url") or f"{brand}:{i}"
+    cached = NEWS_ARTICLE_CACHE.get(key)
+    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 168:
+        return cached["result"]
+
+    prompt = f"""You are a news analyst for Primebook India (Android 15 budget laptops).
+
+Article about {competitors.get(brand, {}).get('name', brand)}:
+Title: "{a.get('title','')}"
+Source: {a.get('source','')}
+Snippet: "{a.get('description','')}"
+
+(Only the headline and snippet are available, not the full article — infer reasonably.)
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "summary": "one-paragraph executive summary of what this article is about",
+  "sentiment": "Positive|Neutral|Negative",
+  "emotion": "1-2 word dominant emotion (e.g. optimistic, concern, excitement, criticism)",
+  "topic": "Product|Leadership|Finance|Market|Other",
+  "primebook_angle": "1 sentence on what this means for Primebook"
+}}"""
+
+    result = await _groq_json(prompt, 900)
+    if "error" not in result:
+        NEWS_ARTICLE_CACHE[key] = {"result": result, "time": datetime.now()}
+    return result
+
+
+# ================================================================
+# AI RESEARCH — executive intelligence layer.
+# Scores/ranking = computed from real data. Narrative sections = Groq (cached,
+# lazy per section to respect the free-tier tokens-per-minute cap).
+# Social = YouTube + Instagram only (FB/LinkedIn/X not tracked).
+# ================================================================
+from collections import defaultdict as _dd
+
+_RES_COMP = ["hp", "lenovo", "acer", "dell", "asus"]
+
+
+def _norm(vals):
+    mx = max(vals) if vals else 0
+    return [round(v / mx * 100) if mx else 0 for v in vals]
+
+
+def _price_pos(p, allp):
+    vals = [v for v in allp.values() if v]
+    if not p or not vals:
+        return "—"
+    med = sorted(vals)[len(vals) // 2]
+    if p > med * 1.1:
+        return "Premium"
+    if p < med * 0.9:
+        return "Value"
+    return "Mainstream"
+
+
+def _research_scores():
+    yt = youtube_analytics_all().get("brands", {})
+    ig = instagram_analytics_all().get("brands", {})
+    price_by = {}
+    try:
+        agg = _dd(list)
+        for r in get_price_table("all").get("rows", []):
+            bp = r.get("best_price") or r.get("amazon") or r.get("flipkart") or 0
+            if bp > 0:
+                agg[(r.get("brand") or "").lower()].append(bp)
+        price_by = {k: int(sum(v) / len(v)) for k, v in agg.items() if v}
+    except Exception:
+        pass
+
+    reach = [yt.get(b, {}).get("subscribers", 0) + ig.get(b, {}).get("followers", 0) for b in _RES_COMP]
+    eng   = [yt.get(b, {}).get("engagement_rate", 0) or 0 for b in _RES_COMP]
+    act   = [(yt.get(b, {}).get("uploads_per_week", 0) or 0) * 10 + (ig.get(b, {}).get("reel_share", 0) or 0) for b in _RES_COMP]
+    nr, ne, na = _norm(reach), _norm(eng), _norm(act)
+
+    ranking = []
+    for i, b in enumerate(_RES_COMP):
+        ai = round(0.5 * nr[i] + 0.3 * ne[i] + 0.2 * na[i])
+        ranking.append({
+            "brand_id": b, "brand": competitors.get(b, {}).get("name", b),
+            "ai_score": ai, "growth_score": na[i], "engagement_score": ne[i],
+            "innovation_score": round((na[i] + ne[i]) / 2), "reach": reach[i],
+            "threat_level": "High" if ai >= 70 else "Medium" if ai >= 40 else "Low",
+            "pricing_position": _price_pos(price_by.get(b), price_by),
+            "status": "Leader" if ai >= 70 else "Contender" if ai >= 40 else "Follower",
+        })
+    ranking.sort(key=lambda x: -x["ai_score"])
+    for i, r in enumerate(ranking):
+        r["rank"] = i + 1
+
+    srt = sorted(nr, reverse=True)
+    kpis = {
+        "market_health": round(sum(ne) / len(ne) * 0.6 + sum(na) / len(na) * 0.4) if ne else 0,
+        "competition_intensity": max(0, min(100, round(100 - (srt[0] - srt[1])))) if len(srt) > 1 else 50,
+        "innovation_index": round(sum(na) / len(na)) if na else 0,
+    }
+    return {"ranking": ranking, "kpis": kpis}
+
+
+def _research_ctx():
+    yt = youtube_analytics_all().get("brands", {})
+    ig = instagram_analytics_all().get("brands", {})
+    news = _news_articles()
+    lines = []
+    for b in _RES_COMP:
+        y, i = yt.get(b, {}), ig.get(b, {})
+        heads = [a.get("title", "")[:55] for a in news if a["brand_id"] == b][:2]
+        lines.append(f"{competitors.get(b, {}).get('name', b)}: YT {y.get('subscribers', 0):,} subs / eng {y.get('engagement_rate', '?')}% / ~{y.get('uploads_per_week', '?')} uploads-wk; "
+                     f"IG {i.get('followers', 0):,} followers / {i.get('reel_share', '?')}% reels. News: {' | '.join(heads)}")
+    py, pi = yt.get("primebook", {}), ig.get("primebook", {})
+    lines.append(f"PRIMEBOOK (us): YT {py.get('subscribers', 0):,} subs / eng {py.get('engagement_rate', '?')}%; IG {pi.get('followers', 0):,} followers. "
+                 f"Products: Neo 19990, Pro 25990, Max 27990 (Android 15, Rs.10-40k segment).")
+    return "\n".join(lines)
+
+
+_RES_CACHE = {}
+
+async def _research_ai(key, prompt, max_tokens=1900):
+    c = _RES_CACHE.get(key)
+    if c and (datetime.now() - c["time"]).total_seconds() / 3600 < 24:
+        return c["result"]
+    r = await _groq_json(prompt, max_tokens)
+    if "error" not in r:
+        _RES_CACHE[key] = {"result": r, "time": datetime.now()}
+    return r
+
+
+@app.get("/research/reset")
+def research_reset():
+    _RES_CACHE.clear()
+    return {"cleared": True}
+
+
+@app.get("/research/scores")
+def research_scores():
+    return _research_scores()
+
+
+@app.get("/research/summary")
+async def research_summary():
+    sc = _research_scores()
+    prompt = f"""You are chief strategy analyst for Primebook India (Android 15 budget laptops, Rs.10-40k).
+
+DATA (YouTube + Instagram + news; FB/LinkedIn/X not tracked):
+{_research_ctx()}
+
+Computed KPIs (0-100): market_health {sc['kpis']['market_health']}, competition_intensity {sc['kpis']['competition_intensity']}, innovation_index {sc['kpis']['innovation_index']}.
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "executive_summary": "3-4 sentence market summary with the key story this period",
+  "biggest_competitor": {{"name": "brand", "why": "1 sentence"}},
+  "largest_movement": "1 sentence on the biggest market movement",
+  "market_sentiment": {{"label": "Bullish|Neutral|Cautious", "score": <0-100>, "note": "1 sentence"}},
+  "key_takeaway": "1 punchy strategic takeaway for Primebook",
+  "kpi_notes": {{"market_health": "1 short line", "competition_intensity": "1 short line", "innovation_index": "1 short line"}}
+}}"""
+    ai = await _research_ai("summary", prompt, 1400)
+    return {"kpis": sc["kpis"], **(ai if isinstance(ai, dict) else {"error": "ai"})}
+
+
+@app.get("/research/insights")
+async def research_insights():
+    prompt = f"""You are a market intelligence analyst for Primebook India.
+
+DATA:
+{_research_ctx()}
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "insights": [{{"title": "short", "category": "Market Shift|Customer Behavior|Competitor Strategy|Growth Drivers|Brand Momentum|Emerging Topics", "explanation": "2 sentences", "confidence": <0-100>, "sources": ["YouTube", "Instagram", "News"]}}],
+  "trends": [{{"topic": "2-4 words", "popularity": <0-100>, "growth": <-50..100>, "competitors": ["HP"], "note": "1 sentence"}}]
+}}
+Give 6 insights across different categories and 5 trends."""
+    return await _research_ai("insights", prompt, 2200)
+
+
+@app.get("/research/matrix")
+async def research_matrix():
+    prompt = f"""You are a strategy analyst for Primebook India.
+
+DATA:
+{_research_ctx()}
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "threats": [{{"title": "short", "severity": "High|Medium|Low", "impact": "1 sentence", "reason": "1 sentence", "monitoring": "what to watch"}}],
+  "opportunities": [{{"title": "short", "confidence": <0-100>, "impact": "estimated business impact in 1 sentence", "gap": "the market gap", "action": "suggested action"}}]
+}}
+Give 4 threats and 4 opportunities, specific to Primebook."""
+    return await _research_ai("matrix", prompt, 1900)
+
+
+@app.get("/research/swot")
+async def research_swot():
+    prompt = f"""You are a competitive analyst for Primebook India.
+
+DATA:
+{_research_ctx()}
+
+For Primebook AND each competitor (HP, Lenovo, Acer, Dell, Asus) give a short SWOT.
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "competitors": [{{"brand": "Primebook", "strengths": [".."], "weaknesses": [".."], "opportunities": [".."], "threats": [".."]}}]
+}}
+2-3 bullets per quadrant. Include all 6 brands, Primebook first."""
+    return await _research_ai("swot", prompt, 2600)
+
+
+@app.get("/research/forecast")
+async def research_forecast():
+    sc = _research_scores()
+    leader = sc["ranking"][0]["brand"] if sc["ranking"] else "?"
+    prompt = f"""You are a forecasting analyst for Primebook India.
+
+DATA:
+{_research_ctx()}
+
+Current computed leader by reach+engagement: {leader}.
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "predictions": [{{"title": "e.g. Likely product launch", "confidence": <0-100>, "reasoning": "1-2 sentences", "evidence": "what supports it"}}],
+  "recommendations": [{{"title": "action", "priority": "P0|P1|P2", "impact": "High|Medium|Low", "effort": "High|Medium|Low", "outcome": "expected outcome"}}],
+  "correlation": [{{"step": "e.g. Product Launch", "detail": "1 sentence on how it links to the next"}}],
+  "final_report": {{"top_competitor": "brand", "fastest_growing": "brand", "highest_risk": "brand", "biggest_opportunity": "1 sentence", "industry_trend": "1 sentence", "forecast_30d": "2 sentences", "exec_recommendations": ["..", "..", ".."]}}
+}}
+Give 5 predictions, 5 recommendations, a 6-step correlation chain (Launch to News to Social to Reviews to Pricing to Growth), and the final_report."""
+    ai = await _research_ai("forecast", prompt, 2600)
+    if isinstance(ai, dict) and "error" not in ai:
+        ai = {**ai, "market_score": round(sum(sc["kpis"].values()) / 3)}
+    return ai
+
+
+@app.get("/research/ask")
+async def research_ask(q: str = ""):
+    if not q.strip():
+        return {"error": "empty question"}
+    prompt = f"""You are Primebook India's strategy co-pilot. Answer the executive question using ONLY the data below (YouTube + Instagram + news; be honest if something is not in the data).
+
+DATA:
+{_research_ctx()}
+
+QUESTION: {q}
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{"answer": "3-6 sentence answer grounded in the data", "confidence": <0-100>}}"""
+    return await _groq_json(prompt, 900)
