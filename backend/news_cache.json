@@ -2,6 +2,15 @@
   "hp": [
     {
       "brand": "hp",
+      "title": "Do not settle for just any HP laptop. Find the one that matches your routine, your goals, and your budget.",
+      "description": "Confused by HP's extensive laptop lineup? We break down the top models by use case, budget, and standout features to simplify your decision. | Technology News",
+      "url": "https://www.hindustantimes.com/technology/do-not-settle-for-just-any-hp-laptop-find-the-one-that-matches-your-routine-your-goals-and-your-budget-101783684958599.html",
+      "image": "https://www.hindustantimes.com/ht-img/img/2026/07/10/550x309/hp_laptops_1764051564563_1764051593238_1783685297254_caf05de9-5408-4767-b904-7ebb423095b5.jpg",
+      "source": "Hindustan Times",
+      "published_at": "2026-07-10T12:35:25Z"
+    },
+    {
+      "brand": "hp",
       "title": "HP's 16\" OmniBook 5 touchscreen laptop with 16GB DDR5 is nearly half-price at Walmart",
       "description": "This laptop for work and creative projects is an easy recommendation from me",
       "url": "https://www.techradar.com/pro/hps-16-inch-omnibook-5-laptop-with-ryzen-ai-7-cpu-16gb-ddr5-and-a-1tb-ssd-is-nearly-half-price-at-walmart",
@@ -80,18 +89,45 @@
       "image": "https://www.zdnet.com/a/img/resize/04d3e1bf132bbdfe17851df94a1d199699c14782/2026/07/02/9850eeea-fd61-46a2-b4ef-3780cd8098b7/omnibook-1.jpg?auto=webp&fit=crop&height=675&width=1200",
       "source": "ZDNet",
       "published_at": "2026-07-06T06:30:00Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP OMEN 17: A Gaming Laptop Ready to Replace Your Desktop",
-      "description": "The gaming laptop market has shifted its focus to 16-inch models, which offer the most balanced compromise between portability and performance.",
-      "url": "https://www.invenglobal.com/articles/23418/hp-omen-17-a-gaming-laptop-ready-to-replace-your-desktop",
-      "image": "https://static.invenglobal.com/upload/image/2026/07/03/r1783068632829378.png",
-      "source": "InvenGlobal",
-      "published_at": "2026-07-03T08:48:10Z"
     }
   ],
   "lenovo": [
+    {
+      "brand": "lenovo",
+      "title": "Lenovo ThinkPad L15 Gen 3",
+      "description": "Score the Lenovo ThinkPad L15 Gen 3 for just $439.99 (reg. $799). This refurbished laptop features 16GB RAM, 512GB SSD, Windows 11 Pro, and more.",
+      "url": "https://nypost.com/2026/07/10/shopping/get-a-business-ready-lenovo-thinkpad-l15-gen-3-for-359-off/",
+      "image": "https://nypost.com/wp-content/uploads/sites/2/2026/07/2000x1333-2026-07-07T163704.105.png?w=1200",
+      "source": "New York Post",
+      "published_at": "2026-07-10T20:42:27Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Lenovo's ThinkPad E16 Gen 3 laptop is an easy recommendation from me",
+      "description": "Whether you go for an AMD or Intel processor, this is an easy recommendation from me",
+      "url": "https://www.techradar.com/pro/lenovos-16-inch-thinkpad-e16-gen-3-laptop-for-students-and-professionals-gets-a-big-july-discount-using-this-special-code-i-found-the-configurations-that-give-you-the-best-value-for-money",
+      "image": "https://cdn.mos.cms.futurecdn.net/A5vPiCDfBoPiqg7BkGeGwm-2000-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-10T16:14:00Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Save a whopping $850 today on Lenovo's loaded Legion Pro 7i RTX 5080 OLED gaming laptop with 32GB RAM/2TB SSD",
+      "description": "B&H is now offering Lenovo’s 16-inch Legion Pro 7i gaming laptop with an RTX 5080 GPU for $2,649 shipped. The...",
+      "url": "https://9to5toys.com/2026/07/10/save-850-lenovo-legion-pro-7i-rtx-5080-oled-gaming-laptop/",
+      "image": "https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/02/Lenovo-Legion-Pro-7i-gaming-laptop.jpg?resize=1200%2C628&quality=82&strip=all&ssl=1",
+      "source": "9to5Toys",
+      "published_at": "2026-07-10T15:40:11Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Why Buy a Microsoft Surface Pro When Lenovo Cuts 46% Off the IdeaPad Flex 3i Chromebook, Doubles as Both a Tablet and Laptop?",
+      "description": "This versatile laptop can do just about anything you need it to do, and you can take it anywhere you go.",
+      "url": "https://gizmodo.com/why-buy-a-microsoft-surface-pro-when-lenovo-cuts-46-off-the-ideapad-flex-3i-chromebook-doubles-as-both-a-tablet-and-laptop-2000783851",
+      "image": "https://gizmodo.com/app/uploads/2026/07/Lenovo-IdeaPad-Flex-3i-Chromebook-2-in-1-Laptop-1200x675.jpg",
+      "source": "Gizmodo",
+      "published_at": "2026-07-10T10:40:03Z"
+    },
     {
       "brand": "lenovo",
       "title": "Save a massive $345 on Lenovo's Ryzen 7-powered IdeaPad Slim 3 laptop",
@@ -145,42 +181,6 @@
       "image": "https://images.news18.com/ibnlive/uploads/2026/07/image-2026-07-3b5200549ebbf9c8d6530e9f97a2187d-1200x675.jpg",
       "source": "News18",
       "published_at": "2026-07-01T03:16:57Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "This Lenovo ThinkPad T16 Gen 5 deal means business",
-      "description": "Speedy specs and the best keyboard on any laptop are precisely why this Windows 11 Pro laptop stands out for business professionals",
-      "url": "https://www.techradar.com/pro/lenovos-thinkpad-t16-is-a-phenomenal-laptop-for-productivity-and-this-gen-5-deal-is-exactly-the-kind-of-serious-business-laptop-id-recommend-to-anyone-who-needs-a-reliable-daily-driver",
-      "image": "https://cdn.mos.cms.futurecdn.net/Uhhgum8NSxQRFwNvjv6bjR-2000-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-06-30T11:05:00Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Lenovo's Snapdragon Yoga Slim 7x 2K OLED touchscreen Copilot+ laptop drops to $1,000 for Best Buy's 4th of July sale ($200 off)",
-      "description": "Best Buy is currently offering some great deals on Windows Copilot+ laptops as part of its 4th of July sale,...",
-      "url": "https://9to5toys.com/2026/06/30/lenovo-snapdragon-yoga-slim-7x-2k-oled-touchscreen-copilot-laptop/",
-      "image": "https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/06/Lenovo-Yoga-Slim-7x-Copilot-PC.jpg?resize=1200%2C628&quality=82&strip=all&ssl=1",
-      "source": "9to5Toys",
-      "published_at": "2026-06-30T10:45:05Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "This year's 'Back to School' laptop deals are already live - here are 9 options from Dell, Lenovo, and HP that can save you up to $530",
-      "description": "Options for all budgets this week",
-      "url": "https://www.techradar.com/computing/windows-laptops/this-years-back-to-school-laptop-deals-are-already-live-here-are-9-options-from-dell-lenovo-and-hp-that-can-save-you-up-to-usd530",
-      "image": "https://cdn.mos.cms.futurecdn.net/FEaE5YRh4qUWDYqih25kGn-2560-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-06-30T10:30:53Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Lenovo IdeaPad Slim 3i Review: Can Wildcat Lake Overtake The MacBook Neo?",
-      "description": "The Lenovo IdeaPad Slim 3i is an Intel Core Series 3 Wildcat Lake-powered, thin and light laptop designed to take on competitive systems like the",
-      "url": "https://hothardware.com/reviews/lenovo-ideapad-slim-3i-wildcat-lake-review",
-      "image": "https://hothardware.com/contentimages/Article/3617/content/16x9_2133x1200_highres-lenovo-wildcat-lake-laptop.jpg",
-      "source": "Hot Hardware",
-      "published_at": "2026-06-29T18:00:00Z"
     }
   ],
   "acer": [
@@ -278,6 +278,15 @@
   "dell": [
     {
       "brand": "dell",
+      "title": "Dell Pro 5: Your multitasking laptop powerhouse",
+      "description": "With the Dell Pro 5, that blend of power and portability in a laptop needn't be out of reach.",
+      "url": "https://www.tomsguide.com/computing/can-one-laptop-really-keep-up-with-modern-multitasking-your-dell-pro-5-productivity-questions-answered",
+      "image": "https://cdn.mos.cms.futurecdn.net/emceQ2nqc3q8En7rADerrH-1920-80.png",
+      "source": "Tom's Guide",
+      "published_at": "2026-07-10T16:30:05Z"
+    },
+    {
+      "brand": "dell",
       "title": "I'm a Windows user who installed Linux for the first time - here's how the experience changed me",
       "description": "I put Ubuntu on an old Dell laptop to see if Linux could really replace Windows 11. See why my final destination was so worth the speed bumps.",
       "url": "https://www.zdnet.com/article/windows-user-installed-linux-for-the-first-time/",
@@ -356,18 +365,18 @@
       "image": "https://www.livemint.com/lm-img/img/2026/07/01/1600x900/logo/laptop_deals_1782895698983_1782895710398_1d1f831d-2be6-458d-a206-d166396a8029.png",
       "source": "Livemint",
       "published_at": "2026-07-01T08:53:35Z"
-    },
-    {
-      "brand": "dell",
-      "title": "Best Gaming Laptops From Asus, Lenovo, HP And Dell You Can Buy",
-      "description": "Some of the popular gaming laptop brands are offering good deals on their models that you can check out.",
-      "url": "https://www.news18.com/tech/best-gaming-laptops-from-asus-lenovo-hp-and-dell-you-can-buy-ws-el-10183279.html",
-      "image": "https://images.news18.com/ibnlive/uploads/2026/07/image-2026-07-3b5200549ebbf9c8d6530e9f97a2187d-1200x675.jpg",
-      "source": "News18",
-      "published_at": "2026-07-01T03:16:57Z"
     }
   ],
   "asus": [
+    {
+      "brand": "asus",
+      "title": "Asus Vivobook 14, Vivobook 15 updated with Intel Core series 3 chips and AI features",
+      "description": "Asus has refreshed its Vivobook 14 and Vivobook 15 laptop lineup with Intel Core Series 3 processors, built-in AI capabilities and improved performance. The new models feature Full-HD IPS displays, up to 16GB RAM, PCIe 4.0 SSD storage and dedicated NPUs for enhanced on-device AI tasks.",
+      "url": "https://www.indiatvnews.com/technology/news/asus-vivobook-14-vivobook-15-updated-with-intel-core-series-3-chips-and-ai-features-2026-07-10-1047821",
+      "image": "https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2026/07/asus-vivobook-1783682634.jpg",
+      "source": "India TV News",
+      "published_at": "2026-07-10T11:34:06Z"
+    },
     {
       "brand": "asus",
       "title": "Asus Vivobook 15 with Intel Core 5 Series 3 processor, 16GB RAM, and 15.6-inch FHD anti-glare display launched in India",
@@ -448,16 +457,7 @@
       "image": "https://static.toiimg.com/thumb/msid-132015392,width-1280,height-720,resizemode-6,overlay-toi_sw,pt-32,y_pad-600/photo.jpg",
       "source": "Times of India",
       "published_at": "2026-06-29T11:02:00Z"
-    },
-    {
-      "brand": "asus",
-      "title": "Amazon Is Offering Up To 48% Discount On Laptops: Here Are Hand Picked Options You Can Consider Buying",
-      "description": "Looking for a new laptop without spending a fortune? Several laptops from Lenovo, Acer, ASUS, HP and other brands are currently available with discounts of up to 48% on Amazon.",
-      "url": "https://www.news18.com/tech/amazon-is-offering-up-to-48-discount-on-laptops-here-are-hand-picked-options-you-can-consider-buying-ws-el-10176019.html",
-      "image": "https://images.news18.com/ibnlive/uploads/2026/06/image-2026-06-9af82b00b44d5bc945d8a20aa2ca95e0-1200x675.jpg",
-      "source": "News18",
-      "published_at": "2026-06-29T02:20:09Z"
     }
   ],
-  "last_updated": "2026-07-10T07:02:27.973930+00:00"
+  "last_updated": "2026-07-11T10:58:03.246493+00:00"
 }
