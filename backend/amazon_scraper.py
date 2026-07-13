@@ -66,6 +66,10 @@ def create_driver():
     options.add_argument("--window-size=1920,1080")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
+    # Headless during the scheduled job (SCRAPE_HEADLESS=1) so no window pops up;
+    # visible for manual runs. Matches the Flipkart/Instagram Playwright scrapers.
+    if os.environ.get("SCRAPE_HEADLESS", "0") == "1":
+        options.add_argument("--headless=new")
     driver = uc.Chrome(options=options, version_main=149)
     return driver
 

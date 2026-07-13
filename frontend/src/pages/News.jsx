@@ -19,6 +19,16 @@ const card = { background: CARD, border: `0.5px solid ${BORDER}`, borderRadius: 
 const label = { color: MUTED, fontSize: 10, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase" }
 const sentColor = s => /pos/i.test(s) ? GREEN : /neg/i.test(s) ? RED : BLUE
 
+// Convert any "$1,234.56" amounts in text to approx ₹ (a lot of deal news is US-sourced).
+const USD_INR = 83
+function toINR(text) {
+  if (text == null) return text
+  return String(text).replace(/\$\s?(\d[\d,]*(?:\.\d{1,2})?)/g, (m, n) => {
+    const v = parseFloat(n.replace(/,/g, ""))
+    return isNaN(v) ? m : "₹" + Math.round(v * USD_INR).toLocaleString("en-IN")
+  })
+}
+
 function timeAgo(dateStr) {
   if (!dateStr) return ""
   const diff = (Date.now() - new Date(dateStr)) / 1000
@@ -62,8 +72,18 @@ function NewsAI({ brand, idx }) {
                   {ai.emotion && <span style={{ background: "rgba(148,163,184,0.15)", color: TEXT, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>{ai.emotion}</span>}
                   {ai.topic && <span style={{ background: `${GOLD}22`, color: GOLD, fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4 }}>{ai.topic}</span>}
                 </div>
-                <div style={{ color: TEXT, fontSize: 12, lineHeight: 1.55 }}>{ai.summary}</div>
-                {ai.primebook_angle && <div style={{ color: TEXT, fontSize: 11.5, lineHeight: 1.5 }}><b style={{ color: GOLD }}>Primebook angle:</b> {ai.primebook_angle}</div>}
+                <div style={{ color: TEXT, fontSize: 12, lineHeight: 1.55 }}>{toINR(ai.summary)}</div>
+                {(ai.points || []).length > 0 && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 2 }}>
+                    {ai.points.map((pt, i) => (
+                      <div key={i} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+                        <span style={{ width: 5, height: 5, borderRadius: "50%", background: GOLD, flexShrink: 0, marginTop: 6 }} />
+                        <span style={{ color: TEXT, fontSize: 12, lineHeight: 1.5 }}>{toINR(pt)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {ai.primebook_angle && <div style={{ color: TEXT, fontSize: 11.5, lineHeight: 1.5, marginTop: 2 }}><b style={{ color: GOLD }}>Primebook angle:</b> {toINR(ai.primebook_angle)}</div>}
               </div>
             )}
         </div>
@@ -81,8 +101,8 @@ function ArticleCard({ a }) {
           {a.image && <img src={a.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} onError={e => e.target.style.display = "none"} />}
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", lineHeight: 1.4, marginBottom: 5 }}>{a.title}</div>
-          <div style={{ fontSize: 12, color: TEXT, lineHeight: 1.5, marginBottom: 8, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{a.description}</div>
+          <div style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", lineHeight: 1.4, marginBottom: 5 }}>{toINR(a.title)}</div>
+          <div style={{ fontSize: 12, color: TEXT, lineHeight: 1.5, marginBottom: 8, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{toINR(a.description)}</div>
           <div style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 11, color: MUTED }}>
             <span style={{ background: `${brand?.color || GOLD}22`, color: brand?.color || GOLD, padding: "2px 8px", borderRadius: 4, fontWeight: 700, fontSize: 10 }}>{brand?.label || a.brand}</span>
             <span>{a.source}</span><span>{timeAgo(a.published_at)}</span>
@@ -107,7 +127,17 @@ function IntelligenceView() {
       {/* Executive summary */}
       <div style={{ ...card, borderColor: GOLD }}>
         <div style={{ ...label, color: GOLD }}>Executive summary</div>
-        <div style={{ color: "#e2e8f0", fontSize: 13, lineHeight: 1.6, marginTop: 8 }}>{d.executive_summary}</div>
+        <div style={{ color: "#e2e8f0", fontSize: 13, lineHeight: 1.6, marginTop: 8 }}>{toINR(d.executive_summary)}</div>
+        {(d.summary_points || []).length > 0 && (
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+            {d.summary_points.map((pt, i) => (
+              <div key={i} style={{ display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: GOLD, flexShrink: 0, marginTop: 6 }} />
+                <span style={{ color: TEXT, fontSize: 12.5, lineHeight: 1.55 }}>{toINR(pt)}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Sentiment + topics */}

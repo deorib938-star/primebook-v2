@@ -92,6 +92,29 @@ def clean_name(name):
         name = name.replace(word, "")
     return name.strip()
 
+# Model code (e.g. CX1400CKA, C223NA, 15ALC7) — usually sits AFTER the spec text.
+_MODEL_CODE_RE = re.compile(r'\b([A-Z]{1,3}\d{3,4}[A-Z0-9-]{0,6}|\d{2}[A-Z]{3}\d?)\b')
+
+def _extract_model_code(full_name):
+    if not full_name:
+        return ""
+    for tok in _MODEL_CODE_RE.findall(full_name):   # first qualifying = the primary model code
+        t = tok.strip('-').upper()
+        if len(t) < 4:
+            continue
+        if re.match(r'^N\d{2,4}$', t):          # chip like N4500
+            continue
+        if re.match(r'^\d{3,4}[UHGP]$', t):      # chip like 5500U
+            continue
+        return t
+    return ""
+
+def _chip_code(full_name):
+    """Processor chip identifier (e.g. 3250U, 7320U, N4500) to tell configs apart."""
+    m = re.search(r'\b(\d{4}[UHGP]|N\d{2,4})\b', (full_name or "").upper())
+    return m.group(1) if m else ""
+
+
 def is_similar(name1, name2, threshold=0.75):
     w1 = set(clean_name(name1).split())
     w2 = set(clean_name(name2).split())
@@ -111,7 +134,16 @@ def is_duplicate(p1, p2):
     # Must be same brand
     if p1.get("brand") != p2.get("brand"):
         return False
-    
+
+    # Different explicit model code or processor chip → definitely different products
+    n1, n2 = p1.get("name", ""), p2.get("name", "")
+    code1, code2 = _extract_model_code(n1), _extract_model_code(n2)
+    if code1 and code2 and code1 != code2:
+        return False
+    chip1, chip2 = _chip_code(n1), _chip_code(n2)
+    if chip1 and chip2 and chip1 != chip2:
+        return False
+
     # STRICT MATCH: shortened name + all key specs must match
     name1 = _shorten_for_dedup(p1.get("name", ""))
     name2 = _shorten_for_dedup(p2.get("name", ""))
@@ -717,6 +749,56 @@ def get_youtube_all_summary():
         results[brand_id] = b.get("tabs", {}).get("videos_latest", [])[:8]
     return results
 
+# ================================================================
+# Persistent disk-backed AI cache.
+# Every Groq/AI analysis result is written to ai_cache.json so it
+# survives server restarts (Render cold starts) and can be committed
+# and pushed to live. Results are served from disk UNTIL an explicit
+# refresh / regenerate, so the live server never re-hits the rate-
+# limited AI API on its own. Regenerate locally, then push the file.
+# ================================================================
+AI_CACHE_FILE = "ai_cache.json"
+try:
+    with open(AI_CACHE_FILE, "r", encoding="utf-8") as _aicf:
+        _AI_STORE = json.load(_aicf)
+except Exception:
+    _AI_STORE = {}
+
+
+def _ai_store_flush():
+    try:
+        tmp = AI_CACHE_FILE + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as f:
+            json.dump(_AI_STORE, f, ensure_ascii=False)
+        os.replace(tmp, AI_CACHE_FILE)
+    except Exception as e:
+        print("ai_cache flush failed:", e)
+
+
+def _ai_get(ns, key="_"):
+    """Cached AI result (served until an explicit refresh) or None."""
+    e = _AI_STORE.get(ns, {}).get(str(key))
+    return e.get("result") if e else None
+
+
+def _ai_set(ns, result, key="_"):
+    _AI_STORE.setdefault(ns, {})[str(key)] = {
+        "result": result, "time": datetime.now().isoformat()}
+    _ai_store_flush()
+
+
+@app.get("/ai-cache/status")
+def ai_cache_status():
+    """What AI analysis is currently cached on disk (for debugging / ops)."""
+    out = {}
+    for ns, entries in _AI_STORE.items():
+        times = [v.get("time", "") for v in entries.values() if isinstance(v, dict)]
+        out[ns] = {"entries": len(entries),
+                   "keys": list(entries.keys())[:30],
+                   "newest": max(times) if times else None}
+    return {"file": AI_CACHE_FILE, "namespaces": out}
+
+
 AI_ANALYSIS_CACHE = {}
 AI_ANALYSIS_CACHE_TIME = None
 
@@ -1287,6 +1369,16 @@ def _shorten_model_name(full_name, brand):
     
     return shortened if shortened else full_name[:30]
 
+
+def _display_name(full_name, brand):
+    """Display name = short model name + its model code (so different configs of the
+    same series read as distinct products instead of identical duplicates)."""
+    base = _shorten_model_name(full_name, brand).rstrip(" ,.-")
+    code = _extract_model_code(full_name)
+    if code and code.lower() not in base.lower():
+        return f"{base} {code}"
+    return base
+
 # ================================
 # ROUTE 1: Price table (all brands or one brand, includes Primebook)
 # ================================
@@ -1424,7 +1516,7 @@ def get_price_table(brand: str = "all"):
             rows.append({
                 "brand":        brand_label,
                 "is_our_brand": False,
-                "name":         _shorten_model_name(m.get("name", "Unknown"), brand_label),
+                "name":         _display_name(m.get("name", "Unknown"), brand_label),
                 "official":     0,
                 "amazon":       amazon_price,
                 "flipkart":     flipkart_price,
@@ -2100,7 +2192,7 @@ def youtube_analytics_brand(brand_id: str):
 VIDEO_ANALYSIS_CACHE = {}
 
 @app.get("/youtube/video-analysis/{brand_id}/{video_id}")
-async def youtube_video_analysis(brand_id: str, video_id: str, context: str = Query(default="top")):
+async def youtube_video_analysis(brand_id: str, video_id: str, context: str = Query(default="top"), refresh: bool = Query(default=False)):
     brand_id = brand_id.lower()
     context  = "latest" if context == "latest" else "top"
     b = _brand_cache(brand_id)
@@ -2111,9 +2203,10 @@ async def youtube_video_analysis(brand_id: str, video_id: str, context: str = Qu
         return {"error": "Video not found"}
 
     ckey = f"{video_id}:{context}"
-    cached = VIDEO_ANALYSIS_CACHE.get(ckey)
-    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 168:
-        return cached["result"]
+    if not refresh:
+        hit = _ai_get("video_analysis", ckey)
+        if hit is not None:
+            return hit
 
     is_ours    = brand_id == "primebook"
     brand_name = b.get("stats", {}).get("name", brand_id)
@@ -2171,7 +2264,7 @@ Return ONLY this JSON (no markdown, no apostrophes inside strings):
     result = await _groq_json(prompt, 1200)
     if "error" not in result:
         result["action_label"] = action_label
-        VIDEO_ANALYSIS_CACHE[ckey] = {"result": result, "time": datetime.now()}
+        _ai_set("video_analysis", result, ckey)
     return result
 
 
@@ -2210,12 +2303,12 @@ async def _groq_json(prompt: str, max_tokens: int = 2500, temperature: float = 0
 CONTENT_STRATEGY_CACHE = {}
 
 @app.get("/youtube/content-strategy")
-async def youtube_content_strategy():
+async def youtube_content_strategy(refresh: bool = Query(default=False)):
     """AI content-strategy report: title/format patterns, topic clusters, gaps, SWOT, ideas."""
-    global CONTENT_STRATEGY_CACHE
-    c = CONTENT_STRATEGY_CACHE
-    if c.get("result") and c.get("time") and (datetime.now() - c["time"]).total_seconds() / 3600 < 24:
-        return c["result"]
+    if not refresh:
+        hit = _ai_get("yt_content_strategy")
+        if hit is not None:
+            return hit
 
     cache  = _load_cache()
     brands = cache.get("brands", {})
@@ -2270,7 +2363,7 @@ Give 4-5 items in each array and 6 content_ideas. Base everything on the data ab
 
     result = await _groq_json(prompt, 3200)
     if "error" not in result:
-        CONTENT_STRATEGY_CACHE = {"result": result, "time": datetime.now()}
+        _ai_set("yt_content_strategy", result)
     return result
 
 
@@ -2353,7 +2446,7 @@ def _load_yt_comments() -> dict:
 SENTIMENT_CACHE = {}
 
 @app.get("/youtube/sentiment/{brand_id}")
-async def youtube_sentiment(brand_id: str):
+async def youtube_sentiment(brand_id: str, refresh: bool = Query(default=False)):
     brand_id = brand_id.lower()
     data = _load_yt_comments()
     bc   = (data.get("brands", {}) or {}).get(brand_id) if data else None
@@ -2361,9 +2454,10 @@ async def youtube_sentiment(brand_id: str):
         return {"available": False,
                 "message": "No comments collected yet. Run: python youtube_comments_builder.py"}
 
-    cached = SENTIMENT_CACHE.get(brand_id)
-    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 24:
-        return cached["result"]
+    if not refresh:
+        hit = _ai_get("sentiment", brand_id)
+        if hit is not None:
+            return hit
 
     comments = bc["comments"][:120]
     listing  = "\n".join(f"- {c}" for c in comments)
@@ -2388,7 +2482,7 @@ Percentages must sum to 100. Give 3-5 pain_points, 3-4 praise, 4-5 themes."""
         result["available"] = True
         result["sample_size"] = len(comments)
         result["sampled_videos"] = bc.get("sampled_videos", 0)
-        SENTIMENT_CACHE[brand_id] = {"result": result, "time": datetime.now()}
+        _ai_set("sentiment", result, brand_id)
     return result
 
     
@@ -2461,11 +2555,11 @@ IG_CONTENT_CACHE = {}
 
 
 @app.get("/instagram/content-strategy")
-async def instagram_content_strategy():
-    global IG_CONTENT_CACHE
-    c = IG_CONTENT_CACHE
-    if c.get("result") and c.get("time") and (datetime.now() - c["time"]).total_seconds() / 3600 < 24:
-        return c["result"]
+async def instagram_content_strategy(refresh: bool = Query(default=False)):
+    if not refresh:
+        hit = _ai_get("ig_content_strategy")
+        if hit is not None:
+            return hit
 
     cache = _load_instagram_cache()
     brands = cache.get("brands", {})
@@ -2507,7 +2601,7 @@ Give 4-5 items in each array and 6 content_ideas. Base everything on the data ab
 
     result = await _groq_json(prompt, 3000)
     if "error" not in result:
-        IG_CONTENT_CACHE = {"result": result, "time": datetime.now()}
+        _ai_set("ig_content_strategy", result)
     return result
 
 
@@ -2515,7 +2609,7 @@ IG_POST_CACHE = {}
 
 
 @app.get("/instagram/post-analysis/{brand_id}")
-async def instagram_post_analysis(brand_id: str, i: int = Query(default=0)):
+async def instagram_post_analysis(brand_id: str, i: int = Query(default=0), refresh: bool = Query(default=False)):
     brand_id = brand_id.lower()
     bc = _load_instagram_cache().get("brands", {}).get(brand_id)
     if not bc:
@@ -2526,9 +2620,10 @@ async def instagram_post_analysis(brand_id: str, i: int = Query(default=0)):
     p = posts[i]
 
     ckey = f"{brand_id}:{i}"
-    cached = IG_POST_CACHE.get(ckey)
-    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 168:
-        return cached["result"]
+    if not refresh:
+        hit = _ai_get("ig_post", ckey)
+        if hit is not None:
+            return hit
 
     is_ours = brand_id == "primebook"
     name = bc.get("name", brand_id)
@@ -2569,7 +2664,7 @@ Return ONLY this JSON (no markdown, no apostrophes inside strings):
     result = await _groq_json(prompt, 1100)
     if "error" not in result:
         result["action_label"] = action_label
-        IG_POST_CACHE[ckey] = {"result": result, "time": datetime.now()}
+        _ai_set("ig_post", result, ckey)
     return result
 
 
@@ -2692,7 +2787,7 @@ Age pcts must sum to 100. Give 4-5 profession groups with pcts summing to about 
 YT_AUDIENCE_CACHE = {}
 
 @app.get("/youtube/audience/{brand_id}")
-async def youtube_audience(brand_id: str):
+async def youtube_audience(brand_id: str, refresh: bool = Query(default=False)):
     brand_id = brand_id.lower()
     b = _brand_cache(brand_id)
     if not b:
@@ -2701,10 +2796,8 @@ async def youtube_audience(brand_id: str):
     content = _yt_content_breakdown(vids)          # data-driven
     most_viewed_type = content[0]["type"] if content else None
 
-    cached = YT_AUDIENCE_CACHE.get(brand_id)
-    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 24:
-        demo = cached["result"]
-    else:
+    demo = None if refresh else _ai_get("yt_audience", brand_id)
+    if demo is None:
         name = b.get("stats", {}).get("name", brand_id)
         top_titles = " | ".join((v.get("title") or "")[:55] for v in sorted(vids, key=lambda v: v.get("views", 0), reverse=True)[:10])
         signal = (f"Channel: {name}. Subscribers: {b.get('stats', {}).get('subscribers', 0):,}. "
@@ -2712,7 +2805,7 @@ async def youtube_audience(brand_id: str):
                   f"Content types by avg views: " + ", ".join(f"{c['type']} ({c['avg_views']:,})" for c in content[:6]))
         demo = await _demographics(name, "YouTube", signal)
         if "error" not in demo:
-            YT_AUDIENCE_CACHE[brand_id] = {"result": demo, "time": datetime.now()}
+            _ai_set("yt_audience", demo, brand_id)
 
     return {"brand_id": brand_id, "estimated": True,
             "content_types": content, "most_viewed_type": most_viewed_type,
@@ -2722,7 +2815,7 @@ async def youtube_audience(brand_id: str):
 IG_AUDIENCE_CACHE = {}
 
 @app.get("/instagram/audience/{brand_id}")
-async def instagram_audience(brand_id: str):
+async def instagram_audience(brand_id: str, refresh: bool = Query(default=False)):
     brand_id = brand_id.lower()
     bc = _load_instagram_cache().get("brands", {}).get(brand_id)
     if not bc:
@@ -2736,10 +2829,8 @@ async def instagram_audience(brand_id: str):
         {"type": "Static / Carousel", "count": static, "share_pct": round(static / tot * 100)},
     ]
 
-    cached = IG_AUDIENCE_CACHE.get(brand_id)
-    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 24:
-        demo = cached["result"]
-    else:
+    demo = None if refresh else _ai_get("ig_audience", brand_id)
+    if demo is None:
         name = bc.get("name", brand_id)
         caps = [(p.get("alt") or "").replace("\n", " ")[:70] for p in posts][:6]
         signal = (f"Account: {name}. Followers: {bc.get('stats', {}).get('followers', 0):,}. "
@@ -2747,7 +2838,7 @@ async def instagram_audience(brand_id: str):
                   f"Recent captions: " + " | ".join(caps))
         demo = await _demographics(name, "Instagram", signal)
         if "error" not in demo:
-            IG_AUDIENCE_CACHE[brand_id] = {"result": demo, "time": datetime.now()}
+            _ai_set("ig_audience", demo, brand_id)
 
     return {"brand_id": brand_id, "estimated": True,
             "content_mix": content_mix, "demographics": demo}
@@ -2761,7 +2852,7 @@ CONTENT_AI_CACHE = {}
 
 
 @app.get("/youtube/content-ai")
-async def youtube_content_ai():
+async def youtube_content_ai(refresh: bool = Query(default=False)):
     cache = _load_cache()
     brands = cache.get("brands", {})
     if not brands:
@@ -2795,10 +2886,8 @@ async def youtube_content_ai():
             verdict = "lag"
         rows.append({"type": t, "primebook_avg": pb, "competitor_avg": comp_avg, "verdict": verdict})
 
-    cached = CONTENT_AI_CACHE.get("result")
-    if cached and (datetime.now() - CONTENT_AI_CACHE.get("time", datetime.min)).total_seconds() / 3600 < 24:
-        ai = cached
-    else:
+    ai = None if refresh else _ai_get("yt_content_ai")
+    if ai is None:
         table = "\n".join(
             f"- {r['type']}: Primebook avg {r['primebook_avg'] if r['primebook_avg'] is not None else 'DOES NOT POST'} views | "
             f"Competitors avg {r['competitor_avg'] if r['competitor_avg'] is not None else 'n/a'} views ({r['verdict']})"
@@ -2819,8 +2908,7 @@ Return ONLY this JSON (no markdown, no apostrophes inside strings):
 Include every content type from the list."""
         ai = await _groq_json(prompt, 2600)
         if "error" not in ai:
-            CONTENT_AI_CACHE["result"] = ai
-            CONTENT_AI_CACHE["time"] = datetime.now()
+            _ai_set("yt_content_ai", ai)
 
     ai_by_type = {x.get("type"): x for x in (ai.get("by_type", []) if isinstance(ai, dict) else [])}
     merged = [{**r, "why": ai_by_type.get(r["type"], {}).get("why", ""),
@@ -2850,15 +2938,15 @@ def _news_articles():
 
 
 @app.get("/news/ai/intelligence")
-async def news_intelligence():
+async def news_intelligence(refresh: bool = Query(default=False)):
     arts = _news_articles()
     if not arts:
         return {"error": "No news cached. Hit /news/refresh first."}
 
-    fp = "|".join(sorted(a.get("title", "") for a in arts))
-    c = NEWS_INTEL_CACHE
-    if c["result"] and c["fp"] == fp and c["time"] and (datetime.now() - c["time"]).total_seconds() / 3600 < 24:
-        return c["result"]
+    if not refresh:
+        hit = _ai_get("news_intel")
+        if hit is not None:
+            return hit
 
     now = datetime.now(timezone.utc)
     def recent48(a):
@@ -2883,7 +2971,8 @@ Below is recent laptop news for 5 competitors (HP, Lenovo, Acer, Dell, Asus). Ea
 
 Analyze across all brands and return ONLY this JSON (no markdown, no apostrophes inside strings):
 {{
-  "executive_summary": "one tight paragraph summarizing the overall competitor news landscape and what matters for Primebook",
+  "executive_summary": "2 sentence lead framing the overall competitor news landscape",
+  "summary_points": ["8 to 10 bullet points, each 1 specific sentence covering a distinct development across the brands (launches, pricing, campaigns, leadership, momentum) and what it means for Primebook"],
   "sentiment": {{"positive": <int %>, "neutral": <int %>, "negative": <int %>, "label": "Positive|Mixed|Negative"}},
   "topics": [
     {{"topic": "Product", "sentiment": "positive|neutral|negative", "note": "1 sentence"}},
@@ -2896,25 +2985,26 @@ Analyze across all brands and return ONLY this JSON (no markdown, no apostrophes
   "emerging_trends": [{{"trend": "2-4 words", "brands": ["HP", "Dell"], "note": "1 sentence"}}],
   "anomalies": [{{"brand": "brand name", "signal": "negative spike|volume spike", "detail": "1 sentence, only if genuinely notable"}}]
 }}
-Sentiment percentages must sum to 100. Give one positioning entry per brand, 3-5 innovation_signals, 3-5 emerging_trends. Only include anomalies that are real; use an empty array if none."""
+Sentiment percentages must sum to 100. summary_points MUST have 8-10 bullets. Give one positioning entry per brand, 3-5 innovation_signals, 3-5 emerging_trends. Only include anomalies that are real; use an empty array if none."""
 
-    result = await _groq_json(prompt, 2200)
+    result = await _groq_json(prompt, 2800)
     if "error" not in result:
-        NEWS_INTEL_CACHE.update({"result": result, "fp": fp, "time": datetime.now()})
+        _ai_set("news_intel", result)
     return result
 
 
 @app.get("/news/ai/article")
-async def news_article_ai(brand: str, i: int = 0):
+async def news_article_ai(brand: str, i: int = 0, refresh: bool = Query(default=False)):
     brand = brand.lower()
     arr = _load_news_cache().get(brand, []) or []
     if i < 0 or i >= len(arr):
         return {"error": "Article not found"}
     a = arr[i]
     key = a.get("url") or f"{brand}:{i}"
-    cached = NEWS_ARTICLE_CACHE.get(key)
-    if cached and (datetime.now() - cached["time"]).total_seconds() / 3600 < 168:
-        return cached["result"]
+    if not refresh:
+        hit = _ai_get("news_article", key)
+        if hit is not None:
+            return hit
 
     prompt = f"""You are a news analyst for Primebook India (Android 15 budget laptops).
 
@@ -2926,16 +3016,18 @@ Snippet: "{a.get('description','')}"
 (Only the headline and snippet are available, not the full article — infer reasonably.)
 Return ONLY this JSON (no markdown, no apostrophes inside strings):
 {{
-  "summary": "one-paragraph executive summary of what this article is about",
+  "summary": "1 sentence lead on what this article is about",
+  "points": ["4 to 5 bullet points, each 1 sentence, covering the key facts (what, who, price/offer, why it matters)"],
   "sentiment": "Positive|Neutral|Negative",
   "emotion": "1-2 word dominant emotion (e.g. optimistic, concern, excitement, criticism)",
   "topic": "Product|Leadership|Finance|Market|Other",
   "primebook_angle": "1 sentence on what this means for Primebook"
-}}"""
+}}
+points MUST have 4-5 bullets."""
 
-    result = await _groq_json(prompt, 900)
+    result = await _groq_json(prompt, 1100)
     if "error" not in result:
-        NEWS_ARTICLE_CACHE[key] = {"result": result, "time": datetime.now()}
+        _ai_set("news_article", result, key)
     return result
 
 
@@ -3264,3 +3356,127 @@ def price_history_record(force: bool = Query(default=True)):
 @app.get("/price/history-backfill")
 def price_history_backfill(weeks: int = Query(default=26)):
     return _backfill_price_history(weeks)
+
+
+# ================================================================
+# DEEP COMPETITOR REPORT — expert CI analyst framework, per competitor.
+# Synthesizes Overview + News + Social (YouTube/IG) + Pricing.
+# ================================================================
+RES_COMPETITOR_CACHE = {}
+
+
+def _competitor_context(brand_id):
+    c = competitors.get(brand_id, {})
+    name = c.get("name", brand_id)
+    yt = youtube_analytics_all().get("brands", {}).get(brand_id, {})
+    ig = instagram_analytics_all().get("brands", {}).get(brand_id, {})
+    b = _brand_cache(brand_id)
+    top_titles = [v.get("title", "")[:55] for v in _yt_all_videos(b)][:6] if b else []
+    news = [a for a in _news_articles() if a["brand_id"] == brand_id][:6]
+
+    try:
+        rows = get_price_table("all").get("rows", [])
+    except Exception:
+        rows = []
+    theirs = [r for r in rows if (r.get("brand") or "").lower() == brand_id][:8]
+    price_lines = [f"{(r.get('name') or '')[:34]} — Rs.{r.get('amazon') or r.get('flipkart') or 0} "
+                   f"({r.get('ram_gb')}GB/{r.get('storage_gb')}GB, {r.get('processor')})" for r in theirs]
+
+    ctx = f"""COMPETITOR: {name}
+Overview: market share {c.get('market_share', 'n/a')}, segment {c.get('price_range', 'n/a')}, OS {', '.join(c.get('os', []) or [])}, popular models {', '.join(c.get('popular_models', []) or [])[:120]}.
+YouTube: {yt.get('subscribers', 0):,} subs, engagement {yt.get('engagement_rate', '?')}%, ~{yt.get('uploads_per_week', '?')} uploads/wk, {yt.get('shorts_share', '?')}% shorts.
+  Top videos: {' | '.join(top_titles)}
+Instagram: {ig.get('followers', 0):,} followers, {ig.get('reel_share', '?')}% reels, {ig.get('followers_per_post', '?')} followers/post.
+Recent news: {' | '.join(a.get('title', '')[:60] for a in news)}
+Their pricing (real, current):
+  {chr(10).join('  ' + p for p in price_lines)}
+Primebook (us): Neo Rs.19,990 / Pro Rs.25,990 / Max Rs.27,990 (Android 15, Rs.10-40k segment)."""
+    return name, ctx
+
+
+@app.get("/research/competitor/{brand_id}")
+async def research_competitor(brand_id: str, refresh: bool = Query(default=False)):
+    brand_id = brand_id.lower()
+    if brand_id not in competitors:
+        return {"error": "Unknown competitor"}
+    if not refresh:
+        hit = _ai_get("research_competitor", brand_id)
+        if hit is not None:
+            return hit
+
+    name, ctx = _competitor_context(brand_id)
+    today = datetime.now(timezone.utc).date().isoformat()
+
+    prompt = f"""You are an expert Competitive Intelligence Analyst with 15+ years of experience delivering deep, objective, actionable analysis. Analyze the competitor for Primebook India (our company; Android 15 budget laptops, Rs.10,000-40,000).
+
+DATA (Overview + News + Social + Pricing):
+{ctx}
+
+Current date: {today}
+Competitor: {name}
+
+Be objective and data-driven — never invent facts. Highlight cause-and-effect. Flag data gaps / low-confidence areas. Use the data above.
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "executive_summary": "2-4 sentences on overall health and momentum",
+  "key_insights": ["3-5 most important insights right now"],
+  "snapshot": {{"growth": "1 line", "pricing": "1 line", "sentiment": "1 line", "visibility": "1 line", "positioning": "1 line on current strategic positioning"}},
+  "market_pricing": "pricing strategy effectiveness; competitive edge or vulnerability vs Primebook (2-3 sentences)",
+  "narrative_sentiment": "how public/media perceive them; emerging crises or tailwinds (2-3 sentences)",
+  "content_audience": "what is working or not on YouTube/Instagram (2-3 sentences)",
+  "swot": {{"strengths": [".."], "weaknesses": [".."], "opportunities": [".."], "threats": [".."]}},
+  "cross_insights": ["connections between pricing moves, news and social reaction — cause and effect"],
+  "forward": {{"next_moves": ["likely next moves or risks"], "best_case": "best case for THEM in 3-6 months", "worst_case": "worst case for THEM in 3-6 months"}},
+  "recommendations": [{{"action": "what Primebook should do", "stance": "attack|defend|copy|differentiate", "priority": "High|Medium|Low", "rationale": "why"}}],
+  "data_gaps": ["areas with missing or low-confidence data"]
+}}
+Give 3-5 key_insights, 2-3 bullets per SWOT quadrant, 3-4 cross_insights, and 3-5 recommendations (most impactful first)."""
+
+    result = await _groq_json(prompt, 3000)
+    if "error" not in result:
+        result["competitor"] = name
+        result["generated"] = today
+        _ai_set("research_competitor", result, brand_id)
+    return result
+
+
+# ================================================================
+# MARKET-WIDE SUMMARY — all competitors synthesised into one overview.
+# ================================================================
+RES_ALL_CACHE = {}
+
+
+@app.get("/research/all")
+async def research_all(refresh: bool = Query(default=False)):
+    if not refresh:
+        hit = _ai_get("research_all")
+        if hit is not None:
+            return hit
+
+    today = datetime.now(timezone.utc).date().isoformat()
+    prompt = f"""You are an expert Competitive Intelligence Analyst with 15+ years of experience. Give an objective, data-driven MARKET-WIDE summary across ALL competitors for Primebook India (our company; Android 15 budget laptops, Rs.10,000-40,000).
+
+DATA (all brands — YouTube + Instagram + recent news):
+{_research_ctx()}
+
+Current date: {today}
+Be objective — never invent facts. Highlight cause-and-effect. Flag data gaps.
+
+Return ONLY this JSON (no markdown, no apostrophes inside strings):
+{{
+  "executive_summary": "3-4 sentences on the overall competitive landscape right now",
+  "key_insights": ["5 most important market-wide insights"],
+  "brand_takes": [{{"brand": "HP", "take": "1-2 sentences on where they stand and their momentum"}}],
+  "market_trends": ["emerging trends across competitors"],
+  "primebook_position": "2-3 sentences on where Primebook sits vs the field and its biggest gap and edge",
+  "recommendations": [{{"action": "what Primebook should do market-wide", "stance": "attack|defend|copy|differentiate", "priority": "High|Medium|Low", "rationale": "why"}}],
+  "data_gaps": ["missing or low-confidence areas"]
+}}
+Give one brand_take for each of HP, Lenovo, Acer, Dell, Asus; 5 key_insights; 3-5 market_trends; 4-5 recommendations (most impactful first)."""
+
+    result = await _groq_json(prompt, 2800)
+    if "error" not in result:
+        result["generated"] = today
+        _ai_set("research_all", result)
+    return result

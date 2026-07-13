@@ -36,7 +36,7 @@ CACHE_FILES = [
     "youtube_cache.json", "youtube_comments.json", "youtube_history.json",
     "amazon_cache.json", "flipkart_cache.json",
     "instagram_cache.json", "instagram_history.json", "news_cache.json",
-    "price_history.json",
+    "price_history.json", "ai_cache.json",
 ]
 
 
@@ -82,6 +82,58 @@ def refresh_news_and_snapshots():
             log(f"FAILED {fn_name}: {e}")
 
 
+def refresh_ai_cache():
+    """Regenerate all page-level AI analysis into ai_cache.json by calling the
+    app's own endpoint functions with refresh=True. Paced to respect Groq's
+    token-per-minute limit. Skipped if AI_REFRESH=0."""
+    if os.environ.get("AI_REFRESH", "1") != "1":
+        log("AI_REFRESH=0 — skipping AI cache regeneration")
+        return
+    try:
+        import main
+    except Exception as e:
+        log(f"ERROR importing main for AI refresh: {e}")
+        return
+
+    delay = float(os.environ.get("AI_REFRESH_DELAY", "15"))
+    competitors = ["hp", "lenovo", "acer", "dell", "asus"]
+    all_brands = ["primebook"] + competitors
+
+    # (label, coroutine factory) — each returns a fresh coroutine when called
+    jobs = [("research/all", lambda: main.research_all(refresh=True))]
+    jobs += [(f"research/{c}", (lambda c=c: main.research_competitor(c, refresh=True))) for c in competitors]
+    jobs += [
+        ("news/intelligence", lambda: main.news_intelligence(refresh=True)),
+        ("youtube/content-strategy", lambda: main.youtube_content_strategy(refresh=True)),
+        ("youtube/content-ai", lambda: main.youtube_content_ai(refresh=True)),
+        ("instagram/content-strategy", lambda: main.instagram_content_strategy(refresh=True)),
+    ]
+    jobs += [(f"youtube/sentiment/{b}", (lambda b=b: main.youtube_sentiment(b, refresh=True))) for b in competitors]
+    jobs += [(f"youtube/audience/{b}", (lambda b=b: main.youtube_audience(b, refresh=True))) for b in all_brands]
+    jobs += [(f"instagram/audience/{b}", (lambda b=b: main.instagram_audience(b, refresh=True))) for b in all_brands]
+
+    async def run_all():
+        ok = 0
+        for n, (label, make) in enumerate(jobs, 1):
+            try:
+                res = await make()
+                if isinstance(res, dict) and res.get("error"):
+                    log(f"AI [{n}/{len(jobs)}] {label} -> error: {str(res.get('error'))[:60]}")
+                else:
+                    ok += 1
+                    log(f"AI [{n}/{len(jobs)}] {label} OK")
+            except Exception as e:
+                log(f"AI [{n}/{len(jobs)}] {label} FAILED: {str(e)[:80]}")
+            if n < len(jobs):
+                await asyncio.sleep(delay)
+        log(f"AI cache regenerated: {ok}/{len(jobs)}")
+
+    try:
+        asyncio.run(run_all())
+    except Exception as e:
+        log(f"AI refresh loop error: {e}")
+
+
 def git_push():
     repo = os.path.dirname(os.getcwd())  # project root (parent of backend/)
     def git(*args):
@@ -109,6 +161,7 @@ def main_run():
     log("========== DAILY REFRESH START ==========")
     results = {name: run_builder(name, script, args) for name, script, args in BUILDERS}
     refresh_news_and_snapshots()
+    refresh_ai_cache()
     if os.environ.get("AUTO_PUSH", "0") == "1":
         git_push()
     ok = sum(1 for v in results.values() if v)
