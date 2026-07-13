@@ -98,6 +98,25 @@
                 "source": "Amazon"
             },
             {
+                "name": "HP 15 (2025), AMD Athlon 7120U Dual Core - (8 GB/256 GB SSD/AMD Radeon Graphics/Windows 11 Home) Thi",
+                "price_inr": 37999,
+                "processor": "Athlon",
+                "ram_gb": 8,
+                "storage_gb": 256,
+                "display_inch": 15.6,
+                "display_quality": "HD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 3.6,
+                "reviews": 27,
+                "url": "https://www.amazon.in/dp/B0FKM37XT7",
+                "brand": "HP",
+                "source": "Amazon"
+            },
+            {
                 "name": "HP 15 (2025), AMD Athlon 7120U Dual Core - (8 GB/256 GB SSD/AMD Radeon Graphics/Windows 11 Pro) Thin",
                 "price_inr": 37999,
                 "processor": "Athlon",
@@ -132,25 +151,6 @@
                 "rating": 2.8,
                 "reviews": 11,
                 "url": "https://www.amazon.in/dp/B0CGM8YD5J",
-                "brand": "HP",
-                "source": "Amazon"
-            },
-            {
-                "name": "HP 255 Notebook, AMD Athlon Silver 7120U,8GB DDR4, 256GB SSD, 15.6-inch(39.6cm),Anti-Glare, HD Lapto",
-                "price_inr": 37999,
-                "processor": "Athlon",
-                "ram_gb": 8,
-                "storage_gb": 256,
-                "display_inch": 15.6,
-                "display_quality": "HD",
-                "battery_hours": 7,
-                "webcam": "720p",
-                "keyboard_backlit": false,
-                "os": "Windows 11",
-                "weight_kg": 1.7,
-                "rating": 1.0,
-                "reviews": 2,
-                "url": "https://www.amazon.in/dp/B0DV97FSGN",
                 "brand": "HP",
                 "source": "Amazon"
             }
@@ -643,5 +643,5 @@
         ],
         "total": 2
     },
-    "last_updated": "2026-07-13 11:10"
+    "last_updated": "2026-07-13 12:35"
 }
