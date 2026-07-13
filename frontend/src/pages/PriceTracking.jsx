@@ -229,74 +229,105 @@ function FilterSidebar({ filters, setFilters, counts, onReset }) {
   );
 }
 
-function InteractiveHistoryChart({ months, models }) {
+const MONTH_ABBR = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function fmtDateLabel(iso) {
+  if (!iso || iso.indexOf("-") < 0) return iso || "";
+  const p = iso.split("-");
+  return `${parseInt(p[2], 10)} ${MONTH_ABBR[parseInt(p[1], 10) - 1]}`;
+}
+
+function InteractiveHistoryChart({ months, models, realFrom }) {
   const canvasRef = useRef(null);
   const chartRef  = useRef(null);
   const [activeModel, setActiveModel] = useState(null);
 
   function toggleModel(i) { setActiveModel(prev => (prev === i ? null : i)); }
 
-  function buildDatasets() {
-    return models.map((m, i) => {
-      const color = MODEL_COLORS[i % MODEL_COLORS.length];
-      const isActive = activeModel === null || activeModel === i;
-      return {
-        label: m.name, data: m.history,
-        borderColor: isActive ? color : color + "22",
-        pointBackgroundColor: isActive ? color : color + "22",
-        borderWidth: activeModel === i ? 4 : 2,
-        pointRadius: activeModel === i ? 5 : 3,
-        pointHoverRadius: 7, pointHitRadius: 15, tension: 0.3, fill: false,
-        order: activeModel === i ? 0 : 1,
-      };
-    });
-  }
+  const realIdx = realFrom ? months.indexOf(realFrom) : months.length - 1;
 
   useEffect(() => {
     if (!canvasRef.current || !months || months.length === 0) return;
     if (chartRef.current) chartRef.current.destroy();
+
+    // Auto-scale Y to the visible models so small price swings are readable.
+    const visible = models.filter((_, i) => activeModel === null || activeModel === i);
+    const vals = visible.flatMap(m => m.history).filter(v => v != null && v > 0);
+    let yMin = PRICE_MIN, yMax = PRICE_MAX;
+    if (vals.length) {
+      const lo = Math.min(...vals), hi = Math.max(...vals);
+      const pad = Math.max((hi - lo) * 0.15, 1500);
+      yMin = Math.max(0, Math.floor((lo - pad) / 1000) * 1000);
+      yMax = Math.ceil((hi + pad) / 1000) * 1000;
+    }
+
+    const datasets = models.map((m, i) => {
+      const color = MODEL_COLORS[i % MODEL_COLORS.length];
+      const isActive = activeModel === null || activeModel === i;
+      const dim = !isActive;
+      return {
+        label: m.name, data: m.history,
+        borderColor: dim ? color + "22" : color,
+        backgroundColor: color + "18",
+        pointBackgroundColor: dim ? color + "22" : color,
+        borderWidth: activeModel === i ? 3 : 2,
+        pointRadius: ctx => (ctx.dataIndex >= realIdx ? (activeModel === i ? 5 : 3) : 0),
+        pointHoverRadius: 6, pointHitRadius: 12, tension: 0.35,
+        fill: activeModel === i ? "start" : false,
+        order: activeModel === i ? 0 : 1,
+        // estimated portion (before the first real point) is dashed; real is solid
+        segment: { borderDash: ctx => (ctx.p0DataIndex >= realIdx ? undefined : [5, 4]) },
+      };
+    });
+
     try {
       chartRef.current = new ChartJS(canvasRef.current, {
         type: "line",
-        data: { labels: months, datasets: buildDatasets() },
+        data: { labels: months.map(fmtDateLabel), datasets },
         options: {
           responsive: true, maintainAspectRatio: false,
           interaction: { mode: "nearest", intersect: false },
-          onClick: (evt, elements, chartInstance) => {
-            const points = chartInstance.getElementsAtEventForMode(evt, "nearest", { intersect: false }, true);
-            if (points.length > 0) toggleModel(points[0].datasetIndex);
+          onClick: (evt, el, ci) => {
+            const pts = ci.getElementsAtEventForMode(evt, "nearest", { intersect: false }, true);
+            if (pts.length > 0) toggleModel(pts[0].datasetIndex);
           },
-          onHover: (evt, elements, chartInstance) => {
-            const points = chartInstance.getElementsAtEventForMode(evt, "nearest", { intersect: false }, true);
-            if (evt.native?.target) evt.native.target.style.cursor = points.length > 0 ? "pointer" : "default";
+          onHover: (evt, el, ci) => {
+            const pts = ci.getElementsAtEventForMode(evt, "nearest", { intersect: false }, true);
+            if (evt.native?.target) evt.native.target.style.cursor = pts.length > 0 ? "pointer" : "default";
           },
           plugins: {
             legend: { display: false },
-            tooltip: { callbacks: { label: c => " " + c.dataset.label + ": " + fmtRs(c.raw) } },
+            tooltip: {
+              backgroundColor: "#0f172a", borderColor: "#334155", borderWidth: 1, padding: 10,
+              titleColor: "#e2e8f0", bodyColor: "#cbd5e1",
+              callbacks: {
+                title: items => months[items[0].dataIndex] + (items[0].dataIndex >= realIdx ? "  (tracked)" : "  (estimated)"),
+                label: c => "  " + c.dataset.label + ": " + fmtRs(c.raw),
+              },
+            },
             zoom: {
               zoom: { wheel: { enabled: true }, pinch: { enabled: true }, mode: "xy" },
               pan: { enabled: true, mode: "xy" },
-              limits: { y: { min: PRICE_MIN, max: PRICE_MAX } },
+              limits: { y: { min: 0, max: PRICE_MAX * 1.5 } },
             },
           },
           scales: {
-            y: { min: PRICE_MIN, max: PRICE_MAX,
+            y: { min: yMin, max: yMax,
               ticks: { callback: v => "Rs." + (v / 1000).toFixed(0) + "K", font: { size: 11 }, color: "#64748b" },
-              grid: { color: "rgba(128,128,128,0.08)" } },
-            x: { ticks: { font: { size: 11 }, color: "#64748b" }, grid: { display: false } },
+              grid: { color: "rgba(148,163,184,0.08)" } },
+            x: { ticks: { font: { size: 10 }, color: "#64748b", maxRotation: 0, autoSkip: true, maxTicksLimit: 10 }, grid: { display: false } },
           },
         },
       });
     } catch (err) { console.error("Chart.js error:", err); }
     return () => { if (chartRef.current) chartRef.current.destroy(); };
-  }, [months, models, activeModel]);
+  }, [months, models, activeModel, realIdx]);
 
   return (
     <div>
       <div style={{ fontSize: 11, color: "#64748b", marginBottom: 8 }}>
-        Scroll to zoom · drag to pan · click a line or model name to isolate it
+        Scroll to zoom · drag to pan · click a line/chip to isolate · <span style={{ color: "#94a3b8" }}>dashed = estimated, solid = tracked</span>
       </div>
-      <div style={{ position: "relative", width: "100%", height: 320 }}>
+      <div style={{ position: "relative", width: "100%", height: 340 }}>
         <canvas ref={canvasRef} />
       </div>
       <div style={{ display: "flex", gap: 8, marginTop: 14, flexWrap: "wrap" }}>
@@ -304,10 +335,13 @@ function InteractiveHistoryChart({ months, models }) {
           const color = MODEL_COLORS[i % MODEL_COLORS.length];
           const isActive = activeModel === i;
           const isDimmed = activeModel !== null && activeModel !== i;
+          const hist = m.history.filter(v => v != null);
+          const latest = hist[hist.length - 1], first = hist[0];
+          const delta = (latest != null && first != null) ? latest - first : 0;
           return (
             <div key={m.name} onClick={() => toggleModel(i)} style={{
               display: "flex", alignItems: "center", gap: 6, fontSize: 11,
-              color: isActive ? "#f1f5f9" : "#64748b",
+              color: isActive ? "#f1f5f9" : "#94a3b8",
               cursor: "pointer", padding: "5px 10px", borderRadius: 20,
               border: `1px solid ${isActive ? "#475569" : "transparent"}`,
               background: isActive ? "#1e293b" : "transparent",
@@ -316,6 +350,8 @@ function InteractiveHistoryChart({ months, models }) {
             }}>
               <span style={{ width: 10, height: 10, borderRadius: "50%", background: color, flexShrink: 0 }} />
               {m.name}
+              {latest != null && <span style={{ color: "#e2e8f0", fontWeight: 600 }}>· {fmtRs(latest)}</span>}
+              {delta !== 0 && <span style={{ color: delta < 0 ? "#22c55e" : "#ef4444", fontSize: 10 }}>{delta < 0 ? "▼" : "▲"}{fmtRs(Math.abs(delta))?.replace("Rs.", "")}</span>}
             </div>
           );
         })}
@@ -345,6 +381,7 @@ export default function PriceTracking() {
   const [activeTab,      setActiveTab]      = useState("table");
   const [selectedBrands, setSelectedBrands] = useState(new Set()); // empty = all
   const [historyBrand,   setHistoryBrand]   = useState("primebook");
+  const [historyPlatform, setHistoryPlatform] = useState("flipkart");
   const [allRows,        setAllRows]        = useState([]);
   const [historyData,    setHistoryData]    = useState({ months: [], models: [] });
   const [alertsData,     setAlertsData]     = useState({ price_diff_alerts: [], new_products: [] });
@@ -375,11 +412,21 @@ export default function PriceTracking() {
   useEffect(() => {
     if (activeTab !== "history") return;
     setHistoryLoading(true);
-    axios.get(`${API}/price/history/${historyBrand}`)
+    axios.get(`${API}/price/history/${historyBrand}`, { params: { platform: historyPlatform } })
       .then(res => setHistoryData(res.data))
       .catch(() => setHistoryData({ months: [], models: [] }))
       .finally(() => setHistoryLoading(false));
-  }, [activeTab, historyBrand]);
+  }, [activeTab, historyBrand, historyPlatform]);
+
+  // Auto-pick the platform with more tracked models for the selected brand (once per brand).
+  const platformAdjusted = useRef({});
+  useEffect(() => {
+    const pc = historyData.platform_counts;
+    if (!pc || historyData.brand !== historyBrand || platformAdjusted.current[historyBrand]) return;
+    platformAdjusted.current[historyBrand] = true;
+    const richer = (pc.flipkart || 0) >= (pc.amazon || 0) ? "flipkart" : "amazon";
+    if (richer !== historyPlatform) setHistoryPlatform(richer);
+  }, [historyData, historyBrand]);
 
   useEffect(() => {
     if (activeTab !== "alerts") return;
@@ -653,17 +700,36 @@ export default function PriceTracking() {
                 </button>
               ))}
             </div>
+            <div style={{ display: "flex", gap: 8, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
+              <span style={{ fontSize: 11, color: "#64748b" }}>Platform:</span>
+              {[{ id: "amazon", label: "Amazon" }, { id: "flipkart", label: "Flipkart" }].map(p => (
+                <button key={p.id} className="pt-chip" onClick={() => { platformAdjusted.current[historyBrand] = true; setHistoryPlatform(p.id); }}
+                  style={historyPlatform === p.id ? { background: "#C9A84C", color: "#0f1117", borderColor: "#C9A84C" } : {}}>
+                  {p.label}
+                </button>
+              ))}
+            </div>
+            {(historyData.estimated_history || historyData.collecting) && (
+              <div style={{ background: "rgba(201,168,76,0.06)", border: "1px solid #C9A84C", borderRadius: 10, padding: "12px 16px", marginBottom: 14, display: "flex", gap: 10, alignItems: "flex-start" }}>
+                <Sparkles size={16} color="#C9A84C" style={{ flexShrink: 0, marginTop: 2 }} />
+                <div style={{ fontSize: 12, color: "#e2e8f0", lineHeight: 1.5 }}>
+                  <b style={{ color: "#C9A84C" }}>{historyData.estimated_history ? "Estimated history." : "Real price tracking has started."}</b> {historyData.message} New real prices append weekly.
+                </div>
+              </div>
+            )}
             <div className="pt-card">
               <div style={{ marginBottom: 8 }}>
-                <div style={{ fontSize: 14, fontWeight: 500, color: "#f1f5f9" }}>{BRAND_MAP[historyBrand]?.label} — All models</div>
-                <div style={{ fontSize: 12, color: "#64748b" }}>Last 6 months · price range fixed at Rs.0 – Rs.60K</div>
+                <div style={{ fontSize: 14, fontWeight: 500, color: "#f1f5f9" }}>{BRAND_MAP[historyBrand]?.label} — top models</div>
+                <div style={{ fontSize: 12, color: "#64748b" }}>
+                  Real tracked prices{historyData.dates?.length ? ` · ${historyData.dates.length} snapshot${historyData.dates.length > 1 ? "s" : ""}` : ""} · y-axis Rs.0 – Rs.60K
+                </div>
               </div>
               {historyLoading ? (
                 <div className="center-msg" style={{ padding: 40 }}><RefreshCw size={24} className="spin" /></div>
               ) : historyData.models.length === 0 ? (
-                <div style={{ textAlign: "center", padding: 40, color: "#475569", fontSize: 13 }}>No price history available</div>
+                <div style={{ textAlign: "center", padding: 40, color: "#475569", fontSize: 13 }}>No price history yet — run the refresh job to capture the first snapshot.</div>
               ) : (
-                <InteractiveHistoryChart months={historyData.months} models={historyData.models} />
+                <InteractiveHistoryChart months={historyData.months} models={historyData.models} realFrom={historyData.real_from} />
               )}
             </div>
           </>

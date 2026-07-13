@@ -36,6 +36,7 @@ CACHE_FILES = [
     "youtube_cache.json", "youtube_comments.json", "youtube_history.json",
     "amazon_cache.json", "flipkart_cache.json",
     "instagram_cache.json", "instagram_history.json", "news_cache.json",
+    "price_history.json",
 ]
 
 
@@ -73,7 +74,7 @@ def refresh_news_and_snapshots():
         log("OK news refresh")
     except Exception as e:
         log(f"FAILED news refresh: {e}")
-    for fn_name in ("_record_yt_snapshot", "_record_ig_snapshot"):
+    for fn_name in ("_record_yt_snapshot", "_record_ig_snapshot", "_record_price_snapshot"):
         try:
             getattr(main, fn_name)()
             log(f"OK {fn_name}")

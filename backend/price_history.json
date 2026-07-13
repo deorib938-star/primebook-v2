@@ -1,0 +1,217 @@
+{
+  "snapshots": [
+    {
+      "date": "2026-07-13",
+      "brands": {
+        "primebook": {
+          "Primebook 2 Neo": {
+            "amazon": null,
+            "flipkart": 29990,
+            "best": 29990
+          },
+          "Primebook 2 Max": {
+            "amazon": 28990,
+            "flipkart": 27290,
+            "best": 27290
+          },
+          "Primebook 2 Pro": {
+            "amazon": 26990,
+            "flipkart": 24990,
+            "best": 24990
+          }
+        },
+        "hp": {
+          "HP Chromebook": {
+            "amazon": null,
+            "flipkart": 26990,
+            "best": 26990
+          },
+          "HP 255 Notebook,": {
+            "amazon": 37999,
+            "flipkart": null,
+            "best": 37999
+          },
+          "HP Laptop 255": {
+            "amazon": 37999,
+            "flipkart": null,
+            "best": 37999
+          },
+          "HP Laptop 15s,": {
+            "amazon": 26990,
+            "flipkart": null,
+            "best": 26990
+          },
+          "HP 14s Intel": {
+            "amazon": 38900,
+            "flipkart": null,
+            "best": 38900
+          },
+          "HP 15": {
+            "amazon": 37999,
+            "flipkart": null,
+            "best": 37999
+          }
+        },
+        "lenovo": {
+          "Lenovo Chromebook": {
+            "amazon": null,
+            "flipkart": 13990,
+            "best": 13990
+          },
+          "Lenovo 100e Chromebook": {
+            "amazon": null,
+            "flipkart": 18990,
+            "best": 18990
+          },
+          "Lenovo IdeaPad Slim 1": {
+            "amazon": 38799,
+            "flipkart": null,
+            "best": 38799
+          },
+          "Lenovo Chromebook Duet": {
+            "amazon": null,
+            "flipkart": 29990,
+            "best": 29990
+          },
+          "Lenovo IdeaPad Slim 3": {
+            "amazon": 29999,
+            "flipkart": null,
+            "best": 29999
+          },
+          "Lenovo IdeaPad 3": {
+            "amazon": 37380,
+            "flipkart": 37890,
+            "best": 37380
+          },
+          "Lenovo V15": {
+            "amazon": 29999,
+            "flipkart": null,
+            "best": 29999
+          },
+          "Lenovo V15 ITL": {
+            "amazon": 29999,
+            "flipkart": null,
+            "best": 29999
+          }
+        },
+        "acer": {
+          "Acer Aspire 3": {
+            "amazon": null,
+            "flipkart": 39500,
+            "best": 39500
+          },
+          "Acer Aspire": {
+            "amazon": null,
+            "flipkart": 29999,
+            "best": 29999
+          },
+          "Acer One 14": {
+            "amazon": null,
+            "flipkart": 37990,
+            "best": 37990
+          },
+          "acer Aspire": {
+            "amazon": 39850,
+            "flipkart": null,
+            "best": 39850
+          },
+          "acer Chromebook, Intel": {
+            "amazon": 32999,
+            "flipkart": null,
+            "best": 32999
+          },
+          "Acer Aspire with Infinity": {
+            "amazon": null,
+            "flipkart": 32990,
+            "best": 32990
+          },
+          "acer Travelmate Business": {
+            "amazon": 39999,
+            "flipkart": null,
+            "best": 39999
+          },
+          "Acer Aspire 15 MS": {
+            "amazon": null,
+            "flipkart": 38990,
+            "best": 38990
+          },
+          "acer Chromebook": {
+            "amazon": 28990,
+            "flipkart": null,
+            "best": 28990
+          },
+          "Acer One 14 Pro": {
+            "amazon": 39849,
+            "flipkart": null,
+            "best": 39849
+          },
+          "acer Aspire 3 A325-45": {
+            "amazon": 39990,
+            "flipkart": null,
+            "best": 39990
+          },
+          "Acer Chromebook, MediaTek": {
+            "amazon": 23990,
+            "flipkart": null,
+            "best": 23990
+          },
+          "Acer Chromebook, Intel": {
+            "amazon": 21990,
+            "flipkart": null,
+            "best": 21990
+          }
+        },
+        "dell": {
+          "Dell New 14\" Latitude": {
+            "amazon": 36990,
+            "flipkart": null,
+            "best": 36990
+          }
+        },
+        "asus": {
+          "ASUS VivoBook 15": {
+            "amazon": null,
+            "flipkart": 35990,
+            "best": 35990
+          },
+          "ASUS Chromebook": {
+            "amazon": 24990,
+            "flipkart": 20990,
+            "best": 20990
+          },
+          "ASUS Vivobook 15": {
+            "amazon": null,
+            "flipkart": 39990,
+            "best": 39990
+          },
+          "ASUS Chromebook CX14": {
+            "amazon": null,
+            "flipkart": 17990,
+            "best": 17990
+          },
+          "ASUS Chromebook CX1405": {
+            "amazon": 39990,
+            "flipkart": null,
+            "best": 39990
+          },
+          "ASUS Chromebook CM1505": {
+            "amazon": 30990,
+            "flipkart": null,
+            "best": 30990
+          },
+          "ASUS Chromebook CM1405": {
+            "amazon": 28990,
+            "flipkart": null,
+            "best": 28990
+          },
+          "ASUS Chromebook CM32 Detachable": {
+            "amazon": 37990,
+            "flipkart": null,
+            "best": 37990
+          }
+        }
+      },
+      "estimated": false
+    }
+  ]
+}

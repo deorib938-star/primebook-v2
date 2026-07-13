@@ -1463,39 +1463,55 @@ def get_price_table(brand: str = "all"):
 # ROUTE 2: Price history (combined chart data for one brand's models)
 # ================================
 @app.get("/price/history/{brand_id}")
-def get_price_history(brand_id: str):
+def get_price_history(brand_id: str, platform: str = Query(default="flipkart")):
     """
-    brand_id = 'primebook' | 'hp' | 'lenovo' | 'acer' | 'dell' | 'asus'
-    Returns { months: [...], models: [{name, history: [...]}] }
+    Price history from accumulated snapshots (price_history.json).
+    platform = 'flipkart' | 'amazon' | 'best'.
+    Returns { dates, months (alias), platform, models:[{name, history:[...]}],
+              collecting, estimated_history, real_from, message }.
     """
-    months = []
-    today = datetime.now()
-    for i in range(5, -1, -1):
-        d = today - timedelta(days=30 * i)
-        months.append(d.strftime("%b"))
+    brand_id = brand_id.lower()
+    platform = platform if platform in ("amazon", "flipkart", "best") else "flipkart"
+    snaps = _load_price_history().get("snapshots", [])
+    if not snaps:                       # seed the first point so the tab isn't empty
+        _record_price_snapshot()
+        snaps = _load_price_history().get("snapshots", [])
+
+    def val(entry):
+        if isinstance(entry, dict):
+            return entry.get(platform)
+        return entry                    # legacy snapshots stored a plain number
+
+    dates = [s["date"] for s in snaps]
+    names = []
+    for s in snaps:
+        for n in s.get("brands", {}).get(brand_id, {}):
+            if n not in names:
+                names.append(n)
 
     models_out = []
+    for n in names:
+        series = [val(s.get("brands", {}).get(brand_id, {}).get(n)) for s in snaps]
+        if any(v for v in series):
+            models_out.append({"name": n, "history": series})
 
-    if brand_id == "primebook":
-        for m in PRIMEBOOK_PRICING:
-            models_out.append({
-                "name":    m["name"],
-                "history": _generate_history(m["official"]),
-            })
-    else:
-        BRAND_LABELS = {"hp": "HP", "lenovo": "Lenovo", "acer": "Acer", "dell": "Dell", "asus": "Asus"}
-        if brand_id not in BRAND_LABELS:
-            return {"error": "Invalid brand", "months": [], "models": []}
-
-        top_models = _get_brand_models(brand_id)
-        for m in top_models:
-            current = m.get("amazon_price", 0) or m.get("flipkart_price", 0) or m.get("price_inr", 0)
-            models_out.append({
-                "name":    m.get("name", "Unknown")[:35],
-                "history": _generate_history(current),
-            })
-
-    return {"brand": brand_id, "months": months, "models": models_out}
+    real_from = next((s["date"] for s in snaps if not s.get("estimated")), None)
+    estimated_history = any(s.get("estimated") for s in snaps)
+    latest_brand = (snaps[-1].get("brands", {}) if snaps else {}).get(brand_id, {})
+    platform_counts = {"amazon": 0, "flipkart": 0}
+    for v in latest_brand.values():
+        if isinstance(v, dict):
+            if v.get("amazon"): platform_counts["amazon"] += 1
+            if v.get("flipkart"): platform_counts["flipkart"] += 1
+    return {
+        "brand": brand_id, "platform": platform, "dates": dates, "months": dates, "models": models_out,
+        "collecting": len(snaps) < 2, "platform_counts": platform_counts,
+        "estimated_history": estimated_history, "real_from": real_from,
+        "message": (f"History before {real_from} is estimated; real prices tracked weekly from then."
+                    if estimated_history else
+                    ("Real price tracking has started — the trend fills in as weekly snapshots accumulate."
+                     if len(snaps) < 2 else f"Tracking {len(snaps)} weekly price snapshots.")),
+    }
 
 
 # ================================
@@ -3143,3 +3159,108 @@ QUESTION: {q}
 Return ONLY this JSON (no markdown, no apostrophes inside strings):
 {{"answer": "3-6 sentence answer grounded in the data", "confidence": <0-100>}}"""
     return await _groq_json(prompt, 900)
+
+
+# ================================================================
+# PRICE HISTORY — real tracking via accumulated daily snapshots
+# (replaces the old synthetic _generate_history). Fed by refresh_all.py.
+# ================================================================
+PRICE_HISTORY_FILE = "price_history.json"
+PRICE_MODELS_PER_BRAND = 6
+
+
+def _load_price_history():
+    if not os.path.exists(PRICE_HISTORY_FILE):
+        return {"snapshots": []}
+    try:
+        with open(PRICE_HISTORY_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {"snapshots": []}
+
+
+def _price_snapshot_today():
+    """Snapshot EVERY model's real Amazon + Flipkart + best price, per brand,
+    straight from the price table (same real data the Price table tab shows)."""
+    brands = {}
+    try:
+        rows = get_price_table("all").get("rows", [])
+    except Exception:
+        rows = []
+    for r in rows:
+        bid = (r.get("brand") or "").lower()
+        if not bid:
+            continue
+        name = (r.get("name") or "")[:40]
+        a = r.get("amazon") or 0
+        f = r.get("flipkart") or 0
+        prices = [p for p in (a, f) if p and p > 0]
+        if not prices:
+            continue
+        brands.setdefault(bid, {})[name] = {"amazon": a or None, "flipkart": f or None, "best": min(prices)}
+    return brands
+
+
+def _save_price_history(hist):
+    with open(PRICE_HISTORY_FILE, "w", encoding="utf-8") as f:
+        json.dump(hist, f, indent=2, ensure_ascii=False)
+
+
+def _record_price_snapshot(force=False):
+    """Records a REAL snapshot. Weekly cadence: skips if the last snapshot is
+    under 7 days old unless force=True (so the daily job only adds ~weekly)."""
+    hist = _load_price_history()
+    snaps = hist.get("snapshots", [])
+    today = datetime.now(timezone.utc).date()
+    if not force and snaps:
+        try:
+            last = datetime.strptime(snaps[-1]["date"], "%Y-%m-%d").date()
+            if (today - last).days < 7:
+                return {"recorded": False, "reason": "within weekly window", "total_snapshots": len(snaps)}
+        except Exception:
+            pass
+    tod = today.isoformat()
+    snaps = [s for s in snaps if s.get("date") != tod]
+    snaps.append({"date": tod, "brands": _price_snapshot_today(), "estimated": False})
+    snaps.sort(key=lambda s: s["date"])
+    hist["snapshots"] = snaps
+    _save_price_history(hist)
+    return {"recorded": True, "date": tod, "total_snapshots": len(snaps)}
+
+
+def _backfill_price_history(weeks=26):
+    """Seed an ESTIMATED weekly price curve for the past `weeks`, converging to each
+    model's real current price. Overwrites history. Real weekly points append after."""
+    current = _price_snapshot_today()
+    today = datetime.now(timezone.utc).date()
+    snaps = []
+    for w in range(weeks, 0, -1):
+        frac = (weeks - w) / weeks          # 0 oldest -> ~1 most recent
+        brands = {}
+        for bid, models in current.items():
+            bd = {}
+            for name, pr in models.items():
+                entry = {}
+                for plat in ("amazon", "flipkart", "best"):
+                    base = pr.get(plat)
+                    if base:
+                        start = base * 1.08     # ~8% higher 6 months ago
+                        val = (start + (base - start) * frac) * (1 + _random.uniform(-0.015, 0.015))
+                        entry[plat] = int(round(val / 10) * 10)
+                if entry:
+                    bd[name] = entry
+            brands[bid] = bd
+        snaps.append({"date": (today - timedelta(weeks=w)).isoformat(), "brands": brands, "estimated": True})
+    snaps.append({"date": today.isoformat(), "brands": current, "estimated": False})   # real anchor
+    _save_price_history({"snapshots": snaps})
+    return {"backfilled": True, "weeks": weeks, "total_snapshots": len(snaps)}
+
+
+@app.get("/price/history-record")
+def price_history_record(force: bool = Query(default=True)):
+    return _record_price_snapshot(force=force)
+
+
+@app.get("/price/history-backfill")
+def price_history_backfill(weeks: int = Query(default=26)):
+    return _backfill_price_history(weeks)
