@@ -86,6 +86,35 @@
           "posts": 758
         }
       }
+    },
+    {
+      "date": "2026-07-14",
+      "brands": {
+        "hp": {
+          "followers": 239000,
+          "posts": 1599
+        },
+        "lenovo": {
+          "followers": 598000,
+          "posts": 3536
+        },
+        "acer": {
+          "followers": 222000,
+          "posts": 4583
+        },
+        "dell": {
+          "followers": 374000,
+          "posts": 2833
+        },
+        "asus": {
+          "followers": 853000,
+          "posts": 6786
+        },
+        "primebook": {
+          "followers": 45000,
+          "posts": 758
+        }
+      }
     }
   ]
 }

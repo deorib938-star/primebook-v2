@@ -94,6 +94,24 @@
   "lenovo": [
     {
       "brand": "lenovo",
+      "title": "Lenovo just refreshed its most powerful gaming laptop, but a CPU boost can't justify a $2,000 markup",
+      "description": "Lenovo has refreshed its Legion Pro 7i gaming laptop, but the premium added to this CPU upgrade means last year's model makes far more sense.",
+      "url": "https://www.gamesradar.com/hardware/laptops/lenovo-just-refreshed-its-most-powerful-gaming-laptop-but-a-cpu-boost-cant-justify-a-usd2-000-markup/",
+      "image": "https://cdn.mos.cms.futurecdn.net/dU4tRNM2Jc2BXTgQEvVpL4-2560-80.jpg",
+      "source": "GamesRadar+",
+      "published_at": "2026-07-13T13:33:45Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Unlike MacBook Price Hikes, Lenovo's Ryzen-Powered Windows 11 Pro Laptop Hits Record Low Pricing",
+      "description": "Work anywhere you want with ease and for less.",
+      "url": "https://gizmodo.com/unlike-macbook-price-hikes-lenovos-ryzen-powered-windows-11-pro-laptop-hits-record-low-pricing-2000784605",
+      "image": "https://gizmodo.com/app/uploads/2026/07/lenovo-deal-1200x675.jpg",
+      "source": "Gizmodo",
+      "published_at": "2026-07-13T10:10:44Z"
+    },
+    {
+      "brand": "lenovo",
       "title": "Lenovo ThinkPad L15 Gen 3",
       "description": "Score the Lenovo ThinkPad L15 Gen 3 for just $439.99 (reg. $799). This refurbished laptop features 16GB RAM, 512GB SSD, Windows 11 Pro, and more.",
       "url": "https://nypost.com/2026/07/10/shopping/get-a-business-ready-lenovo-thinkpad-l15-gen-3-for-359-off/",
@@ -163,24 +181,6 @@
       "image": "https://www.cnet.com/a/img/resize/c04bef8508957934970b0d37327241f93f4e346c/hub/2026/06/28/2cb15ca5-c43b-425a-b6df-b1c67ad8ea72/legion-7i-gen-10-6-of-8.jpg?auto=webp&fit=crop&height=675&width=1200",
       "source": "CNET",
       "published_at": "2026-07-03T10:07:15Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Lenovo's IdeaPad Slim 3i Laptop Drops 78%, Now Priced Close to an Entry-Level iPad With Microsoft 365 Included",
-      "description": "You're not going to get savings like this very often, so move quickly.",
-      "url": "https://gizmodo.com/lenovos-ideapad-slim-3i-laptop-drops-78-now-priced-close-to-an-entry-level-ipad-with-microsoft-365-included-2000780545",
-      "image": "https://gizmodo.com/app/uploads/2026/07/len-deal-1200x675.jpg",
-      "source": "Gizmodo",
-      "published_at": "2026-07-02T10:10:03Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Best Gaming Laptops From Asus, Lenovo, HP And Dell You Can Buy",
-      "description": "Some of the popular gaming laptop brands are offering good deals on their models that you can check out.",
-      "url": "https://www.news18.com/tech/best-gaming-laptops-from-asus-lenovo-hp-and-dell-you-can-buy-ws-el-10183279.html",
-      "image": "https://images.news18.com/ibnlive/uploads/2026/07/image-2026-07-3b5200549ebbf9c8d6530e9f97a2187d-1200x675.jpg",
-      "source": "News18",
-      "published_at": "2026-07-01T03:16:57Z"
     }
   ],
   "acer": [
@@ -459,5 +459,5 @@
       "published_at": "2026-07-01T03:16:57Z"
     }
   ],
-  "last_updated": "2026-07-13T07:56:48.560996+00:00"
+  "last_updated": "2026-07-14T05:41:37.076584+00:00"
 }
