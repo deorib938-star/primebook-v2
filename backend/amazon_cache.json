@@ -98,6 +98,25 @@
                 "source": "Amazon"
             },
             {
+                "name": "HP 15 (2025), Intel Celeron Dual Core N4500 - (8 GB/256 GB SSD/Intel UHD Graphics/Windows 11 Home) T",
+                "price_inr": 39990,
+                "processor": "Celeron N",
+                "ram_gb": 8,
+                "storage_gb": 256,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 3.7,
+                "reviews": 25,
+                "url": "https://www.amazon.in/dp/B0BB76GKSL",
+                "brand": "HP",
+                "source": "Amazon"
+            },
+            {
                 "name": "HP 15 (2025), AMD Athlon 7120U Dual Core - (8 GB/256 GB SSD/AMD Radeon Graphics/Windows 11 Pro) Thin",
                 "price_inr": 37999,
                 "processor": "Athlon",
@@ -136,7 +155,7 @@
                 "source": "Amazon"
             }
         ],
-        "total": 7
+        "total": 8
     },
     "lenovo": {
         "name": "Lenovo",
@@ -193,7 +212,7 @@
                 "os": "Windows 11",
                 "weight_kg": 1.7,
                 "rating": 4.0,
-                "reviews": 605,
+                "reviews": 606,
                 "url": "https://www.amazon.in/dp/B0B4JRH895",
                 "brand": "Lenovo",
                 "source": "Amazon"
@@ -294,7 +313,7 @@
                 "os": "Windows 11",
                 "weight_kg": 1.7,
                 "rating": 3.6,
-                "reviews": 485,
+                "reviews": 486,
                 "url": "https://www.amazon.in/dp/B0FF4QBNWM",
                 "brand": "Acer",
                 "source": "Amazon"
@@ -313,8 +332,27 @@
                 "os": "ChromeOS",
                 "weight_kg": 1.7,
                 "rating": 3.9,
-                "reviews": 241,
+                "reviews": 240,
                 "url": "https://www.amazon.in/dp/B0DH4M1MJ3",
+                "brand": "Acer",
+                "source": "Amazon"
+            },
+            {
+                "name": "acer Aspire Lite, AMD Ryzen 3-5300U, 8 GB RAM, 512 GB SSD, Full HD 15.6\"/39.62 cm, Windows 11 Home, ",
+                "price_inr": 39990,
+                "processor": "Ryzen 3 5300U",
+                "ram_gb": 8,
+                "storage_gb": 512,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 4.2,
+                "reviews": 73,
+                "url": "https://www.amazon.in/dp/B0D37T35JP",
                 "brand": "Acer",
                 "source": "Amazon"
             },
@@ -358,7 +396,7 @@
             },
             {
                 "name": "acer Chromebook Intel Celeron Dual-Core N4500 (Chrome OS/8 GB/64 GB eMMC) CB314-3H with 35.5 cm (14\"",
-                "price_inr": 28990,
+                "price_inr": 26990,
                 "processor": "Celeron",
                 "ram_gb": 8,
                 "storage_gb": 64,
@@ -391,25 +429,6 @@
                 "rating": 5.0,
                 "reviews": 1,
                 "url": "https://www.amazon.in/dp/B0H41ZVWJD",
-                "brand": "Acer",
-                "source": "Amazon"
-            },
-            {
-                "name": "acer Aspire 3 A325-45 HD Thin & Light Laptop | Intel Celeron N4500 | 8GB LPDDR4X RAM | 512GB SSD | W",
-                "price_inr": 38999,
-                "processor": "Celeron",
-                "ram_gb": 8,
-                "storage_gb": 512,
-                "display_inch": 15.6,
-                "display_quality": "HD",
-                "battery_hours": 7,
-                "webcam": "720p",
-                "keyboard_backlit": false,
-                "os": "Windows 11",
-                "weight_kg": 1.5,
-                "rating": 1.0,
-                "reviews": 1,
-                "url": "https://www.amazon.in/dp/B0GWRH9G6W",
                 "brand": "Acer",
                 "source": "Amazon"
             },
@@ -585,7 +604,7 @@
         "products": [
             {
                 "name": "Primebook 2 Max (2026) | 8GB RAM, 256GB UFS Storage | 15.6-Inch Full HD IPS Display | 12hrs Battery ",
-                "price_inr": 28990,
+                "price_inr": 29980,
                 "processor": "Mediatek Helio",
                 "ram_gb": 8,
                 "storage_gb": 256,
@@ -615,8 +634,8 @@
                 "keyboard_backlit": false,
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
-                "rating": 4.4,
-                "reviews": 780,
+                "rating": 4.3,
+                "reviews": 784,
                 "url": "https://www.amazon.in/dp/B0FFM8M9B5",
                 "brand": "Primebook",
                 "source": "Amazon"
@@ -624,5 +643,5 @@
         ],
         "total": 2
     },
-    "last_updated": "2026-07-14 10:59"
+    "last_updated": "2026-07-15 11:00"
 }

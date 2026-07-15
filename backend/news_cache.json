@@ -2,6 +2,24 @@
   "hp": [
     {
       "brand": "hp",
+      "title": "HP's 16-inch Windows laptop is perfect for the home and office - with 16 GB of RAM and Snapdragon X for $809 while it lasts",
+      "description": "The HP Omnibook 5 chews through productivity with solid performance, massive battery life, an OLED display, and more.",
+      "url": "https://www.windowscentral.com/hardware/laptops/hp-omnibook-5-perfect-with-16-gb-snapdragon-x",
+      "image": "https://cdn.mos.cms.futurecdn.net/UAziuycJf36h2Zh9Q872fP-2560-80.jpg",
+      "source": "Windows Central",
+      "published_at": "2026-07-14T09:07:03Z"
+    },
+    {
+      "brand": "hp",
+      "title": "CCI finds laptop maker HP rigged bids, levies Rs 14.28 crore penalty",
+      "description": "The Competition Commission of India fined HP India and sixteen resellers Rs 14.28 crore. This penalty was imposed for cartelisation in the sale of print hardware consumables. HP India received a penalty of Rs 11.98 crore, while resellers collectively paid Rs 2.30 crore. The regulator also directed them to stop engaging in anti-competitive conduct. Officials of HP India and its resellers were found liable and penalized.",
+      "url": "https://economictimes.indiatimes.com/industry/cons-products/electronics/cci-finds-laptop-maker-hp-rigged-bids-on-government-procurement-platform/articleshow/132382170.cms",
+      "image": "https://img.etimg.com/thumb/msid-132382256,width-1200,height-630,imgsize-63414,overlay-economictimes/articleshow.jpg",
+      "source": "The Economic Times",
+      "published_at": "2026-07-14T05:51:00Z"
+    },
+    {
+      "brand": "hp",
       "title": "HP’s OMEN 16″2K Slim Gaming Laptop is finally back on sale at Walmart for $300 off",
       "description": "\"Kingdom Hearts IV\" is finally coming soon. Here's what to know if you're a Nintendo Switch 1 owner looking forward to playing the game",
       "url": "https://www.silive.com/shopping-deals/2026/07/hps-omen-162k-slim-gaming-laptop-is-finally-back-on-sale-at-walmart-for-300-off.html",
@@ -71,24 +89,6 @@
       "image": "https://nypost.com/wp-content/uploads/sites/2/2026/07/2000x1333-2026-07-08T111950.071.png?w=1200",
       "source": "New York Post",
       "published_at": "2026-07-08T18:35:57Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP OmniBook 3 16 Review: Big-Screen Budget Laptop With Unbeatable Battery Life",
-      "description": "Powered by a Snapdragon X chip, HP's budget 16-inch laptop can run for nearly a day and a half on a single charge. It's also fairly portable for its size and elegant for its price.",
-      "url": "https://www.cnet.com/tech/computing/hp-omnibook-3-16-laptop-review/",
-      "image": "https://www.cnet.com/a/img/resize/83b2197ad06fa21d756413f28ad3ab057458dabe/hub/2026/05/29/fe33507a-56b8-4bc2-b234-de885d1579f3/hp-omnibook-3-16-snapdragon-x.jpg?auto=webp&fit=crop&height=675&width=1200",
-      "source": "CNET",
-      "published_at": "2026-07-08T16:00:00Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP 14-Inch Copilot AI Laptop at Nearly 60% Off Is Priced Below an Entry-Level iPad, With Microsoft 365 Included",
-      "description": "You get one year of Microsoft 365 and an extra 1TB OneDrive cloud storage for absolutely free with your purchase.",
-      "url": "https://gizmodo.com/hp-14-inch-copilot-ai-laptop-at-nearly-60-off-is-priced-below-an-entry-level-ipad-with-microsoft-365-included-2000782048",
-      "image": "https://gizmodo.com/app/uploads/2026/07/hp-ultrabook-1200x675.jpg",
-      "source": "Gizmodo",
-      "published_at": "2026-07-07T10:10:29Z"
     }
   ],
   "lenovo": [
@@ -186,6 +186,15 @@
   "acer": [
     {
       "brand": "acer",
+      "title": "Acer, Intel and Infinity Learn Launch 'India's First NEET-Ready Laptop' Ahead of CBT Shift",
+      "description": "The new laptop combines Intel-powered hardware with AI-based NEET preparation tools as India prepares to move the medical entrance exam to a computer-based format from 2027.",
+      "url": "https://www.republicworld.com/tech/acer-intel-and-infinity-learn-launch-india-s-first-neet-ready-laptop-ahead-of-cbt-shift-2026-07-14-132271",
+      "image": "https://img.republicworld.com/all_images/2026/07/acer-1784024307574-1280x720.webp",
+      "source": "Republic World",
+      "published_at": "2026-07-14T10:18:35Z"
+    },
+    {
+      "brand": "acer",
       "title": "Acer Swift Go 16 AI review: An impressive OLED Windows laptop",
       "description": "It has its downsides, but Acer surprised me in more of the right ways with a well-priced Windows laptop that'll be a strong competitor in its category.",
       "url": "https://www.windowscentral.com/hardware/acer/acer-swift-go-16-ai-review",
@@ -264,18 +273,27 @@
       "image": "https://cdn.mos.cms.futurecdn.net/xf862mtCq6eeU4d45AiFrP-2000-80.jpg",
       "source": "Tom's Guide",
       "published_at": "2026-06-27T09:30:00Z"
-    },
-    {
-      "brand": "acer",
-      "title": "Best Prime Day Laptop Deals From Lenovo, Apple, Acer and More",
-      "description": "With just a few hours left, these Prime Day laptop deals are worth considering regardless of your budget.",
-      "url": "https://www.cnet.com/deals/best-prime-day-laptop-deals-2026-06-26/",
-      "image": "https://www.cnet.com/a/img/resize/f1892e3f603456a8691ecb1d64711df5ec01bde5/hub/2026/06/11/6e8447fb-86a8-44fa-a89d-4ee9320f5562/prime-day-laptop-deals.jpg?auto=webp&fit=crop&height=675&width=1200",
-      "source": "CNET",
-      "published_at": "2026-06-26T22:16:00Z"
     }
   ],
   "dell": [
+    {
+      "brand": "dell",
+      "title": "Alienware's Aurora 16X 240Hz RTX 5070 gaming laptop loaded with 64GB RAM/4TB SSD is a whopping $2,500 off today",
+      "description": "Dell is now offering one of the more loaded configs of the Alienware Aurora 16X gaming laptop for $2,479.99 shipped....",
+      "url": "https://9to5toys.com/2026/07/14/alienware-aurora-16x-240hz-rtx-5070-gaming-laptop-64gb-ram-4tb-ssd/",
+      "image": "https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/06/Alienware-Aurora-16X-gaming-laptop.jpg?resize=1200%2C628&quality=82&strip=all&ssl=1",
+      "source": "9to5Toys",
+      "published_at": "2026-07-14T16:57:40Z"
+    },
+    {
+      "brand": "dell",
+      "title": "Is this the ultimate 'back to school' laptop? Students can get a brand new 2026 Dell XPS 13 for just $599",
+      "description": "The new XPS 13 is a direct competitor to the new MacBook Neo",
+      "url": "https://www.techradar.com/computing/windows/is-this-the-ultimate-back-to-school-laptop-students-can-get-a-brand-new-2026-dell-xps-13-for-just-usd599",
+      "image": "https://cdn.mos.cms.futurecdn.net/LpYiVMTgvojcnudteqK7FB-2000-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-14T11:38:47Z"
+    },
     {
       "brand": "dell",
       "title": "Need a Faster Work Laptop? Entrepreneurs Can Save Big on This Dell Latitude While Supplies Last.",
@@ -347,24 +365,6 @@
       "image": "https://cdn.mos.cms.futurecdn.net/yCnCdaGhYGxrUDd8rucW69-2000-80.jpg",
       "source": "TechRadar",
       "published_at": "2026-07-03T18:20:07Z"
-    },
-    {
-      "brand": "dell",
-      "title": "This 2K premium laptop with all-day battery life demolishes the competition - and now a discount drops it below $1,000 [UPDATE]",
-      "description": "The Dell XPS 13 laptop is one of its best in recent years, and its gorgeous 2K display is now on sale for a 29% discount.",
-      "url": "https://www.windowscentral.com/gaming/this-3k-oled-premium-laptop-with-all-day-battery-life-demolishes-the-competition",
-      "image": "https://cdn.mos.cms.futurecdn.net/tgYv8EfqEVvgLc2WxxnhSn-2048-80.jpg",
-      "source": "Windows Central",
-      "published_at": "2026-07-03T15:48:28Z"
-    },
-    {
-      "brand": "dell",
-      "title": "Alienware 15 launched in India with Nvidia RTX 3050/4050, and 165Hz screen; Price starts at Rs 1,15,990",
-      "description": "Tech News News: Dell has launched the Alienware 15 in India, its most affordable gaming laptop yet. The move is aimed squarely at gamers in Tier 2 and Tier 3 cities w.",
-      "url": "https://timesofindia.indiatimes.com/technology/tech-news/alienware-15-launched-in-india-with-nvidia-rtx-3050/4050-and-165hz-screen-price-starts-at-rs-115990/articleshow/132132722.cms",
-      "image": "https://static.toiimg.com/thumb/msid-132133428,width-1280,height-720,resizemode-6,overlay-toi_sw,pt-32,y_pad-600/photo.jpg",
-      "source": "Times of India",
-      "published_at": "2026-07-02T08:17:00Z"
     }
   ],
   "asus": [
@@ -459,5 +459,5 @@
       "published_at": "2026-07-01T03:16:57Z"
     }
   ],
-  "last_updated": "2026-07-14T05:41:37.076584+00:00"
+  "last_updated": "2026-07-15T05:45:53.386809+00:00"
 }
