@@ -19,3 +19,8 @@ dist/
 backend/.evn
 *.evn
 backend/logs/
+
+# content-studio runtime state (regenerated; ephemeral on Render)
+backend/content_studio_state.json
+# stray windows shortcut
+backend/Multi Agent - Shortcut.lnk

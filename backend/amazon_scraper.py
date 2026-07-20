@@ -24,6 +24,12 @@ BRAND_URLS = {
     "primebook": {"name": "Primebook","url": "https://www.amazon.in/s?k=Primebook+laptop&s=review-rank"},
 }
 
+def _asin(url: str) -> str:
+    """Stable Amazon product id from a URL (the ASIN in /dp/XXXX). Used to track the
+    same products run-to-run so price history stays continuous."""
+    m = re.search(r'/dp/([A-Z0-9]{8,})', url or "")
+    return m.group(1) if m else ""
+
 # ================================
 # CACHE
 # ================================
@@ -451,6 +457,11 @@ def scrape_all(force=False):
     print("Amazon | Top 10 popular models | Under Rs.40,000")
     print("Cache valid for 30 days\n")
 
+    # Previously-tracked products — we ALWAYS re-scrape these so their price history
+    # stays continuous, even if they drop out of the search's top results this run.
+    prev_cache = load_cache() or {}
+    today = datetime.now().strftime("%Y-%m-%d")
+
     driver = create_driver()
     all_data = {}
 
@@ -460,24 +471,63 @@ def scrape_all(force=False):
             print(f"BRAND: {info['name']}")
             print(f"{'='*50}")
 
-            links = get_amazon_links(driver, info["url"], info["name"])
-            products = []
-            seen = set()
+            prev_brand = prev_cache.get(brand_id) if isinstance(prev_cache.get(brand_id), dict) else {}
+            prev_list  = prev_brand.get("products", []) if prev_brand else []
+            prev_by_id = {}
+            for p in prev_list:
+                pid = _asin(p.get("url", "")) or p.get("name", "")
+                if pid:
+                    prev_by_id[pid] = p
 
-            for i, link in enumerate(links):
-                print(f"\n  [{i+1}/{len(links)}]")
+            discovered = get_amazon_links(driver, info["url"], info["name"])
+
+            # Scrape order: tracked products first (guaranteed), then any NEW discoveries.
+            ordered_links, seen_ids = [], set()
+            for p in prev_list:
+                u = p.get("url", "")
+                pid = _asin(u) or p.get("name", "")
+                if u and pid and pid not in seen_ids:
+                    ordered_links.append(u); seen_ids.add(pid)
+            new_count = 0
+            for u in discovered:
+                pid = _asin(u)
+                if pid and pid not in seen_ids:
+                    ordered_links.append(u); seen_ids.add(pid); new_count += 1
+            print(f"  Tracking {len(prev_list)} known + {new_count} newly discovered")
+
+            products, done_ids = [], set()
+            for i, link in enumerate(ordered_links):
+                pid = _asin(link) or link
+                print(f"\n  [{i+1}/{len(ordered_links)}] {pid}")
                 p = scrape_product(driver, link, info["name"])
-                if p and p["name"] and p["name"] not in seen:
-                    products.append(p)
-                    seen.add(p["name"])
+                if p and p.get("name"):
+                    key = _asin(p.get("url", "")) or p["name"]
+                    if key in done_ids:
+                        continue
+                    prev = prev_by_id.get(pid) or prev_by_id.get(p["name"])
+                    p["first_seen"]  = (prev or {}).get("first_seen") or today
+                    p["last_checked"] = today
+                    p["available"]   = True
+                    products.append(p); done_ids.add(key)
+                else:
+                    # A tracked product we couldn't fetch now (delisted/out of range):
+                    # keep its last-known record so its history line doesn't break.
+                    prev = prev_by_id.get(pid)
+                    if prev and pid not in done_ids:
+                        kept = dict(prev)
+                        kept["last_checked"] = today
+                        kept["available"]    = False
+                        kept.setdefault("first_seen", today)
+                        products.append(kept); done_ids.add(pid)
+                        print(f"    [KEEP] retained last-known for tracked product")
                 time.sleep(2)
+
             # Price sanity check — remove obviously wrong low prices
             # (deals, refurbished, EMI, or parse errors)
             products = filter_price_outliers(products, info["name"])
 
-            # Sort by reviews
-            products.sort(key=lambda x: x["reviews"], reverse=True)
-            products = products[:10]
+            # Sort by reviews (display order only — NO truncation, so tracked products persist)
+            products.sort(key=lambda x: x.get("reviews", 0), reverse=True)
 
             all_data[brand_id] = {
                 "name": info["name"],

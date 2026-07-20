@@ -40,6 +40,26 @@ BRAND_URLS = {
 MAX_PRICE_OVERRIDE = {}
 
 
+def _fk_id(url: str) -> str:
+    """Stable Flipkart product id (pid, else the itm id) so we track the same
+    products run-to-run and keep price history continuous."""
+    m = re.search(r'pid=([A-Z0-9]+)', url or "")
+    if m:
+        return m.group(1)
+    m = re.search(r'/(itm[a-z0-9]+)', url or "")
+    return m.group(1) if m else ""
+
+
+def _load_flipkart_cache() -> dict:
+    if os.path.exists(FLIPKART_CACHE):
+        try:
+            with open(FLIPKART_CACHE, "r", encoding="utf-8") as f:
+                return json.loads(f.read().strip() or "{}")
+        except Exception:
+            pass
+    return {}
+
+
 def parse_specs_from_text(text, brand_name):
     product = {
         "name": "",
@@ -318,44 +338,84 @@ async def get_price_from_product_page(page, url):
     return 0, ""
 
 
-async def scrape_brand(page, brand_id, brand_info):
-    items = await get_links_from_search(page, brand_id, brand_info)
-
+async def scrape_brand(page, brand_id, brand_info, prev_list=None):
+    prev_list = prev_list or []
+    today = datetime.now().strftime("%Y-%m-%d")
     max_price = MAX_PRICE_OVERRIDE.get(brand_id, 40000)
-    products = []
 
-    for i, item in enumerate(items):
-        print(f"\n  [{i+1}/{len(items)}] Checking price: {item['name'][:50]}")
-        price, page_processor = await get_price_from_product_page(page, item["url"])
+    discovered = await get_links_from_search(page, brand_id, brand_info)
+    disc_by_id = {}
+    for it in discovered:
+        pid = _fk_id(it["url"]) or it["name"]
+        disc_by_id.setdefault(pid, it)
+
+    prev_by_id = {}
+    for p in prev_list:
+        pid = _fk_id(p.get("url", "")) or p.get("name", "")
+        if pid:
+            prev_by_id[pid] = p
+
+    # Targets: previously-tracked products first (always re-priced), then new discoveries.
+    order, seen = [], set()
+    for p in prev_list:
+        pid = _fk_id(p.get("url", "")) or p.get("name", "")
+        if pid and pid not in seen and p.get("url"):
+            order.append(("prev", pid, p)); seen.add(pid)
+    new_count = 0
+    for pid, it in disc_by_id.items():
+        if pid not in seen:
+            order.append(("new", pid, it)); seen.add(pid); new_count += 1
+    print(f"  Tracking {len(prev_list)} known + {new_count} newly discovered")
+
+    products = []
+    for i, (kind, pid, obj) in enumerate(order):
+        url, name = obj.get("url"), obj.get("name", "")
+        print(f"\n  [{i+1}/{len(order)}] {name[:50]}")
+        price, page_processor = await get_price_from_product_page(page, url)
+        prev = prev_by_id.get(pid)
 
         if price == 0 or price < 5000 or price > max_price:
-            print(f"    Skipping — price Rs.{price:,} out of range")
+            # Keep a tracked product's last-known record so its history line doesn't break.
+            if prev:
+                kept = dict(prev)
+                kept["last_checked"] = today
+                kept["available"] = False
+                kept.setdefault("first_seen", today)
+                products.append(kept)
+                print(f"    [KEEP] retained last-known (current Rs.{price:,} out of range)")
+            else:
+                print(f"    Skipping — price Rs.{price:,} out of range")
             continue
 
-        product = parse_specs_from_text(item["text"], brand_info["name"])
-        product["name"] = item["name"]
-        product["url"] = item["url"]
+        if kind == "new":
+            product = parse_specs_from_text(obj.get("text", ""), brand_info["name"])
+            product["rating"] = obj.get("rating", 0)
+            product["reviews"] = obj.get("reviews", 0)
+        else:
+            product = dict(prev)   # reuse known specs; just refresh the price
+        product["name"] = name
+        product["url"] = url
         product["price_inr"] = price
-        product["rating"] = item["rating"]
-        product["reviews"] = item["reviews"]
-        
-        # Prefer product-page processor over card-text processor (more reliable)
         if page_processor:
             product["processor"] = page_processor
+        product["first_seen"]  = (prev or {}).get("first_seen") or today
+        product["last_checked"] = today
+        product["available"]   = True
 
         products.append(product)
-        print(f"    [OK] Rs.{price:,} | {product['ram_gb']}GB | {product['storage_gb']}GB | {product['processor']} | {product['rating']} stars")
-        if len(products) >= 10:
-            break
+        print(f"    [OK] Rs.{price:,} | {product.get('ram_gb')}GB | {product.get('storage_gb')}GB | {product.get('processor')} | {product.get('rating')} stars")
 
-    products.sort(key=lambda x: x["reviews"], reverse=True)
-    return products[:10]
+    # Sort by reviews for display order — NO truncation, so tracked products persist.
+    products.sort(key=lambda x: x.get("reviews", 0), reverse=True)
+    return products
 
 
 async def scrape_flipkart():
     print("=== FLIPKART SCRAPER — PLAYWRIGHT (accurate price mode) ===")
     print("Visiting each product page for verified pricing\n")
 
+    # Previously-tracked products — always re-scraped so price history stays continuous.
+    prev_cache = _load_flipkart_cache()
     all_data = {}
 
     async with async_playwright() as p:
@@ -384,7 +444,9 @@ async def scrape_flipkart():
             pass
 
         for brand_id, brand_info in BRAND_URLS.items():
-            products = await scrape_brand(page, brand_id, brand_info)
+            prev_brand = prev_cache.get(brand_id) if isinstance(prev_cache.get(brand_id), dict) else {}
+            prev_list = prev_brand.get("products", []) if prev_brand else []
+            products = await scrape_brand(page, brand_id, brand_info, prev_list)
             all_data[brand_id] = {
                 "name": brand_info["name"],
                 "products": products,

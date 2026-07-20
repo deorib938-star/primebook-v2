@@ -142,10 +142,22 @@ function shortName(m) {
 }
 
 // ─── Shared cell styles ───────────────────────────────────────────────────────
+// Frozen left columns: Spec + the selected Primebook column(s) stay pinned while
+// competitor columns scroll horizontally. Fixed widths keep the sticky offsets aligned.
+const SPEC_W = 130
+const PRIME_W = 150
+const PRIME_STICKY_BG = "#26221a"   // opaque gold tint so scrolled cells don't bleed through
+const primeLeft = pos => SPEC_W + pos * PRIME_W
+const stickyPrimeCell = (pos, isLast, z = 1) => ({
+  position: "sticky", left: primeLeft(pos), zIndex: z,
+  backgroundColor: PRIME_STICKY_BG, width: PRIME_W, minWidth: PRIME_W, maxWidth: PRIME_W,
+  borderRight: isLast ? `2px solid ${BORDER}` : undefined,
+})
+
 const thStyle  = { padding: "10px 12px", fontSize: "11px", fontWeight: "700", color: TEXT, textAlign: "left", borderBottom: `1px solid ${BORDER}`, whiteSpace: "nowrap", backgroundColor: "#141820" }
 const tdStyle  = { padding: "10px 12px", fontSize: "12px", color: "white", borderBottom: `0.5px solid ${BORDER}`, whiteSpace: "nowrap" }
 const primeTd  = { ...tdStyle, backgroundColor: "rgba(201,168,76,0.05)", fontWeight: "600" }
-const specTd   = { ...tdStyle, borderRight: `1px solid ${BORDER}`, color: TEXT, fontWeight: "700", position: "sticky", left: 0, backgroundColor: "#1a2235", zIndex: 1 }
+const specTd   = { ...tdStyle, borderRight: `1px solid ${BORDER}`, color: TEXT, fontWeight: "700", position: "sticky", left: 0, backgroundColor: "#1a2235", zIndex: 1, width: SPEC_W, minWidth: SPEC_W, maxWidth: SPEC_W }
 
 // ─── Point badge — colour by outcome, number only (compact for multi-model) ────
 function PtsBadge({ pts, outcome, prefix }) {
@@ -201,8 +213,6 @@ export default function Overview() {
   const [relevantProducts,setRelevantProducts]= useState([])
   const [priceRangeLabel, setPriceRangeLabel] = useState("")
   const [primebookModels, setPrimebookModels] = useState(officialModels)
-  const [currentPage,     setCurrentPage]     = useState(0)
-  const PRODUCTS_PER_PAGE = 5
 
   // Reference model — sets the price range / product list (lowest selected index)
   const primeIndices        = [...selectedPrimes].sort((a, b) => a - b)
@@ -282,7 +292,6 @@ export default function Overview() {
       })
       setRelevantProducts(merged)
       setPriceRangeLabel(label)
-      setCurrentPage(0)
     })
   }, [selectedBrands, referencePrimeIndex, competitors])
 
@@ -292,11 +301,6 @@ export default function Overview() {
     if (pa !== pb) return pa - pb
     return getScore(referencePrime, a) - getScore(referencePrime, b)
   })
-  const totalPages    = Math.ceil(sortedProducts.length / PRODUCTS_PER_PAGE)
-  const pagedProducts = sortedProducts.slice(
-    currentPage * PRODUCTS_PER_PAGE,
-    (currentPage + 1) * PRODUCTS_PER_PAGE
-  )
 
   // All competitor products (for the stats card)
   const allCompProducts = []
@@ -327,54 +331,54 @@ export default function Overview() {
   }
 
   return (
-    <div style={{ padding: "32px" }}>
+    <div style={{ padding: "24px" }}>
 
       {/* ── Header ── */}
       <p style={{ color: GOLD, fontSize: "10px", fontWeight: "700", letterSpacing: "0.15em" }}>COMPETITOR ANALYSIS</p>
-      <h1 style={{ color: "white", fontSize: "24px", fontWeight: "700", marginTop: "4px" }}>Intelligence Overview</h1>
-      <p style={{ color: MUTED, fontSize: "13px", marginTop: "4px" }}>Budget laptop segment · Rs. 10,000 – Rs. 40,000</p>
-      <div style={{ height: "1px", backgroundColor: BORDER, marginTop: "16px", marginBottom: "24px" }} />
+      <h1 style={{ color: "white", fontSize: "22px", fontWeight: "700", marginTop: "4px" }}>Intelligence Overview</h1>
+      <p style={{ color: MUTED, fontSize: "12px", marginTop: "3px" }}>Budget laptop segment · Rs. 10,000 – Rs. 40,000</p>
+      <div style={{ height: "1px", backgroundColor: BORDER, marginTop: "12px", marginBottom: "18px" }} />
 
       {/* ── Stats row ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "32px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "9px", marginBottom: "12px" }}>
 
-        <div style={{ backgroundColor: CARD, borderRadius: "8px", padding: "20px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}` }}>
-          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.12em" }}>BRANDS TRACKED</p>
-          <p style={{ color: GOLD, fontSize: "28px", fontWeight: "800", fontFamily: "monospace", marginTop: "8px" }}>{Object.keys(competitors).length}</p>
+        <div style={{ backgroundColor: CARD, borderRadius: "8px", padding: "9px 12px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}` }}>
+          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.05em" }}>BRANDS TRACKED</p>
+          <p style={{ color: GOLD, fontSize: "17px", fontWeight: "800", fontFamily: "monospace", marginTop: "3px" }}>{Object.keys(competitors).length}</p>
           <p style={{ color: TEXT, fontSize: "10px", marginTop: "6px" }}>{Object.values(competitors).map(c => c.name).join(" · ")}</p>
         </div>
 
-        <div onClick={() => setShowAllProducts(!showAllProducts)} style={{ backgroundColor: CARD, borderRadius: "8px", padding: "20px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}`, cursor: "pointer" }}>
-          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.12em" }}>PRODUCTS SCRAPED</p>
-          <p style={{ color: GOLD, fontSize: "28px", fontWeight: "800", fontFamily: "monospace", marginTop: "8px" }}>
+        <div onClick={() => setShowAllProducts(!showAllProducts)} style={{ backgroundColor: CARD, borderRadius: "8px", padding: "9px 12px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}`, cursor: "pointer" }}>
+          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.05em" }}>PRODUCTS SCRAPED</p>
+          <p style={{ color: GOLD, fontSize: "17px", fontWeight: "800", fontFamily: "monospace", marginTop: "3px" }}>
             {Object.values(rawProducts).reduce((s, b) => s + (b.total || 0), 0) || allCompProducts.length}
           </p>
           <p style={{ color: TEXT, fontSize: "10px", marginTop: "4px" }}>Amazon + Flipkart</p>
           <p style={{ color: GOLD, fontSize: "10px", marginTop: "4px" }}>{showAllProducts ? "▲ Hide" : "▼ Click to view all"}</p>
         </div>
 
-        <div style={{ backgroundColor: CARD, borderRadius: "8px", padding: "20px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}` }}>
-          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.12em" }}>PRICE RANGE</p>
-          <p style={{ color: GOLD, fontSize: "24px", fontWeight: "800", fontFamily: "monospace", marginTop: "8px" }}>Rs.10K–40K</p>
+        <div style={{ backgroundColor: CARD, borderRadius: "8px", padding: "9px 12px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}` }}>
+          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.05em" }}>PRICE RANGE</p>
+          <p style={{ color: GOLD, fontSize: "16px", fontWeight: "800", fontFamily: "monospace", marginTop: "3px" }}>Rs.10K–40K</p>
           <p style={{ color: TEXT, fontSize: "10px", marginTop: "6px" }}>Budget laptop segment</p>
         </div>
 
-        <div style={{ backgroundColor: CARD, borderRadius: "8px", padding: "20px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}` }}>
-          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.12em" }}>LAST UPDATED</p>
-          <p style={{ color: GOLD, fontSize: "24px", fontWeight: "800", fontFamily: "monospace", marginTop: "8px" }}>{products.last_updated?.split(" ")[0] || "Today"}</p>
+        <div style={{ backgroundColor: CARD, borderRadius: "8px", padding: "9px 12px", border: `0.5px solid ${BORDER}`, borderTop: `2px solid ${GOLD}` }}>
+          <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.05em" }}>LAST UPDATED</p>
+          <p style={{ color: GOLD, fontSize: "16px", fontWeight: "800", fontFamily: "monospace", marginTop: "3px" }}>{products.last_updated?.split(" ")[0] || "Today"}</p>
           <p style={{ color: TEXT, fontSize: "10px", marginTop: "6px" }}>Amazon + Flipkart caches</p>
         </div>
       </div>
 
       {/* ── All products table (expandable) ── */}
       {showAllProducts && (
-        <div style={{ marginBottom: "32px" }}>
+        <div style={{ marginBottom: "12px" }}>
           <p style={{ color: GOLD, fontSize: "10px", fontWeight: "700", letterSpacing: "0.15em", marginBottom: "16px" }}>ALL SCRAPED PRODUCTS</p>
           {Object.entries(rawProducts).map(([brandId, brandData]) => {
             if (!brandData.products?.length) return null
             return (
               <div key={brandId} style={{ marginBottom: "24px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "12px", padding: "10px 16px", backgroundColor: "#141820", borderRadius: "8px 8px 0 0", border: `0.5px solid ${BORDER}`, borderBottom: `2px solid ${GOLD}` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "9px", padding: "10px 16px", backgroundColor: "#141820", borderRadius: "8px 8px 0 0", border: `0.5px solid ${BORDER}`, borderBottom: `2px solid ${GOLD}` }}>
                   <span style={{ color: GOLD, fontSize: "14px", fontWeight: "700" }}>{brandData.name}</span>
                   <span style={{ color: TEXT, fontSize: "11px", backgroundColor: CARD, padding: "2px 8px", borderRadius: "3px" }}>{brandData.total} products</span>
                   <span style={{ color: MUTED, fontSize: "10px", marginLeft: "auto" }}>Amazon: {brandData.amazon_count} · Flipkart: {brandData.flipkart_count}</span>
@@ -428,89 +432,47 @@ export default function Overview() {
 
       {/* ── Our Products ── */}
       <p style={{ color: GOLD, fontSize: "10px", fontWeight: "700", letterSpacing: "0.15em", marginBottom: "12px" }}>OUR PRODUCTS — SELECT ONE OR MORE TO COMPARE</p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "16px", marginBottom: "32px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "9px", marginBottom: "12px" }}>
         {primebookModels.map((model, i) => {
           const isSel = selectedPrimes.has(i)
           return (
-            <div key={i} onClick={() => togglePrime(i)} style={{
-              backgroundColor: CARD, borderRadius: "8px", padding: "20px",
+            <div key={i} onClick={() => togglePrime(i)} title={`Compares vs Rs.${(model.priceRangeMin/1000).toFixed(0)}K–${(model.priceRangeMax/1000).toFixed(0)}K`} style={{
+              backgroundColor: isSel ? "rgba(201,168,76,0.09)" : CARD, borderRadius: "6px", padding: "8px 11px",
               border: isSel ? `1px solid ${GOLD}` : `0.5px solid ${BORDER}`,
-              borderTop: `2px solid ${isSel ? GOLD : BORDER}`,
-              cursor: "pointer", textAlign: "center",
+              cursor: "pointer",
             }}>
-              <p style={{ color: GOLD, fontSize: "10px", fontWeight: "700", letterSpacing: "0.15em" }}>PRIMEBOOK</p>
-              <h3 style={{ color: "white", fontSize: "16px", fontWeight: "700", margin: "6px 0" }}>{shortName(model)}</h3>
-              <p style={{ color: GOLD, fontSize: "22px", fontWeight: "800", fontFamily: "monospace" }}>Rs. {model.price.toLocaleString()}</p>
-
-              {model.isReal ? (
-                <span style={{ display: "inline-block", marginTop: "4px", fontSize: "9px", fontWeight: "700", padding: "2px 6px", borderRadius: "4px", background: "rgba(34,197,94,0.15)", color: "#4ade80" }}>
-                  Live · {model.realSource}
+              <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "6px" }}>
+                <span style={{ color: isSel ? GOLD : "white", fontSize: "13px", fontWeight: "700" }}>
+                  {isSel ? "✓ " : ""}{shortName(model)}
                 </span>
-              ) : (
-                <span style={{ display: "inline-block", marginTop: "4px", fontSize: "9px", fontWeight: "700", padding: "2px 6px", borderRadius: "4px", background: "rgba(234,179,8,0.15)", color: "#facc15" }}>
-                  Official price
-                </span>
-              )}
-
-              <div style={{ height: "0.5px", backgroundColor: BORDER, margin: "10px 0" }} />
-              <p style={{ color: TEXT, fontSize: "12px", lineHeight: "1.8" }}>
-                {model.ram}GB RAM · {model.storage}GB · {model.display}" · {model.battery}hrs
+                <span style={{ color: GOLD, fontSize: "13px", fontWeight: "800", fontFamily: "monospace" }}>Rs. {model.price.toLocaleString()}</span>
+              </div>
+              <p style={{ color: MUTED, fontSize: "10px", marginTop: "3px" }}>
+                {model.ram}GB · {model.storage}GB · {model.display}" · {model.battery}hrs
               </p>
-              {model.isReal && model.officialPrice !== model.price && (
-                <p style={{ color: "#6b7280", fontSize: "9px", marginTop: "4px" }}>Official Rs. {model.officialPrice.toLocaleString()}</p>
-              )}
-              <p style={{ color: "#818cf8", fontSize: "10px", marginTop: "8px", fontWeight: "600" }}>
-                Compares: Rs.{(model.priceRangeMin / 1000).toFixed(0)}K – Rs.{(model.priceRangeMax / 1000).toFixed(0)}K
-              </p>
-              {isSel && <p style={{ color: GOLD, fontSize: "11px", fontWeight: "700", marginTop: "8px" }}>SELECTED</p>}
             </div>
           )
         })}
       </div>
 
-      {/* ── Primebook brand banner + Competitor brand cards ── */}
+      {/* ── Brand row: our brand (gold) + competitor brand cards ── */}
       <p style={{ color: GOLD, fontSize: "10px", fontWeight: "700", letterSpacing: "0.15em", marginBottom: "12px" }}>SELECT COMPETITOR BRANDS</p>
-
-      {/* Our brand banner */}
-      <div style={{ marginBottom: "16px", backgroundColor: "rgba(201,168,76,0.06)", borderRadius: "8px", padding: "16px 20px", border: `1px solid ${GOLD}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-          <span style={{ background: GOLD, color: "#0d1117", fontSize: "10px", fontWeight: "800", padding: "3px 8px", borderRadius: "3px" }}>OUR BRAND</span>
-          <span style={{ color: GOLD, fontWeight: "700", fontSize: "18px" }}>Primebook</span>
-        </div>
-        <div style={{ display: "flex", gap: "32px", flexWrap: "wrap" }}>
-          <div style={{ textAlign: "center" }}>
-            <p style={{ color: MUTED, fontSize: "9px", fontWeight: "700", letterSpacing: "0.1em" }}>MARKET SHARE</p>
-            <p style={{ color: GOLD, fontSize: "20px", fontWeight: "800", fontFamily: "monospace" }}>3%</p>
-            <p style={{ color: MUTED, fontSize: "9px" }}>budget segment</p>
-          </div>
-          <div style={{ textAlign: "center" }}>
-            <p style={{ color: MUTED, fontSize: "9px", fontWeight: "700", letterSpacing: "0.1em" }}>MODELS</p>
-            <p style={{ color: TEXT, fontSize: "12px", fontWeight: "600" }}>Neo · Pro · Max</p>
-          </div>
-          <a href="https://primebook.in" target="_blank" rel="noreferrer" style={{ color: GOLD, fontSize: "11px", fontWeight: "600", textDecoration: "none", alignSelf: "center" }}>
-            Official Site →
-          </a>
-        </div>
-      </div>
 
       {/* Competitor cards */}
       {loading ? <p style={{ color: MUTED }}>Loading...</p> : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "16px", marginBottom: "32px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "9px", marginBottom: "12px" }}>
           {Object.entries(competitors).map(([id, comp]) => {
             const isSel = selectedBrands.has(id)
             return (
               <div key={id} onClick={() => toggleBrand(id)} style={{
-                backgroundColor: CARD, borderRadius: "8px", padding: "16px",
+                backgroundColor: isSel ? "rgba(201,168,76,0.09)" : CARD, borderRadius: "6px", padding: "7px 10px",
                 border: isSel ? `1px solid ${GOLD}` : `0.5px solid ${BORDER}`,
-                borderTop: `2px solid ${isSel ? GOLD : BORDER}`,
                 textAlign: "center", cursor: "pointer",
               }}>
-                <p style={{ color: MUTED, fontSize: "10px", fontWeight: "700", marginBottom: "4px" }}>{comp.market_share} SHARE</p>
-                <p style={{ color: "white", fontWeight: "700", fontSize: "16px", marginBottom: "8px" }}>{comp.name}</p>
-                {isSel && <p style={{ color: GOLD, fontSize: "10px", fontWeight: "700", marginBottom: "8px" }}>SELECTED</p>}
-                <a href={comp.website} target="_blank" rel="noreferrer" onClick={e => e.stopPropagation()} style={{ color: GOLD, fontSize: "11px", fontWeight: "600", textDecoration: "none" }}>
-                  Official Site →
-                </a>
+                <p style={{ color: isSel ? GOLD : "white", fontWeight: "700", fontSize: "13px" }}>
+                  {isSel ? "✓ " : ""}{comp.name}
+                </p>
+                <p style={{ color: MUTED, fontSize: "9px", marginTop: "2px" }}>{comp.market_share} share</p>
               </div>
             )
           })}
@@ -521,8 +483,8 @@ export default function Overview() {
       {relevantProducts.length > 0 && (
         <>
           {/* Info bar */}
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "12px", alignItems: "center" }}>
-            <span style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.12em" }}>SHOWING {relevantProducts.length} PRODUCTS:</span>
+          <div style={{ display: "flex", gap: "9px", flexWrap: "wrap", marginBottom: "12px", alignItems: "center" }}>
+            <span style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.05em" }}>SHOWING {relevantProducts.length} PRODUCTS:</span>
             <span style={{ background: "rgba(201,168,76,0.12)", color: GOLD, fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "3px" }}>
               {relevantProducts.length - oorCount} IN RANGE
             </span>
@@ -531,22 +493,19 @@ export default function Overview() {
                 {oorCount} OUT OF RANGE
               </span>
             )}
-            <span style={{ color: "#818cf8", fontSize: "10px", marginLeft: "auto" }}>
-              Comparison range: {priceRangeLabel}
-            </span>
           </div>
 
           {/* Score weight legend + outcome colour key */}
           <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginBottom: "10px", alignItems: "center" }}>
-            <span style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.12em" }}>SCORE WEIGHTS:</span>
+            <span style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.05em" }}>SCORE WEIGHTS:</span>
             {COMP_SPECS.map((s, i) => (
               <span key={i} style={{ background: `${s.wColor}22`, color: s.wColor, fontSize: "10px", fontWeight: "700", padding: "2px 8px", borderRadius: "3px" }}>
                 {s.label} {s.wLabel}
               </span>
             ))}
           </div>
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", marginBottom: "16px", alignItems: "center" }}>
-            <span style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.12em" }}>POINTS:</span>
+          <div style={{ display: "flex", gap: "9px", flexWrap: "wrap", marginBottom: "16px", alignItems: "center" }}>
+            <span style={{ color: MUTED, fontSize: "10px", fontWeight: "700", letterSpacing: "0.05em" }}>POINTS:</span>
             {[["win", "Primebook wins"], ["equal", "Tie"], ["loss", "Primebook loses"]].map(([k, txt]) => (
               <span key={k} style={{ display: "inline-flex", alignItems: "center", gap: "5px" }}>
                 <span style={{ width: "10px", height: "10px", borderRadius: "2px", background: OUTCOME_COLOR[k] }} />
@@ -559,54 +518,19 @@ export default function Overview() {
             <p style={{ color: GOLD, fontSize: "10px", fontWeight: "700", letterSpacing: "0.15em", margin: 0 }}>
               COMPARISON — {primeNames.toUpperCase()} vs {brandNames.toUpperCase()}
             </p>
-            {totalPages > 1 && (
-              <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                <span style={{ color: TEXT, fontSize: "10px" }}>
-                  Showing {currentPage * PRODUCTS_PER_PAGE + 1}–{Math.min((currentPage + 1) * PRODUCTS_PER_PAGE, relevantProducts.length)} of {relevantProducts.length}
-                </span>
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
-                  disabled={currentPage === 0}
-                  style={{
-                    fontSize: "11px", padding: "4px 10px", borderRadius: "4px",
-                    border: `1px solid ${BORDER}`, backgroundColor: "transparent",
-                    color: currentPage === 0 ? MUTED : GOLD,
-                    cursor: currentPage === 0 ? "not-allowed" : "pointer",
-                    opacity: currentPage === 0 ? 0.4 : 1,
-                  }}
-                >
-                  ← Prev
-                </button>
-                <span style={{ color: TEXT, fontSize: "11px", fontWeight: "600" }}>
-                  Page {currentPage + 1} / {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
-                  disabled={currentPage >= totalPages - 1}
-                  style={{
-                    fontSize: "11px", padding: "4px 10px", borderRadius: "4px",
-                    border: `1px solid ${currentPage >= totalPages - 1 ? BORDER : GOLD}`,
-                    backgroundColor: currentPage >= totalPages - 1 ? "transparent" : "rgba(201,168,76,0.1)",
-                    color: currentPage >= totalPages - 1 ? MUTED : GOLD,
-                    cursor: currentPage >= totalPages - 1 ? "not-allowed" : "pointer",
-                    opacity: currentPage >= totalPages - 1 ? 0.4 : 1,
-                    fontWeight: "600",
-                  }}
-                >
-                  Next →
-                </button>
-              </div>
-            )}
+            <span style={{ color: TEXT, fontSize: "10px" }}>
+              {sortedProducts.length} products · scroll horizontally →
+            </span>
           </div>
 
           <div style={{ overflowX: "auto", borderRadius: "8px", border: `0.5px solid ${BORDER}` }}>
             <table style={{ width: "100%", borderCollapse: "collapse" }}>
               <thead>
                 <tr>
-                  <th style={{ ...thStyle, minWidth: "120px", borderRight: `1px solid ${BORDER}`, position: "sticky", left: 0, zIndex: 2 }}>Spec</th>
-                  {/* Our product columns (multi-select) */}
-                  {primeCols.map(({ idx, model }) => (
-                    <th key={idx} style={{ ...thStyle, color: GOLD, backgroundColor: "rgba(201,168,76,0.06)", minWidth: "150px" }}>
+                  <th style={{ ...thStyle, borderRight: `1px solid ${BORDER}`, position: "sticky", left: 0, zIndex: 3, width: SPEC_W, minWidth: SPEC_W, maxWidth: SPEC_W }}>Spec</th>
+                  {/* Our product columns (multi-select) — pinned next to Spec */}
+                  {primeCols.map(({ idx, model }, pos) => (
+                    <th key={idx} style={{ ...thStyle, color: GOLD, ...stickyPrimeCell(pos, pos === primeCols.length - 1, 2) }}>
                       {model.name}
                       {primeCols.length > 1 && idx === referencePrimeIndex && (
                         <><br /><span style={{ color: "#818cf8", fontSize: "9px", fontWeight: "600" }}>SETS RANGE</span></>
@@ -614,8 +538,8 @@ export default function Overview() {
                     </th>
                   ))}
                   {/* Competitor columns */}
-                  {pagedProducts.map((comp, i) => (
-                    <CompHeader key={i} index={currentPage * PRODUCTS_PER_PAGE + i} brandName={comp._brandName} product={comp} />
+                  {sortedProducts.map((comp, i) => (
+                    <CompHeader key={i} index={i} brandName={comp._brandName} product={comp} />
                   ))}
                 </tr>
               </thead>
@@ -624,11 +548,11 @@ export default function Overview() {
 
                 {/* SCORE ROW — one score per selected Primebook model */}
                 <tr style={{ borderBottom: `2px solid ${BORDER}` }}>
-                  <td style={{ ...tdStyle, borderRight: `1px solid ${BORDER}`, fontWeight: "700", color: "white", backgroundColor: "#141820", position: "sticky", left: 0, zIndex: 1 }}>Score</td>
-                  {primeCols.map(({ idx }) => (
-                    <td key={idx} style={{ ...primeTd, color: GOLD, fontWeight: "700" }}>—</td>
+                  <td style={{ ...tdStyle, borderRight: `1px solid ${BORDER}`, fontWeight: "700", color: "white", backgroundColor: "#141820", position: "sticky", left: 0, zIndex: 2, width: SPEC_W, minWidth: SPEC_W, maxWidth: SPEC_W }}>Score</td>
+                  {primeCols.map(({ idx }, pos) => (
+                    <td key={idx} style={{ ...primeTd, color: GOLD, fontWeight: "700", ...stickyPrimeCell(pos, pos === primeCols.length - 1) }}>—</td>
                   ))}
-                  {pagedProducts.map((comp, i) => (
+                  {sortedProducts.map((comp, i) => (
                     <td key={i} style={{ ...tdStyle, backgroundColor: comp.out_of_range ? OOR_BG : "transparent" }}>
                       <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
                         {primeCols.map(({ idx, model }) => {
@@ -650,10 +574,10 @@ export default function Overview() {
                 {COMP_SPECS.map(spec => (
                   <tr key={spec.key}>
                     <td style={specTd}>{spec.label} <span style={{ color: spec.wColor, fontSize: "9px" }}>{spec.wLabel}</span></td>
-                    {primeCols.map(({ idx, model }) => (
-                      <td key={idx} style={{ ...primeTd, ...(spec.primeStyle || {}) }}>{spec.primeVal(model)}</td>
+                    {primeCols.map(({ idx, model }, pos) => (
+                      <td key={idx} style={{ ...primeTd, ...(spec.primeStyle || {}), ...stickyPrimeCell(pos, pos === primeCols.length - 1) }}>{spec.primeVal(model)}</td>
                     ))}
-                    {pagedProducts.map((comp, i) => (
+                    {sortedProducts.map((comp, i) => (
                       <td key={i} style={{ ...tdStyle, backgroundColor: comp.out_of_range ? OOR_BG : "transparent" }}>
                         <span>{spec.compVal(comp)}</span>
                         {primeCols.map(({ idx, model }) => {

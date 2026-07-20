@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react"
 import axios from "axios"
+import ContentStudioAI from "../components/ContentStudioAI"
 import {
   Chart as ChartJS, BarController, BarElement, LineController, LineElement, PointElement,
   RadarController, RadialLinearScale, CategoryScale, LinearScale, Tooltip, Legend, Filler,
@@ -306,74 +307,7 @@ function PostsTab() {
 
 // ═══ CONTENT STRATEGY (AI) ════════════════════════════════════════════════════
 function ContentTab() {
-  const [s, setS] = useState(null)
-  useEffect(() => { axios.get(`${API}/instagram/content-strategy`).then(r => setS(r.data)).catch(() => setS({ error: "network" })) }, [])
-  if (!s) return <Loading what="AI content strategy" />
-  if (s.error) return <div style={{ color: RED, padding: 20 }}>AI error: {String(s.error).slice(0, 200)}</div>
-
-  const swotBox = (title, items, color) => (
-    <div style={{ ...card, borderTop: `2px solid ${color}` }}>
-      <div style={{ ...label, color }}>{title}</div>
-      <ul style={{ margin: "8px 0 0", paddingLeft: 16, color: TEXT, fontSize: 12, lineHeight: 1.6 }}>{(items || []).map((x, i) => <li key={i}>{x}</li>)}</ul>
-    </div>
-  )
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
-      {s.optimal_cadence && (
-        <div style={{ ...card, borderColor: GOLD, display: "flex", alignItems: "center", gap: 14 }}>
-          <Clock size={20} color={GOLD} />
-          <div>
-            <div style={label}>Recommended cadence</div>
-            <div style={{ color: "white", fontSize: 15, fontWeight: 700, marginTop: 3 }}>{s.optimal_cadence.posts_per_week} posts / week · {s.optimal_cadence.reel_ratio}</div>
-            <div style={{ color: TEXT, fontSize: 11, marginTop: 2 }}>{s.optimal_cadence.rationale}</div>
-          </div>
-        </div>
-      )}
-      <div>
-        <SectionTitle icon={Lightbulb}>Content ideas for Primebook</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-          {(s.content_ideas || []).map((c, i) => (
-            <div key={i} style={{ ...card, display: "flex", gap: 10 }}>
-              <Lightbulb size={16} color={GOLD} style={{ flexShrink: 0, marginTop: 2 }} />
-              <div><div style={{ color: "white", fontSize: 13, fontWeight: 600 }}>{c.idea}</div>
-                <div style={{ color: TEXT, fontSize: 11, marginTop: 4 }}>{c.why}</div>
-                {c.format && <div style={{ marginTop: 6 }}><Pill color={c.format === "Reel" ? PURPLE : BLUE}>{c.format}</Pill></div>}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-        <div style={card}><SectionTitle icon={Target}>Content gaps</SectionTitle>
-          {(s.content_gaps || []).map((g, i) => (
-            <div key={i} style={{ marginBottom: 10 }}><div style={{ color: "white", fontSize: 12, fontWeight: 600 }}>🎯 {g.gap}</div><div style={{ color: TEXT, fontSize: 11 }}>{g.why_primebook}</div></div>
-          ))}
-        </div>
-        <div style={card}><SectionTitle icon={Film}>Format mix</SectionTitle>
-          {(s.format_mix || []).map((f, i) => (
-            <div key={i} style={{ marginBottom: 10 }}><div style={{ color: "white", fontSize: 12, fontWeight: 600 }}>{f.format}</div><div style={{ color: TEXT, fontSize: 11 }}>{f.note}</div></div>
-          ))}
-        </div>
-      </div>
-      <div>
-        <SectionTitle>Caption patterns & hashtag themes</SectionTitle>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 12 }}>{(s.caption_patterns || []).map((p, i) => <Pill key={i}>{p.pattern}</Pill>)}</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12 }}>
-          {(s.hashtag_themes || []).map((t, i) => (
-            <div key={i} style={{ ...card, padding: 12 }}><div style={{ color: PINK, fontSize: 12, fontWeight: 700 }}># {t.theme}</div><div style={{ color: TEXT, fontSize: 11, marginTop: 6 }}>{t.note}</div></div>
-          ))}
-        </div>
-      </div>
-      <div>
-        <SectionTitle note="Primebook vs competitors">SWOT</SectionTitle>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
-          {swotBox("STRENGTHS", s.swot?.strengths, GREEN)}
-          {swotBox("WEAKNESSES", s.swot?.weaknesses, RED)}
-          {swotBox("OPPORTUNITIES", s.swot?.opportunities, BLUE)}
-          {swotBox("THREATS", s.swot?.threats, "#f97316")}
-        </div>
-      </div>
-    </div>
-  )
+  return <ContentStudioAI platform="instagram" />
 }
 
 // ═══ GROWTH ══════════════════════════════════════════════════════════════════

@@ -5,6 +5,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from competitor_registry import competitors, primebook
+from agents import Agent, run_crew, crew_covered
 import json
 import os
 import re
@@ -28,6 +29,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Content Strategy AI — multi-agent idea + strategy engine for the YouTube/Instagram tabs
+from content_studio import router as content_studio_router
+app.include_router(content_studio_router)
 
 # ================================
 # PRIME MODEL DEFINITIONS
@@ -2337,16 +2342,82 @@ async def youtube_content_strategy(refresh: bool = Query(default=False)):
     peak_day  = DOW_LABELS[best_dow.index(max(best_dow))] if any(best_dow) else "n/a"
     peak_hour = best_hod.index(max(best_hod)) if any(best_hod) else 0
 
-    prompt = f"""You are a senior YouTube content strategist for Primebook India, an Android 15 budget laptop brand (Rs. 10,000-40,000 segment).
-
-Analyze the 5 competitor channels below and produce a content-strategy report for Primebook.
-
-COMPETITOR YOUTUBE DATA:
+    # Shared context handed to every specialist in the crew.
+    ctx = f"""COMPETITOR YOUTUBE DATA:
 {chr(10).join(lines)}
 
 DATA SIGNAL: across competitors' best-performing videos, the most common upload day is {peak_day} and the most common upload hour is ~{peak_hour}:00 UTC.
 
-PRIMEBOOK PRODUCTS: Neo (Rs.19,990 / 6GB / 11.6"), Pro (Rs.25,990 / 8GB / 14.1"), Max (Rs.27,990 / 8GB / 15.6"). All Android 15.
+PRIMEBOOK PRODUCTS: Neo (Rs.19,990 / 6GB / 11.6"), Pro (Rs.25,990 / 8GB / 14.1"), Max (Rs.27,990 / 8GB / 15.6"). All Android 15."""
+
+    _rules = "Base everything on the data above. Return ONLY valid JSON, no markdown, no apostrophes inside strings."
+
+    # ── Multi-agent crew: three focused specialists, run concurrently ──────────
+    crew = [
+        Agent(
+            name="Pattern Analyst",
+            system="You are a YouTube packaging analyst. You study how competitor "
+                   "videos are titled and formatted, and why certain videos outperform.",
+            prompt=f"""{ctx}
+
+As the packaging/format specialist, return ONLY this JSON:
+{{
+  "title_patterns": [{{"pattern": "short phrase", "detail": "1 sentence with evidence"}}],
+  "format_mix": [{{"format": "Tutorials|Reviews|Unboxing|Shorts|Comparisons|Ads", "note": "who does it and how it performs"}}],
+  "outliers": [{{"observation": "what makes certain videos outperform", "takeaway": "actionable point"}}]
+}}
+Give 4-5 items in each array. {_rules}""",
+            keys=["title_patterns", "format_mix", "outliers"],
+            max_tokens=1400,
+        ),
+        Agent(
+            name="Topic Analyst",
+            system="You are a YouTube topic and audience-demand analyst. You cluster "
+                   "what drives views and spot gaps competitors leave open.",
+            prompt=f"""{ctx}
+
+As the topic/gap specialist, return ONLY this JSON:
+{{
+  "topic_clusters": [{{"topic": "2-3 words", "drives_views": "high|medium|low", "note": "1 sentence"}}],
+  "content_gaps": [{{"gap": "topic competitors ignore", "why_primebook": "why it fits Primebook strengths"}}]
+}}
+Give 4-5 items in each array. {_rules}""",
+            keys=["topic_clusters", "content_gaps"],
+            max_tokens=1200,
+        ),
+        Agent(
+            name="Strategy Advisor",
+            system="You are a senior YouTube content strategist for Primebook India, an "
+                   "Android 15 budget laptop brand (Rs. 10,000-40,000 segment). You turn "
+                   "competitive signals into a concrete plan.",
+            prompt=f"""{ctx}
+
+As the strategy specialist, return ONLY this JSON:
+{{
+  "swot": {{"strengths": ["..."], "weaknesses": ["..."], "opportunities": ["..."], "threats": ["..."]}},
+  "content_ideas": [{{"title": "ready-to-use video title", "format": "format", "why": "1 sentence rationale"}}],
+  "optimal_upload": {{"day": "{peak_day}", "time_ist": "convert {peak_hour}:00 UTC to IST", "rationale": "1 sentence"}}
+}}
+Give 3-4 items per SWOT list and 6 content_ideas. {_rules}""",
+            keys=["swot", "content_ideas", "optimal_upload"],
+            max_tokens=1600,
+        ),
+    ]
+
+    REQUIRED = ["title_patterns", "format_mix", "topic_clusters", "content_gaps",
+                "outliers", "swot", "content_ideas", "optimal_upload"]
+
+    result = await run_crew(crew)
+
+    # Graceful degradation: if any specialist dropped a required section, fall
+    # back to the original single-call prompt so we never regress the contract.
+    if not crew_covered(result, REQUIRED):
+        print(f"[content-strategy] crew missing keys {result.get('_meta', {}).get('errors')}; using single-call fallback")
+        fallback_prompt = f"""You are a senior YouTube content strategist for Primebook India, an Android 15 budget laptop brand (Rs. 10,000-40,000 segment).
+
+Analyze the 5 competitor channels below and produce a content-strategy report for Primebook.
+
+{ctx}
 
 Return ONLY this JSON (no markdown, no apostrophes inside strings):
 {{
@@ -2360,8 +2431,14 @@ Return ONLY this JSON (no markdown, no apostrophes inside strings):
   "optimal_upload": {{"day": "{peak_day}", "time_ist": "convert {peak_hour}:00 UTC to IST", "rationale": "1 sentence"}}
 }}
 Give 4-5 items in each array and 6 content_ideas. Base everything on the data above."""
+        fb = await _groq_json(fallback_prompt, 3200)
+        if "error" not in fb and crew_covered(fb, REQUIRED):
+            result = fb
+        elif not crew_covered(result, REQUIRED):
+            # both paths failed to fully cover — surface what we have / the error
+            if "_meta" in result and len(result) == 1:
+                return {"error": "AI crew failed", "detail": result["_meta"]}
 
-    result = await _groq_json(prompt, 3200)
     if "error" not in result:
         _ai_set("yt_content_strategy", result)
     return result
