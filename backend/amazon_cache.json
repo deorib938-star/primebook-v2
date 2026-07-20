@@ -23,7 +23,7 @@
             },
             {
                 "name": "HP Laptop 15s, Intel Celeron N4500, 15.6-inch (39.6 cm), HD, 8GB DDR4, 512GB SSD, Intel UHD Graphics",
-                "price_inr": 26980,
+                "price_inr": 24998,
                 "processor": "Celeron N",
                 "ram_gb": 8,
                 "storage_gb": 512,
@@ -635,7 +635,7 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.4,
-                "reviews": 878,
+                "reviews": 879,
                 "url": "https://www.amazon.in/dp/B0FFMQB3KL",
                 "brand": "Primebook",
                 "source": "Amazon"
@@ -654,7 +654,7 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.3,
-                "reviews": 795,
+                "reviews": 797,
                 "url": "https://www.amazon.in/dp/B0FFM8M9B5",
                 "brand": "Primebook",
                 "source": "Amazon"
@@ -662,5 +662,5 @@
         ],
         "total": 2
     },
-    "last_updated": "2026-07-20 00:18"
+    "last_updated": "2026-07-20 11:21"
 }

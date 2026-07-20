@@ -94,6 +94,15 @@
   "lenovo": [
     {
       "brand": "lenovo",
+      "title": "ThinkPad X1 Carbon Gen 14 Review: Lenovo's Flagship Ultraportable Is Now More Repairable",
+      "description": "The new Space Frame design should extend the life of the laptop, but doesn't alter the familiar X1 Carbon look and feel.",
+      "url": "https://www.cnet.com/tech/computing/lenovo-thinkpad-x1-carbon-gen-14-review-flagship-ultraportable-repairable/",
+      "image": "https://www.cnet.com/a/img/resize/4048a973899342f898d468fea830812cebfc7f3a/hub/2026/07/17/08b3fd93-b695-46bf-a729-a392a361cf9d/thinkpad-x1-carbon-gen-14-space-frame.jpg?auto=webp&fit=crop&height=675&width=1200",
+      "source": "CNET",
+      "published_at": "2026-07-19T09:01:00Z"
+    },
+    {
+      "brand": "lenovo",
       "title": "Lenovo’s new gaming laptop is the first to feature a 240Hz inkjet-printed OLED display",
       "description": "Lenovo’s new Legion R9000P is the first laptop to feature an inkjet-printed OLED display, offering a 240Hz refresh rate and over 99% DCI-P3 coverage.",
       "url": "https://www.digitaltrends.com/computing/lenovos-new-gaming-laptop-is-the-first-to-feature-a-240hz-inkjet-printed-oled-display/",
@@ -172,15 +181,6 @@
       "image": "https://gizmodo.com/app/uploads/2026/07/Lenovo-IdeaPad-Flex-3i-Chromebook-2-in-1-Laptop-1200x675.jpg",
       "source": "Gizmodo",
       "published_at": "2026-07-10T10:40:03Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Save a massive $345 on Lenovo's Ryzen 7-powered IdeaPad Slim 3 laptop",
-      "description": "With Ryzen 7 chip, 16GB of DDR5 RAM, and a 512GB SSD, this laptop is an easy recommendation from me for students and remote workers",
-      "url": "https://www.techradar.com/pro/lenovos-ryzen-7-ideapad-slim-3-touchscreen-laptop-is-a-usd655-back-to-school-and-wfh-steal-with-a-usd345-price-cut-at-best-buy-right-now",
-      "image": "https://cdn.mos.cms.futurecdn.net/xPdp3T97nmqAs4Zyd9F84a-2000-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-07-09T14:10:00Z"
     }
   ],
   "acer": [
@@ -459,5 +459,5 @@
       "published_at": "2026-07-06T05:45:00Z"
     }
   ],
-  "last_updated": "2026-07-19T19:10:24.779381+00:00"
+  "last_updated": "2026-07-20T06:03:38.340809+00:00"
 }
