@@ -94,6 +94,15 @@
   "lenovo": [
     {
       "brand": "lenovo",
+      "title": "23 of the best laptop deals for students next term including Apple, Dell, Lenovo and more",
+      "description": "We've made sure to cover every price point, from the lower end and more affordable, to the more premium and high-performing laptops",
+      "url": "https://www.manchestereveningnews.co.uk/whats-on/family-kids-news/23-best-laptop-deals-students-34296711",
+      "image": "https://i2-prod.manchestereveningnews.co.uk/article34303885.ece/ALTERNATES/s1200d/0_GettyImages-2149691945.jpg",
+      "source": "Manchester Evening News",
+      "published_at": "2026-07-19T19:00:00Z"
+    },
+    {
+      "brand": "lenovo",
       "title": "ThinkPad X1 Carbon Gen 14 Review: Lenovo's Flagship Ultraportable Is Now More Repairable",
       "description": "The new Space Frame design should extend the life of the laptop, but doesn't alter the familiar X1 Carbon look and feel.",
       "url": "https://www.cnet.com/tech/computing/lenovo-thinkpad-x1-carbon-gen-14-review-flagship-ultraportable-repairable/",
@@ -172,15 +181,6 @@
       "image": "https://i0.wp.com/9to5toys.com/wp-content/uploads/sites/5/2026/02/Lenovo-Legion-Pro-7i-gaming-laptop.jpg?resize=1200%2C628&quality=82&strip=all&ssl=1",
       "source": "9to5Toys",
       "published_at": "2026-07-10T15:40:11Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Why Buy a Microsoft Surface Pro When Lenovo Cuts 46% Off the IdeaPad Flex 3i Chromebook, Doubles as Both a Tablet and Laptop?",
-      "description": "This versatile laptop can do just about anything you need it to do, and you can take it anywhere you go.",
-      "url": "https://gizmodo.com/why-buy-a-microsoft-surface-pro-when-lenovo-cuts-46-off-the-ideapad-flex-3i-chromebook-doubles-as-both-a-tablet-and-laptop-2000783851",
-      "image": "https://gizmodo.com/app/uploads/2026/07/Lenovo-IdeaPad-Flex-3i-Chromebook-2-in-1-Laptop-1200x675.jpg",
-      "source": "Gizmodo",
-      "published_at": "2026-07-10T10:40:03Z"
     }
   ],
   "acer": [
@@ -278,6 +278,15 @@
   "dell": [
     {
       "brand": "dell",
+      "title": "23 of the best laptop deals for students next term including Apple, Dell, Lenovo and more",
+      "description": "We've made sure to cover every price point, from the lower end and more affordable, to the more premium and high-performing laptops",
+      "url": "https://www.manchestereveningnews.co.uk/whats-on/family-kids-news/23-best-laptop-deals-students-34296711",
+      "image": "https://i2-prod.manchestereveningnews.co.uk/article34303885.ece/ALTERNATES/s1200d/0_GettyImages-2149691945.jpg",
+      "source": "Manchester Evening News",
+      "published_at": "2026-07-19T19:00:00Z"
+    },
+    {
+      "brand": "dell",
       "title": "3 Common Problems Owners Have With Dell Laptops",
       "description": "When you buy a Dell laptop, you're likely to encounter battery problems on consumer lines, motherboard issues on corporate models, and overheating on Vostro.",
       "url": "https://www.bgr.com/2214889/common-problems-owners-dell-laptops/",
@@ -356,15 +365,6 @@
       "image": "https://cdn.mos.cms.futurecdn.net/42KjXd7gMunoeZjpJxRugN-2000-80.jpg",
       "source": "TechRadar",
       "published_at": "2026-07-08T17:02:07Z"
-    },
-    {
-      "brand": "dell",
-      "title": "Over eight hundred reviews say this laptop is perfect, and with its snappy performance and high-quality features that's now 15% off, it's easy to see why",
-      "description": "The Dell Pro 16 is a highly regarded productivity laptop, garnering over a thousand positive reviews on Dell's website, gushing over its Intel Core Ultra 5 235U vPro CPU and 16GB of RAM, and other features that are now 15% off",
-      "url": "https://www.windowscentral.com/hardware/laptops/over-eight-hundred-reviews-say-this-laptop-is-perfect-and-with-its-snappy-performance-and-high-quality-features-thats-now-15-percent-off-its-easy-to-see-why",
-      "image": "https://cdn.mos.cms.futurecdn.net/Yh77wX2QNjrKaz97oi29AF-2560-80.jpg",
-      "source": "Windows Central",
-      "published_at": "2026-07-08T14:28:25Z"
     }
   ],
   "asus": [
@@ -459,5 +459,5 @@
       "published_at": "2026-07-06T05:45:00Z"
     }
   ],
-  "last_updated": "2026-07-20T06:03:38.340809+00:00"
+  "last_updated": "2026-07-20T07:07:17.326494+00:00"
 }

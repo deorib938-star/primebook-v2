@@ -19,11 +19,14 @@
                 "reviews": 163,
                 "url": "https://www.amazon.in/dp/B0B88K9XNJ",
                 "brand": "HP",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "HP Laptop 15s, Intel Celeron N4500, 15.6-inch (39.6 cm), HD, 8GB DDR4, 512GB SSD, Intel UHD Graphics",
-                "price_inr": 24998,
+                "price_inr": 29990,
                 "processor": "Celeron N",
                 "ram_gb": 8,
                 "storage_gb": 512,
@@ -38,7 +41,10 @@
                 "reviews": 98,
                 "url": "https://www.amazon.in/dp/B0DGQ3JLPF",
                 "brand": "HP",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "HP 14s Intel Celeron Dual Core N4500 Laptop (8GB/512GB SSD/Win 11) 14.0\" HD Display, MSO 24, Black, ",
@@ -57,7 +63,10 @@
                 "reviews": 81,
                 "url": "https://www.amazon.in/dp/B0FYYBXPPD",
                 "brand": "HP",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "HP Laptop 255 G9 (2024), AMD Athlon Silver 3050U - (4GB/256GB SSD/AMD Radeon Graphics/Windows 11) Th",
@@ -76,7 +85,10 @@
                 "reviews": 34,
                 "url": "https://www.amazon.in/dp/B0DH8825W6",
                 "brand": "HP",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "HP 15 (2025), AMD Athlon 7120U Dual Core - (8 GB/256 GB SSD/AMD Radeon Graphics/Windows 11 Home) Thi",
@@ -95,7 +107,10 @@
                 "reviews": 27,
                 "url": "https://www.amazon.in/dp/B0FKM37XT7",
                 "brand": "HP",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "HP 15 (2025), AMD Athlon 7120U Dual Core - (8 GB/256 GB SSD/AMD Radeon Graphics/Windows 11 Pro) Thin",
@@ -114,7 +129,10 @@
                 "reviews": 16,
                 "url": "https://www.amazon.in/dp/B0FKKTBK64",
                 "brand": "HP",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "HP 255 G9 Ryzen 3 Dual Core AMD Ryzen™ 3 Processor 3250U - (8 GB/512 GB SSD/DOS) 841W6PA Thin and Li",
@@ -133,7 +151,10 @@
                 "reviews": 11,
                 "url": "https://www.amazon.in/dp/B0CGM8YD5J",
                 "brand": "HP",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             }
         ],
         "total": 7
@@ -158,7 +179,10 @@
                 "reviews": 1045,
                 "url": "https://www.amazon.in/dp/B0B2RBP83P",
                 "brand": "Lenovo",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Lenovo IdeaPad Slim 3 Intel Celeron N4020 14'' (35.56cm) HD Thin & Light Laptop (4GB/256GB SSD/Windo",
@@ -177,7 +201,10 @@
                 "reviews": 889,
                 "url": "https://www.amazon.in/dp/B09MM4FPMR",
                 "brand": "Lenovo",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Lenovo IdeaPad Slim 1 AMD Ryzen 3 3250U 15.6\" (39.62cm) FHD Thin & Light Laptop (8GB/512GB SSD/Windo",
@@ -196,7 +223,10 @@
                 "reviews": 606,
                 "url": "https://www.amazon.in/dp/B0B4JRH895",
                 "brand": "Lenovo",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Lenovo IdeaPad Slim 1 AMD Ryzen 5 3500U 15.6\" (39.62cm) FHD Thin & Light Laptop (8GB/512GB SSD/Windo",
@@ -215,7 +245,10 @@
                 "reviews": 345,
                 "url": "https://www.amazon.in/dp/B0B4JRBGQ8",
                 "brand": "Lenovo",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Lenovo V15 Intel Core i3 10th Gen 15.6\" Laptop (4GBRAM/256GB SSD/Windows 10 Home/1.45 kg) 82C500X4IH",
@@ -234,7 +267,10 @@
                 "reviews": 22,
                 "url": "https://www.amazon.in/dp/B095YTYHR7",
                 "brand": "Lenovo",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Lenovo V15 ITL (82KBA03JIH) Laptop (Intel Core i3/ 11th Gen/ 8GB RAM/ 512GB SSD/Windows 11 Home/ 15.",
@@ -253,7 +289,10 @@
                 "reviews": 11,
                 "url": "https://www.amazon.in/dp/B0BNQBQS3Q",
                 "brand": "Lenovo",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             }
         ],
         "total": 6
@@ -278,7 +317,10 @@
                 "reviews": 603,
                 "url": "https://www.amazon.in/dp/B0D7PYTTGH",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "acer Aspire 3, Intel Core Celeron N4500, 12GB LPDDR4X RAM, 512GB SSD, HD, 15.6\"/39.62cm, Windows 11 ",
@@ -297,7 +339,10 @@
                 "reviews": 492,
                 "url": "https://www.amazon.in/dp/B0FF4QBNWM",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "acer One 14 Laptop Intel Celeron Processor N4500 (8GB RAM/256GB SSD/Windows 11 Home) Z8-284 with 29.",
@@ -316,7 +361,10 @@
                 "reviews": 64,
                 "url": "https://www.amazon.in/dp/B0C6R3RV7M",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "acer Travelmate Business Laptop Intel Celeron N4020 Dual-core Processor (4GB DDR4/ 128GB SSD/Windows",
@@ -335,7 +383,10 @@
                 "reviews": 30,
                 "url": "https://www.amazon.in/dp/B09MM8DNTN",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "acer Aspire 3, Intel Pentium N6000, 12GB LPDDR4X RAM, 512GB SSD, HD, 15.6\"/39.62cm, Windows 11 Home,",
@@ -354,7 +405,10 @@
                 "reviews": 16,
                 "url": "https://www.amazon.in/dp/B0GLXWY8ZX",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Acer Chromebook, MediaTek Kompanio 540 Octa-Core Processor, 4GB RAM, 64GB eMMC, Full HD, 11.6\" inch ",
@@ -373,7 +427,10 @@
                 "reviews": 4,
                 "url": "https://www.amazon.in/dp/B0H39C1BR4",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Acer One 14 Laptop Z14-55M | 14\" HD Display | AMD Ryzen 3 7320U | 8GB LPDDR5 RAM | 256GB NVMe SSD | ",
@@ -392,7 +449,10 @@
                 "reviews": 1,
                 "url": "https://www.amazon.in/dp/B0H41ZVWJD",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "acer Aspire 3 A325-45 HD Thin & Light Laptop | Intel Celeron N4500 | 8GB LPDDR4X RAM | 512GB SSD | W",
@@ -411,7 +471,10 @@
                 "reviews": 1,
                 "url": "https://www.amazon.in/dp/B0GWRH9G6W",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Acer Chromebook, Intel Celeron- N4500 Processor, 4GB LPDDR4 RAM, 64GB eMMC, 29.46cm /11.6\" inch HD D",
@@ -430,7 +493,10 @@
                 "reviews": 0,
                 "url": "https://www.amazon.in/dp/B0H6MJBCHN",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Acer Chromebook, Intel Celeron- N4500 Processor, 4GB LPDDR4 RAM, 32GB eMMC, 29.46cm /11.6\" inch HD D",
@@ -449,7 +515,10 @@
                 "reviews": 0,
                 "url": "https://www.amazon.in/dp/B0H6MGH59R",
                 "brand": "Acer",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             }
         ],
         "total": 10
@@ -474,7 +543,10 @@
                 "reviews": 35,
                 "url": "https://www.amazon.in/dp/B0BWK4RT4M",
                 "brand": "Dell",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             }
         ],
         "total": 1
@@ -499,7 +571,32 @@
                 "reviews": 47,
                 "url": "https://www.amazon.in/dp/B08ZNX3G9C",
                 "brand": "Asus",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
+            },
+            {
+                "name": "ASUS Chromebook CX1405 (2026), Smartchoice,Intel N50 Processor, Intel UHD iGPU, 8GB RAM, 128GB SSD, ",
+                "price_inr": 27990,
+                "processor": "Intel N50",
+                "ram_gb": 8,
+                "storage_gb": 128,
+                "display_inch": 14.0,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "ChromeOS",
+                "weight_kg": 1.7,
+                "rating": 3.0,
+                "reviews": 18,
+                "url": "https://www.amazon.in/dp/B0GN2Y3T6M",
+                "brand": "Asus",
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "ASUS Chromebook CX1405 (2026), Smartchoice,Intel N50 Processor, Intel UHD iGPU, 8GB RAM, 128GB SSD, ",
@@ -518,7 +615,10 @@
                 "reviews": 12,
                 "url": "https://www.amazon.in/dp/B0GV15KBMK",
                 "brand": "Asus",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "ASUS Chromebook CM1505 (2026), Smartchoice, MediaTek Kompanio 540 Processor, 4GB RAM, 64GB SSD, FHD,",
@@ -537,7 +637,10 @@
                 "reviews": 5,
                 "url": "https://www.amazon.in/dp/B0H2JC16KQ",
                 "brand": "Asus",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "ASUS Chromebook Intel Celeron Dual Core N4500 - (4 GB/64 GB EMMC Storage/Chrome OS) CX1400CKA-NK0453",
@@ -556,7 +659,10 @@
                 "reviews": 4,
                 "url": "https://www.amazon.in/dp/B0D7W7C81D",
                 "brand": "Asus",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "ASUS Chromebook CM1405 (2026), Smartchoice, MediaTek Kompanio 540 Processor, 4GB RAM, 64GB SSD, FHD,",
@@ -575,7 +681,10 @@
                 "reviews": 1,
                 "url": "https://www.amazon.in/dp/B0H2J8DDKH",
                 "brand": "Asus",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "ASUS Chromebook Intel Celeron Dual Core N4500 - (4 GB/128 GB EMMC Storage/Chrome OS) CX1500CKA-NJ041",
@@ -594,7 +703,10 @@
                 "reviews": 1,
                 "url": "https://www.amazon.in/dp/B0DGQT1214",
                 "brand": "Asus",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "ASUS Chromebook CM32 Detachable (2026),Smartchoice,MediaTek Kompanio 540 Processor,4GB RAM,64GB SSD,",
@@ -613,17 +725,20 @@
                 "reviews": 0,
                 "url": "https://www.amazon.in/dp/B0H2DHYFQZ",
                 "brand": "Asus",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             }
         ],
-        "total": 7
+        "total": 8
     },
     "primebook": {
         "name": "Primebook",
         "products": [
             {
                 "name": "Primebook 2 Max (2026) | 8GB RAM, 256GB UFS Storage | 15.6-Inch Full HD IPS Display | 12hrs Battery ",
-                "price_inr": 30980,
+                "price_inr": 29990,
                 "processor": "Mediatek Helio",
                 "ram_gb": 8,
                 "storage_gb": 256,
@@ -635,10 +750,13 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.4,
-                "reviews": 879,
+                "reviews": 880,
                 "url": "https://www.amazon.in/dp/B0FFMQB3KL",
                 "brand": "Primebook",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             },
             {
                 "name": "Primebook 2 Pro (2026) | 8GB RAM, 128GB UFS Storage | 14.1-Inch FHD IPS Display | 14 Hours Battery |",
@@ -657,10 +775,13 @@
                 "reviews": 797,
                 "url": "https://www.amazon.in/dp/B0FFM8M9B5",
                 "brand": "Primebook",
-                "source": "Amazon"
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-20",
+                "available": true
             }
         ],
         "total": 2
     },
-    "last_updated": "2026-07-20 11:21"
+    "last_updated": "2026-07-20 12:25"
 }
