@@ -21,12 +21,12 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
                 "name": "HP Laptop 15s, Intel Celeron N4500, 15.6-inch (39.6 cm), HD, 8GB DDR4, 512GB SSD, Intel UHD Graphics",
-                "price_inr": 29990,
+                "price_inr": 26980,
                 "processor": "Celeron N",
                 "ram_gb": 8,
                 "storage_gb": 512,
@@ -43,7 +43,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -65,14 +65,14 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
                 "name": "HP Laptop 255 G9 (2024), AMD Athlon Silver 3050U - (4GB/256GB SSD/AMD Radeon Graphics/Windows 11) Th",
                 "price_inr": 39999,
                 "processor": "Athlon Silver 3050U",
-                "ram_gb": 4,
+                "ram_gb": 8,
                 "storage_gb": 256,
                 "display_inch": 15.6,
                 "display_quality": "FHD",
@@ -87,7 +87,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -109,7 +109,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -131,7 +131,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -153,7 +153,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             }
         ],
@@ -181,7 +181,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -203,7 +203,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -225,7 +225,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -247,7 +247,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -269,7 +269,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -291,7 +291,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             }
         ],
@@ -313,13 +313,13 @@
                 "keyboard_backlit": false,
                 "os": "Windows 11",
                 "weight_kg": 1.7,
-                "rating": 3.5,
-                "reviews": 603,
+                "rating": 3.4,
+                "reviews": 604,
                 "url": "https://www.amazon.in/dp/B0D7PYTTGH",
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -335,13 +335,13 @@
                 "keyboard_backlit": false,
                 "os": "Windows 11",
                 "weight_kg": 1.7,
-                "rating": 3.6,
-                "reviews": 492,
+                "rating": 3.5,
+                "reviews": 493,
                 "url": "https://www.amazon.in/dp/B0FF4QBNWM",
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -363,7 +363,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -385,7 +385,29 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
+                "available": true
+            },
+            {
+                "name": "Acer Smartchoice Aspire One, AMD Ryzen 3-7320U, 8GB LPDDR5 RAM/ 256GB SSD, 14.0\"/35.56cm TN HD Displ",
+                "price_inr": 36990,
+                "processor": "Ryzen 3",
+                "ram_gb": 8,
+                "storage_gb": 256,
+                "display_inch": 14.0,
+                "display_quality": "HD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 3.4,
+                "reviews": 23,
+                "url": "https://www.amazon.in/dp/B0GYRK1RZC",
+                "brand": "Acer",
+                "source": "Amazon",
+                "first_seen": "2026-07-21",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -407,14 +429,14 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
                 "name": "Acer Chromebook, MediaTek Kompanio 540 Octa-Core Processor, 4GB RAM, 64GB eMMC, Full HD, 11.6\" inch ",
                 "price_inr": 23990,
                 "processor": "Mediatek Kompanio 520",
-                "ram_gb": 4,
+                "ram_gb": 8,
                 "storage_gb": 64,
                 "display_inch": 11.6,
                 "display_quality": "FHD",
@@ -429,7 +451,29 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
+                "available": true
+            },
+            {
+                "name": "Acer Smartchoice Aspire One, AMD Ryzen 3-7320U, Office 2024 + M365 Basic, 8GB LPDDR5 RAM/ 256GB SSD,",
+                "price_inr": 39990,
+                "processor": "Ryzen 3",
+                "ram_gb": 8,
+                "storage_gb": 256,
+                "display_inch": 14.0,
+                "display_quality": "HD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 2.7,
+                "reviews": 3,
+                "url": "https://www.amazon.in/dp/B0GYRJZZ29",
+                "brand": "Acer",
+                "source": "Amazon",
+                "first_seen": "2026-07-21",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -451,7 +495,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -473,7 +517,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -495,7 +539,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -517,11 +561,11 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             }
         ],
-        "total": 10
+        "total": 12
     },
     "dell": {
         "name": "Dell",
@@ -545,7 +589,7 @@
                 "brand": "Dell",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             }
         ],
@@ -573,7 +617,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -595,7 +639,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -617,7 +661,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -639,7 +683,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -661,7 +705,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -683,7 +727,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -705,7 +749,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             },
             {
@@ -727,7 +771,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             }
         ],
@@ -736,28 +780,6 @@
     "primebook": {
         "name": "Primebook",
         "products": [
-            {
-                "name": "Primebook 2 Max (2026) | 8GB RAM, 256GB UFS Storage | 15.6-Inch Full HD IPS Display | 12hrs Battery ",
-                "price_inr": 29990,
-                "processor": "Mediatek Helio",
-                "ram_gb": 8,
-                "storage_gb": 256,
-                "display_inch": 15.6,
-                "display_quality": "FHD",
-                "battery_hours": 12,
-                "webcam": "720p",
-                "keyboard_backlit": false,
-                "os": "PrimeOS 3.0 (Android 15)",
-                "weight_kg": 1.7,
-                "rating": 4.4,
-                "reviews": 880,
-                "url": "https://www.amazon.in/dp/B0FFMQB3KL",
-                "brand": "Primebook",
-                "source": "Amazon",
-                "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
-                "available": true
-            },
             {
                 "name": "Primebook 2 Pro (2026) | 8GB RAM, 128GB UFS Storage | 14.1-Inch FHD IPS Display | 14 Hours Battery |",
                 "price_inr": 26980,
@@ -772,16 +794,38 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.3,
-                "reviews": 797,
+                "reviews": 799,
                 "url": "https://www.amazon.in/dp/B0FFM8M9B5",
                 "brand": "Primebook",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-20",
+                "last_checked": "2026-07-21",
+                "available": true
+            },
+            {
+                "name": "Primebook 2 Max (2026) | 8GB RAM, 256GB UFS Storage | 15.6-Inch Full HD IPS Display | 12hrs Battery ",
+                "price_inr": 29990,
+                "processor": "Mediatek Helio",
+                "ram_gb": 8,
+                "storage_gb": 256,
+                "display_inch": 15.6,
+                "display_quality": "FHD",
+                "battery_hours": 12,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "PrimeOS 3.0 (Android 15)",
+                "weight_kg": 1.7,
+                "rating": 4.4,
+                "reviews": 796,
+                "url": "https://www.amazon.in/dp/B0FFMQB3KL",
+                "brand": "Primebook",
+                "source": "Amazon",
+                "first_seen": "2026-07-20",
+                "last_checked": "2026-07-21",
                 "available": true
             }
         ],
         "total": 2
     },
-    "last_updated": "2026-07-20 12:25"
+    "last_updated": "2026-07-21 11:12"
 }
