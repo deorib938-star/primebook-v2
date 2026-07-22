@@ -30,9 +30,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Content Strategy AI — multi-agent idea + strategy engine for the YouTube/Instagram tabs
+# Content Strategy AI — multi-agent idea + strategy engine for the YouTube/Instagram/Twitter tabs
 from content_studio import router as content_studio_router
 app.include_router(content_studio_router)
+
+# Twitter / X tracking (mirror of the Instagram dashboard)
+from twitter_tracking import router as twitter_router
+app.include_router(twitter_router)
+
+# Cross-platform (Amazon <-> Flipkart) AI product matcher for the price table
+from product_matcher import router as product_matcher_router
+app.include_router(product_matcher_router)
 
 # ================================
 # PRIME MODEL DEFINITIONS
@@ -207,7 +215,34 @@ def is_duplicate(p1, p2):
 # MERGE AMAZON + FLIPKART
 # ================================
 
-def merge_products(amazon_products, flipkart_products):
+def _ai_match_pairs():
+    """Load the AI product-matcher output (product_matches.json). Returns
+    (pairs, known): confident Amazon<->Flipkart URL pairs, and the set of all
+    URLs the matcher has an opinion on. Empty if the file isn't there yet."""
+    pairs, known = set(), set()
+    try:
+        d = json.loads(open("product_matches.json", encoding="utf-8").read() or "{}")
+    except Exception:
+        return pairs, known
+    for r in d.get("matches", []):
+        az = ((r.get("amazon") or {}).get("url")) or ""
+        fk = ((r.get("flipkart") or {}).get("url")) or ""
+        if az: known.add(az)
+        if fk: known.add(fk)
+        try:
+            conf = float(r.get("confidence", 0) or 0)
+        except (TypeError, ValueError):
+            conf = 0.0
+        if az and fk and conf >= 0.90:
+            pairs.add(frozenset((az, fk)))
+    return pairs, known
+
+
+def merge_products(amazon_products, flipkart_products, ai_pairs=None, ai_known=None):
+    # AI matcher is authoritative when it has covered a pair; the old heuristic is a
+    # fallback only for products the AI hasn't seen yet.
+    if ai_pairs is None or ai_known is None:
+        ai_pairs, ai_known = _ai_match_pairs()
     merged = []
     used_flipkart = set()
 
@@ -216,7 +251,10 @@ def merge_products(amazon_products, flipkart_products):
         for i, fp in enumerate(flipkart_products):
             if i in used_flipkart:
                 continue
-            if is_duplicate(ap, fp):
+            au, fu = ap.get("url", ""), fp.get("url", "")
+            ai_same    = bool(au) and bool(fu) and frozenset((au, fu)) in ai_pairs
+            ai_covered = (au in ai_known) and (fu in ai_known)
+            if ai_same or (not ai_covered and is_duplicate(ap, fp)):
                 amazon_price   = ap.get("price_inr", 0)
                 flipkart_price = fp.get("price_inr", 0)
                 if amazon_price > 0 and flipkart_price > 0:
@@ -263,7 +301,12 @@ def merge_products(amazon_products, flipkart_products):
     for p in merged:
         is_dup = False
         for existing in final:
-            if is_duplicate(p, existing):
+            pu = [u for u in (p.get("amazon_url",""), p.get("flipkart_url",""), p.get("url","")) if u]
+            eu = [u for u in (existing.get("amazon_url",""), existing.get("flipkart_url",""), existing.get("url","")) if u]
+            ai_same2 = any(frozenset((a, b)) in ai_pairs for a in pu for b in eu)
+            ai_cov2  = bool(pu) and bool(eu) and all(u in ai_known for u in pu) and all(u in ai_known for u in eu)
+            # merge only if the heuristic says dup AND the AI didn't explicitly keep them apart
+            if is_duplicate(p, existing) and not (ai_cov2 and not ai_same2):
                 # Merge URL and price fields from BOTH so no data is lost
                 merged_amazon_url   = p.get("amazon_url", "")   or existing.get("amazon_url", "")
                 merged_flipkart_url = p.get("flipkart_url", "") or existing.get("flipkart_url", "")
@@ -311,10 +354,12 @@ def get_combined_products():
     all_brands.discard("last_updated")
     all_brands.discard("next_update")
 
+    ai_pairs, ai_known = _ai_match_pairs()   # load AI matches once for all brands
+
     for brand_id in all_brands:
         amazon_products   = amazon.get(brand_id, {}).get("products", [])
         flipkart_products = flipkart.get(brand_id, {}).get("products", [])
-        merged            = merge_products(amazon_products, flipkart_products)
+        merged            = merge_products(amazon_products, flipkart_products, ai_pairs, ai_known)
         brand_name        = (
             amazon.get(brand_id, {}).get("name") or
             flipkart.get(brand_id, {}).get("name") or

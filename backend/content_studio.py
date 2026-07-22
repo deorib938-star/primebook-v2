@@ -26,10 +26,26 @@ from agents import agent_call
 
 GNEWS_KEY = os.environ.get("GNEWS_API_KEY", "")
 
+# Content Strategy AI runs live on user click. Give it a dedicated Groq key so the
+# offline cache-warming batch (which burns the daily token cap) can never starve it.
+# Optional per-platform keys override the studio key; all fall back to the default.
+def _studio_key(platform: str = "") -> str | None:
+    return (os.environ.get(f"GROQ_API_KEY_{platform.upper()}")
+            or os.environ.get("GROQ_API_KEY_STUDIO")
+            or None)
+
+# Per-platform display name + the content formats the idea generator should use.
+PLATFORM_LABEL = {"youtube": "YouTube", "instagram": "Instagram", "twitter": "X (Twitter)"}
+PLATFORM_FORMATS = {
+    "youtube": "Long-form | Short",
+    "instagram": "Reel | Carousel | Story series",
+    "twitter": "Tweet | Thread | Quote-tweet | Poll",
+}
+
 router = APIRouter(prefix="/content-studio", tags=["content-studio"])
 
 STATE_FILE = "content_studio_state.json"
-PLATFORMS = ("youtube", "instagram")
+PLATFORMS = ("youtube", "instagram", "twitter")
 ACTIVE_TARGET = 5
 _LOCK = asyncio.Lock()
 
@@ -128,7 +144,7 @@ async def _live_signals() -> list:
 # ── Generation ────────────────────────────────────────────────────────────────
 async def _forecast(platform: str) -> dict:
     today = _today()
-    plat = "YouTube" if platform == "youtube" else "Instagram"
+    plat = PLATFORM_LABEL.get(platform, "Instagram")
     signals = await _live_signals()
     if signals:
         signal_block = ("REAL HEADLINES FROM THE LAST FEW DAYS (live signal — this is what is "
@@ -158,9 +174,11 @@ Rules:
 - {grounding}
 - 'upcoming' must prioritise the NEXT 1-4 WEEKS. Only include something further out if it has real momentum building NOW. Do NOT pad the list with generic annual events that are months away (no listing Diwali/IPL/exams just because they exist on the calendar) unless a real signal above points to them.
 - Order soonest / most-current first. Do NOT mention anything that already ended before {today}.
+- BRAND SAFETY — never suggest attaching Primebook to sensitive or negative topics: protests, unrest, violence, deaths, tragedy, disasters, scams, exam-leak or political controversy, religion, or anything a brand shouldn't be seen exploiting. A negative headline is NOT a content opportunity — skip it.
+- TIMING HONESTY — do NOT assert a specific results/launch date unless you are confident. Indian board/JEE/NEET/CUET results cluster around Feb–June, not late July; a "download by <date>" deadline is NOT a results announcement. If unsure of exact timing, frame it as a broad season ("exam-results & admissions season") or leave it out — never invent a precise "this week" claim.
 - Give 4-5 items in each list."""
 
-    res = await agent_call(FORECAST_ROLE, prompt, max_tokens=1600, temperature=0.4)
+    res = await agent_call(FORECAST_ROLE, prompt, max_tokens=1600, temperature=0.4, api_key=_studio_key(platform))
     if not isinstance(res, dict) or "error" in res:
         return {"trends_now": [], "upcoming": [], "generated_on": today,
                 "signal_count": len(signals),
@@ -170,9 +188,8 @@ Rules:
 
 
 async def _generate_ideas(platform: str, forecast: dict, avoid: list, n: int) -> list:
-    plat = "YouTube" if platform == "youtube" else "Instagram"
-    formats = ("Long-form | Short" if platform == "youtube"
-               else "Reel | Carousel | Story series")
+    plat = PLATFORM_LABEL.get(platform, "Instagram")
+    formats = PLATFORM_FORMATS.get(platform, "Reel | Carousel | Story series")
     avoid_block = ""
     if avoid:
         avoid_block = ("\n\nDo NOT repeat or lightly reword any of these already-used ideas:\n"
@@ -189,7 +206,9 @@ Generate {n} {plat} content ideas ({formats}). Every idea MUST:
 - ride ONE specific trend/event from the forecast above (current OR upcoming — name it),
 - carry a strategic EDGE: a Primebook advantage competitors literally cannot copy
   (PrimeOS/Android apps, Cloud PC from Rs.19, keymapping/BGMI, sensors, price, underdog voice),
-- be genuinely NEW and bold — never unboxings, "5 reasons", or generic study/price reels.
+- be genuinely NEW and bold — never unboxings, "5 reasons", or generic study/price reels,
+- be BRAND-SAFE: never tie Primebook to protests, unrest, tragedy, deaths, disasters, scams,
+  exam-leak or political/religious controversy. Skip any negative/sensitive angle entirely.
 
 Return ONLY this JSON:
 {{
@@ -205,7 +224,7 @@ Return ONLY this JSON:
     }}
   ]
 }}"""
-    res = await agent_call(CREATOR_ROLE, prompt, max_tokens=2600, temperature=0.7)
+    res = await agent_call(CREATOR_ROLE, prompt, max_tokens=2600, temperature=0.7, api_key=_studio_key(platform))
     raw = res.get("ideas", []) if isinstance(res, dict) else []
     out = []
     for d in raw:

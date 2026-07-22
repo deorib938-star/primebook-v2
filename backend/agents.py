@@ -83,12 +83,18 @@ async def agent_call(
     temperature: float = 0.3,
     model: str | None = None,
     max_retries: int = 4,
+    api_key: str | None = None,
 ) -> dict:
     """Single specialist LLM call. Returns parsed JSON, or {"error": ...}.
+
+    `api_key` lets callers route to a dedicated Groq account/key (e.g. the live
+    Content Strategy AI uses its own key so batch warming can't starve it);
+    falls back to the default GROQ_API_KEY when not given.
 
     Retries per-minute rate limits (honoring the suggested wait); if a model's
     *daily* quota is exhausted (or the wait is impractically long) it falls back
     to a smaller model with a separate quota so the call still succeeds."""
+    key = (api_key or _groq_key()).strip()
     models = [model or _groq_model()]
     if FALLBACK_MODEL not in models:
         models.append(FALLBACK_MODEL)
@@ -101,7 +107,7 @@ async def agent_call(
                     resp = await client.post(
                         GROQ_URL,
                         headers={
-                            "Authorization": f"Bearer {_groq_key()}",
+                            "Authorization": f"Bearer {key}",
                             "Content-Type": "application/json",
                         },
                         json={

@@ -3,6 +3,28 @@
         "name": "HP",
         "products": [
             {
+                "name": "HP 255 Notebook, AMD Athlon Silver 7120U,8GB DDR4, 256GB SSD, 15.6-inch(39.6cm), Anti-Glare, HD Lapt",
+                "price_inr": 38000,
+                "processor": "Others",
+                "ram_gb": 8,
+                "storage_gb": 256,
+                "display_inch": 15.6,
+                "display_quality": "HD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "Windows 11",
+                "weight_kg": 1.7,
+                "rating": 3.9,
+                "reviews": 283,
+                "url": "https://www.amazon.in/dp/B0DV984J97",
+                "brand": "HP",
+                "source": "Amazon",
+                "first_seen": "2026-07-22",
+                "last_checked": "2026-07-22",
+                "available": true
+            },
+            {
                 "name": "HP Laptop 255 G8/G9 AMD Ryzen 3 3250U Dual Core - (8GB/512GB SSD/AMD Radeon Graphics/15.6\" (39.62cm)",
                 "price_inr": 29999,
                 "processor": "Ryzen 3",
@@ -21,12 +43,12 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
                 "name": "HP Laptop 15s, Intel Celeron N4500, 15.6-inch (39.6 cm), HD, 8GB DDR4, 512GB SSD, Intel UHD Graphics",
-                "price_inr": 26980,
+                "price_inr": 25000,
                 "processor": "Celeron N",
                 "ram_gb": 8,
                 "storage_gb": 512,
@@ -43,7 +65,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -65,14 +87,14 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
                 "name": "HP Laptop 255 G9 (2024), AMD Athlon Silver 3050U - (4GB/256GB SSD/AMD Radeon Graphics/Windows 11) Th",
                 "price_inr": 39999,
                 "processor": "Athlon Silver 3050U",
-                "ram_gb": 8,
+                "ram_gb": 4,
                 "storage_gb": 256,
                 "display_inch": 15.6,
                 "display_quality": "FHD",
@@ -87,7 +109,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -109,7 +131,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -131,7 +153,7 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -153,18 +175,18 @@
                 "brand": "HP",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             }
         ],
-        "total": 7
+        "total": 8
     },
     "lenovo": {
         "name": "Lenovo",
         "products": [
             {
                 "name": "Lenovo IdeaPad 3 11th Gen Intel Core i3 15.6\" FHD Thin & Light Laptop(8GB/512GB SSD/Windows 11/Offic",
-                "price_inr": 37380,
+                "price_inr": 38000,
                 "processor": "Core I3",
                 "ram_gb": 8,
                 "storage_gb": 512,
@@ -181,7 +203,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -203,7 +225,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -225,7 +247,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -247,7 +269,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -269,7 +291,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -291,7 +313,7 @@
                 "brand": "Lenovo",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             }
         ],
@@ -319,7 +341,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -341,7 +363,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -363,7 +385,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -385,7 +407,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -407,7 +429,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-21",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -429,14 +451,14 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
                 "name": "Acer Chromebook, MediaTek Kompanio 540 Octa-Core Processor, 4GB RAM, 64GB eMMC, Full HD, 11.6\" inch ",
                 "price_inr": 23990,
                 "processor": "Mediatek Kompanio 520",
-                "ram_gb": 8,
+                "ram_gb": 4,
                 "storage_gb": 64,
                 "display_inch": 11.6,
                 "display_quality": "FHD",
@@ -451,7 +473,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -473,12 +495,12 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-21",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
                 "name": "Acer One 14 Laptop Z14-55M | 14\" HD Display | AMD Ryzen 3 7320U | 8GB LPDDR5 RAM | 256GB NVMe SSD | ",
-                "price_inr": 38690,
+                "price_inr": 38750,
                 "processor": "Amd Ryzen 3 7320U",
                 "ram_gb": 8,
                 "storage_gb": 256,
@@ -495,7 +517,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -517,7 +539,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -539,12 +561,12 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
                 "name": "Acer Chromebook, Intel Celeron- N4500 Processor, 4GB LPDDR4 RAM, 32GB eMMC, 29.46cm /11.6\" inch HD D",
-                "price_inr": 24400,
+                "price_inr": 21900,
                 "processor": "Celeron",
                 "ram_gb": 4,
                 "storage_gb": 32,
@@ -561,7 +583,7 @@
                 "brand": "Acer",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             }
         ],
@@ -589,7 +611,7 @@
                 "brand": "Dell",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             }
         ],
@@ -617,7 +639,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -639,7 +661,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -661,7 +683,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -683,7 +705,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -705,7 +727,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -727,7 +749,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -749,7 +771,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -771,7 +793,7 @@
                 "brand": "Asus",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             }
         ],
@@ -794,12 +816,12 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.3,
-                "reviews": 799,
+                "reviews": 805,
                 "url": "https://www.amazon.in/dp/B0FFM8M9B5",
                 "brand": "Primebook",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             },
             {
@@ -816,16 +838,16 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.4,
-                "reviews": 796,
+                "reviews": 797,
                 "url": "https://www.amazon.in/dp/B0FFMQB3KL",
                 "brand": "Primebook",
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
-                "last_checked": "2026-07-21",
+                "last_checked": "2026-07-22",
                 "available": true
             }
         ],
         "total": 2
     },
-    "last_updated": "2026-07-21 11:12"
+    "last_updated": "2026-07-22 11:21"
 }

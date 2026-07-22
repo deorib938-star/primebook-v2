@@ -28,7 +28,7 @@ competitors = {
         "website": "https://www.lenovo.com/in/en",
         "social": {
             "instagram": "lenovoindia",
-            "twitter": "LenovoIndia",
+            "twitter": "Lenovo_in",
             "linkedin": "lenovo",
             "facebook": "LenovoIndia",
         },
@@ -44,7 +44,7 @@ competitors = {
         "website": "https://www.acer.com/in-en",
         "social": {
             "instagram": "acerindia",
-            "twitter": "AcerIndia",
+            "twitter": "Acer",
             "linkedin": "acer",
             "facebook": "AcerIndia",
         },
@@ -60,7 +60,7 @@ competitors = {
         "website": "https://www.dell.com/en-in",
         "social": {
             "instagram": "dellindia",
-            "twitter": "DellIndia",
+            "twitter": "Dell",
             "linkedin": "dell",
             "facebook": "DellIndia",
         },
@@ -88,6 +88,7 @@ competitors = {
 # Our product
 primebook = {
     "name": "Primebook",
+    "twitter": "primebookindia",
     "models": [
         {"name": "Primebook 2 Neo", "price": 19990, "ram": 6,  "storage": 128, "display": 11.6, "battery": 8,  "webcam": "1080p"},
         {"name": "Primebook 2 Pro", "price": 25990, "ram": 8,  "storage": 128, "display": 14.1, "battery": 14, "webcam": "1440p"},

@@ -1,13 +1,14 @@
 import { useState } from "react"
 import YouTubeAnalytics from "./YouTubeAnalytics"
 import InstagramAnalytics from "./InstagramAnalytics"
+import TwitterAnalytics from "./TwitterAnalytics"
 
 const GOLD = "#C9A84C", CARD = "#1e293b", BORDER = "#334155", MUTED = "#64748b", TEXT = "#94a3b8"
 
 const PLATFORMS = [
   { id: "youtube", label: "YouTube", icon: "▶️", enabled: true },
   { id: "instagram", label: "Instagram", icon: "📷", enabled: true },
-  { id: "twitter", label: "Twitter/X", icon: "𝕏", enabled: false },
+  { id: "twitter", label: "Twitter/X", icon: "𝕏", enabled: true },
   { id: "linkedin", label: "LinkedIn", icon: "in", enabled: false },
 ]
 
@@ -44,7 +45,8 @@ export default function SocialMedia() {
       {/* Content — each dashboard owns its internal tabs */}
       {platform === "youtube" && <YouTubeAnalytics />}
       {platform === "instagram" && <InstagramAnalytics />}
-      {(platform === "twitter" || platform === "linkedin") && (
+      {platform === "twitter" && <TwitterAnalytics />}
+      {platform === "linkedin" && (
         <div style={{ background: CARD, border: `0.5px solid ${BORDER}`, borderRadius: 12, padding: 40, textAlign: "center", color: MUTED }}>
           Coming soon.
         </div>

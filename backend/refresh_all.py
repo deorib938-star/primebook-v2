@@ -29,6 +29,7 @@ BUILDERS = [
     ("Amazon prices",    "amazon_scraper.py", ["force"]),
     ("Flipkart prices",  "flipkart_scraper.py", []),
     ("Instagram",        "instagram_cache_builder.py", []),
+    ("Twitter/X",        "twitter_cache_builder.py", []),
 ]
 
 # Caches to commit when AUTO_PUSH is on
@@ -37,6 +38,7 @@ CACHE_FILES = [
     "amazon_cache.json", "flipkart_cache.json",
     "instagram_cache.json", "instagram_history.json", "news_cache.json",
     "price_history.json", "ai_cache.json",
+    "twitter_cache.json", "twitter_history.json", "product_matches.json",
 ]
 
 
@@ -80,6 +82,28 @@ def refresh_news_and_snapshots():
             log(f"OK {fn_name}")
         except Exception as e:
             log(f"FAILED {fn_name}: {e}")
+
+
+def refresh_twitter_snapshot_and_matches():
+    """After the scrapers run: record a Twitter follower snapshot and regenerate
+    the AI cross-platform product matches so the price table's Amazon<->Flipkart
+    merge stays current. Both are isolated so one failing never blocks the other."""
+    # Twitter follower/post growth snapshot (reads twitter_cache.json)
+    try:
+        import twitter_tracking
+        r = twitter_tracking.growth_record()
+        log(f"OK twitter snapshot ({r.get('date') if isinstance(r, dict) else r})")
+    except Exception as e:
+        log(f"FAILED twitter snapshot: {e}")
+    # AI product matcher (Amazon <-> Flipkart) — regenerate product_matches.json
+    try:
+        import product_matcher
+        res = asyncio.run(product_matcher.get_matches(refresh=True))
+        both = res.get("matched_both") if isinstance(res, dict) else "?"
+        total = res.get("total") if isinstance(res, dict) else "?"
+        log(f"OK product matches regenerated ({both}/{total} matched on both platforms)")
+    except Exception as e:
+        log(f"FAILED product matches: {e}")
 
 
 def refresh_ai_cache():
@@ -161,6 +185,7 @@ def main_run():
     log("========== DAILY REFRESH START ==========")
     results = {name: run_builder(name, script, args) for name, script, args in BUILDERS}
     refresh_news_and_snapshots()
+    refresh_twitter_snapshot_and_matches()
     refresh_ai_cache()
     if os.environ.get("AUTO_PUSH", "0") == "1":
         git_push()

@@ -2,6 +2,24 @@
   "hp": [
     {
       "brand": "hp",
+      "title": "Need a new laptop for Back-to-School season? Best Buy is offering up to 60% OFF Lenovo, HP, and Acer Chromebooks during its Black Friday in July sale",
+      "description": "Epic Chromebook discounts for work and play.",
+      "url": "https://www.androidcentral.com/chromebooks-laptops/best-buy-back-to-school-chromebook-deals-2026",
+      "image": "https://cdn.mos.cms.futurecdn.net/fSaUtC9dWfVtKF3aLWHaDN-2560-80.jpg",
+      "source": "Android Central",
+      "published_at": "2026-07-21T15:42:49Z"
+    },
+    {
+      "brand": "hp",
+      "title": "HP Omnibook Ultra review: A slim laptop that does not compromise on power",
+      "description": "Reviews News: Rating: 4/5HP's OmniBook lineup has always positioned itself at the intersection of portability and productivity, and the OmniBook Ultra represents th.",
+      "url": "https://timesofindia.indiatimes.com/technology/reviews/hp-omnibook-ultra-review-a-slim-laptop-that-does-not-compromise-on-power/articleshow/132524234.cms",
+      "image": "https://static.toiimg.com/thumb/msid-132524228,width-1280,height-720,resizemode-6,overlay-toi_sw,pt-32,y_pad-600/photo.jpg",
+      "source": "Times of India",
+      "published_at": "2026-07-21T07:35:00Z"
+    },
+    {
+      "brand": "hp",
       "title": "Save $550 on the HP Victus in Best Buy's Black Friday in July sale",
       "description": "The affordable 15.6in laptop offers surprising processor power for under $700",
       "url": "https://www.techradar.com/pro/best-buy-black-friday-in-july-save-usd550-on-the-hp-victus-one-of-our-our-favorite-budget-laptops-for-creators-with-ryzen-5-and-rtx-3050-performance",
@@ -71,35 +89,44 @@
       "image": "https://images.hothardware.com/contentimages/newsitem/71131/content/hero-alienware-gaming-laptop.jpg",
       "source": "Hot Hardware",
       "published_at": "2026-07-16T14:07:00Z"
-    },
-    {
-      "brand": "hp",
-      "title": "8 of the best back-to-school laptop deals for students - my top picks from Apple, Dell, HP, Lenovo, and more",
-      "description": "Includes offers on the Dell XPS 13 and MacBook Neo",
-      "url": "https://www.techradar.com/computing/laptops/8-of-the-best-back-to-school-laptop-deals-for-students-my-top-picks-from-apple-dell-hp-lenovo-and-more",
-      "image": "https://cdn.mos.cms.futurecdn.net/cfqJVoN8XJzXSNrN3T5nZG-2560-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-07-16T12:16:13Z"
-    },
-    {
-      "brand": "hp",
-      "title": "Best business laptop deals - Top picks from HP, Asus, Dell & more",
-      "description": "I searched everywhere I could to find the biggest savings on laptops for work, whether you're in the office or WFH",
-      "url": "https://www.techradar.com/pro/best-business-laptop-deals-2026-top-picks-from-hp-asus-dell-starting-at-usd548",
-      "image": "https://cdn.mos.cms.futurecdn.net/yfpYUk84z3RFzwqmCy6TbG-1920-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-07-16T10:25:58Z"
     }
   ],
   "lenovo": [
     {
       "brand": "lenovo",
-      "title": "Lenovo ThinkPad X1 Carbon Gen 14 Aura Edition Review",
-      "description": "Lenovo's ThinkPad X1 Carbon Gen 14 Aura Edition laptop delivers premium portability, excellent battery life, cool thermals and whisper-quiet",
-      "url": "https://hothardware.com/reviews/lenovo-thinkpad-x1-carbon-gen-14-aura-edition-review",
-      "image": "https://hothardware.com/contentimages/Article/3620/content/16x9_2133x1200_highres-thinkpad-x1-carbon-gen-14-keyboard.jpg",
-      "source": "Hot Hardware",
-      "published_at": "2026-07-20T14:44:00Z"
+      "title": "Need a new laptop for Back-to-School season? Best Buy is offering up to 60% OFF Lenovo, HP, and Acer Chromebooks during its Black Friday in July sale",
+      "description": "Epic Chromebook discounts for work and play.",
+      "url": "https://www.androidcentral.com/chromebooks-laptops/best-buy-back-to-school-chromebook-deals-2026",
+      "image": "https://cdn.mos.cms.futurecdn.net/fSaUtC9dWfVtKF3aLWHaDN-2560-80.jpg",
+      "source": "Android Central",
+      "published_at": "2026-07-21T15:42:49Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "In a year defined by price increases, one spec of Lenovo's latest gaming laptop could suggest cheaper rigs to come",
+      "description": "OLED gaming laptops could get cheaper with new Inkjet Printing manufacturing processes - here's how it works.",
+      "url": "https://www.gamesradar.com/hardware/laptops/in-a-year-defined-by-price-increases-one-spec-of-lenovos-latest-gaming-laptop-could-suggest-cheaper-rigs-to-come/",
+      "image": "https://cdn.mos.cms.futurecdn.net/ZQNz3UqRdLRbe4kpahMeDU-2000-80.jpg",
+      "source": "GamesRadar+",
+      "published_at": "2026-07-21T13:45:52Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "I scoured Lenovo's back to school sale and found 9 deals I'd actually buy starting at $99",
+      "description": "Laptop prices have never been higher, but back to school sales are here to help soften the blow of the RAM crisis. Here's 9 Lenovo deals I recommend for every budget.",
+      "url": "https://www.tomsguide.com/computing/laptops/i-scoured-lenovos-back-to-school-sale-and-found-9-deals-id-actually-buy-starting-at-usd99",
+      "image": "https://cdn.mos.cms.futurecdn.net/6B82H9LUuydmnwbDqRmkmP-2000-80.jpg",
+      "source": "Tom's Guide",
+      "published_at": "2026-07-21T12:00:00Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Lenovo Yoga Slim 7x Gen 11 review: an incredibly portable laptop with a high price tag",
+      "description": "The Yoga Slim 7x Gen 11 certainly impresses with its thin form — but is its performance equally as stunning?",
+      "url": "https://www.techradar.com/computing/laptops/lenovo-yoga-slim-7x-gen-11-review",
+      "image": "https://cdn.mos.cms.futurecdn.net/Ti7GpBk7MihAjEuCHA7eMQ-2560-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-21T09:51:25Z"
     },
     {
       "brand": "lenovo",
@@ -154,36 +181,18 @@
       "image": "https://i2-prod.manchestereveningnews.co.uk/article34303885.ece/ALTERNATES/s1200d/0_GettyImages-2149691945.jpg",
       "source": "Manchester Evening News",
       "published_at": "2026-07-19T19:00:00Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "ThinkPad X1 Carbon Gen 14 Review: Lenovo's Flagship Ultraportable Is Now More Repairable",
-      "description": "The new Space Frame design should extend the life of the laptop, but doesn't alter the familiar X1 Carbon look and feel.",
-      "url": "https://www.cnet.com/tech/computing/lenovo-thinkpad-x1-carbon-gen-14-review-flagship-ultraportable-repairable/",
-      "image": "https://www.cnet.com/wp-content/uploads/sites/2/thinkpad-x1-carbon-gen-14-intel.jpg",
-      "source": "CNET",
-      "published_at": "2026-07-19T13:01:00Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Lenovo’s new gaming laptop is the first to feature a 240Hz inkjet-printed OLED display",
-      "description": "Lenovo’s new Legion R9000P is the first laptop to feature an inkjet-printed OLED display, offering a 240Hz refresh rate and over 99% DCI-P3 coverage.",
-      "url": "https://www.digitaltrends.com/computing/lenovos-new-gaming-laptop-is-the-first-to-feature-a-240hz-inkjet-printed-oled-display/",
-      "image": "https://www.digitaltrends.com/tachyon/2026/07/Lenovo-Legion-R9000P.jpg?resize=1200%2C630",
-      "source": "Digital Trends",
-      "published_at": "2026-07-17T14:52:21Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "8 of the best back-to-school laptop deals for students - my top picks from Apple, Dell, HP, Lenovo, and more",
-      "description": "Includes offers on the Dell XPS 13 and MacBook Neo",
-      "url": "https://www.techradar.com/computing/laptops/8-of-the-best-back-to-school-laptop-deals-for-students-my-top-picks-from-apple-dell-hp-lenovo-and-more",
-      "image": "https://cdn.mos.cms.futurecdn.net/cfqJVoN8XJzXSNrN3T5nZG-2560-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-07-16T12:16:13Z"
     }
   ],
   "acer": [
+    {
+      "brand": "acer",
+      "title": "Need a new laptop for Back-to-School season? Best Buy is offering up to 60% OFF Lenovo, HP, and Acer Chromebooks during its Black Friday in July sale",
+      "description": "Epic Chromebook discounts for work and play.",
+      "url": "https://www.androidcentral.com/chromebooks-laptops/best-buy-back-to-school-chromebook-deals-2026",
+      "image": "https://cdn.mos.cms.futurecdn.net/fSaUtC9dWfVtKF3aLWHaDN-2560-80.jpg",
+      "source": "Android Central",
+      "published_at": "2026-07-21T15:42:49Z"
+    },
     {
       "brand": "acer",
       "title": "Today only: Acer’s 2025 model Chromebook Plus 516 laptop with Google AI is back-to-school ready at $329",
@@ -264,18 +273,36 @@
       "image": "https://img.republicworld.com/all_images/2026/06/acer-1782823174603-1280x720.webp",
       "source": "Republic World",
       "published_at": "2026-06-30T12:39:42Z"
-    },
-    {
-      "brand": "acer",
-      "title": "Amazon Is Offering Up To 48% Discount On Laptops: Here Are Hand Picked Options You Can Consider Buying",
-      "description": "Looking for a new laptop without spending a fortune? Several laptops from Lenovo, Acer, ASUS, HP and other brands are currently available with discounts of up to 48% on Amazon.",
-      "url": "https://www.news18.com/tech/amazon-is-offering-up-to-48-discount-on-laptops-here-are-hand-picked-options-you-can-consider-buying-ws-el-10176019.html",
-      "image": "https://images.news18.com/ibnlive/uploads/2026/06/image-2026-06-9af82b00b44d5bc945d8a20aa2ca95e0-1200x675.jpg",
-      "source": "News18",
-      "published_at": "2026-06-29T02:20:09Z"
     }
   ],
   "dell": [
+    {
+      "brand": "dell",
+      "title": "Dell's Intel Core i5 Laptop Drops 40% to a Record Low in Refurbished Excellent Condition for Back-to-School",
+      "description": "Back Market has an astonishing deal that cuts 40% off this excellent laptop.",
+      "url": "https://gizmodo.com/dells-intel-core-i5-laptop-drops-40-to-a-record-low-in-refurbished-excellent-condition-for-back-to-school-2000788099",
+      "image": "https://gizmodo.com/app/uploads/2026/07/back-Market-Dell-1200x675.jpg",
+      "source": "Gizmodo",
+      "published_at": "2026-07-21T15:10:31Z"
+    },
+    {
+      "brand": "dell",
+      "title": "Use Dell? Don't skip urgent Windows 11 patch for your PC",
+      "description": "Use a Dell PC? Don't skip this urgent Windows 11 patch for your laptop . If you own a Dell-branded laptop, you'll want to hit the Update button as soon as possible",
+      "url": "https://www.gbnews.com/tech/dell-windows-11-security-update",
+      "image": "https://www.gbnews.com/media-library/windows-11-on-dell-pcs.png?id=67507654&width=1200&height=600&coordinates=0%2C95%2C0%2C161",
+      "source": "GB News",
+      "published_at": "2026-07-21T10:18:12Z"
+    },
+    {
+      "brand": "dell",
+      "title": "Dell XPS 14 (2026) Review: Dell's classic Windows laptop returns, and it's hard to put down",
+      "description": "The Dell XPS 14 DA14260 combines a premium CNC aluminum design, a sharp OLED touchscreen, excellent battery life, and surprisingly strong Intel Arc graphics, though the price is hard to ignore.",
+      "url": "https://www.digitaltrends.com/computing/dell-xps-14-da14260-review-a-windows-laptop-i-wanted-to-keep-using/",
+      "image": "https://www.digitaltrends.com/tachyon/2026/07/Dell-XPS-14-Product-Shots-7.jpg?resize=1200%2C630",
+      "source": "Digital Trends",
+      "published_at": "2026-07-20T19:18:53Z"
+    },
     {
       "brand": "dell",
       "title": "23 of the best laptop deals for students next term including Apple, Dell, Lenovo and more",
@@ -338,33 +365,6 @@
       "image": "https://www.entrepreneur.com/wp-content/uploads/sites/2/2026/07/1783523238-DellLattitude1.jpg?resize=1024,682",
       "source": "Entrepreneur",
       "published_at": "2026-07-11T13:00:00Z"
-    },
-    {
-      "brand": "dell",
-      "title": "Dell Pro 5: Your multitasking laptop powerhouse",
-      "description": "With the Dell Pro 5, that blend of power and portability in a laptop needn't be out of reach.",
-      "url": "https://www.tomsguide.com/computing/can-one-laptop-really-keep-up-with-modern-multitasking-your-dell-pro-5-productivity-questions-answered",
-      "image": "https://cdn.mos.cms.futurecdn.net/emceQ2nqc3q8En7rADerrH-1920-80.png",
-      "source": "Tom's Guide",
-      "published_at": "2026-07-10T16:30:05Z"
-    },
-    {
-      "brand": "dell",
-      "title": "I'm a Windows user who installed Linux for the first time - here's how the experience changed me",
-      "description": "I put Ubuntu on an old Dell laptop to see if Linux could really replace Windows 11. See why my final destination was so worth the speed bumps.",
-      "url": "https://www.zdnet.com/article/windows-user-installed-linux-for-the-first-time/",
-      "image": "https://www.zdnet.com/a/img/resize/d730f18e567ee58b3137e3771ed93181ed47241c/2026/04/13/275c5ae0-fb62-450f-bd76-4da5283b783c/ubuntu.jpg?auto=webp&fit=crop&height=675&width=1200",
-      "source": "ZDNet",
-      "published_at": "2026-07-09T18:00:00Z"
-    },
-    {
-      "brand": "dell",
-      "title": "Save $530 on Dell's 14-inch Core 7 laptop with 16GB RAM and 1TB SSD",
-      "description": "Priced at a staggering $699.99, this is Dell's lowest priced 14-inch laptop right now",
-      "url": "https://www.techradar.com/pro/im-a-computer-expert-so-trust-me-when-i-say-this-dell-14-laptop-deal-is-unmissable-save-usd530-on-a-core-7-model-with-16gb-ram-and-a-1tb-ssd",
-      "image": "https://cdn.mos.cms.futurecdn.net/42KjXd7gMunoeZjpJxRugN-2000-80.jpg",
-      "source": "TechRadar",
-      "published_at": "2026-07-08T17:02:07Z"
     }
   ],
   "asus": [
@@ -459,5 +459,5 @@
       "published_at": "2026-07-09T11:24:00Z"
     }
   ],
-  "last_updated": "2026-07-21T05:57:22.153744+00:00"
+  "last_updated": "2026-07-22T06:02:53.235995+00:00"
 }

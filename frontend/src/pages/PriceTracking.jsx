@@ -495,6 +495,10 @@ export default function PriceTracking() {
     rows = [...rows].sort((a, b) => {
       if (a.is_our_brand && !b.is_our_brand) return -1;
       if (!a.is_our_brand && b.is_our_brand) return 1;
+      if (sortOrder === "name") {
+        // Group identical / similar model names together to spot duplicates
+        return (a.name || "").localeCompare(b.name || "", undefined, { sensitivity: "base" });
+      }
       const pa = a.best_price || a.amazon || a.flipkart || 999999;
       const pb = b.best_price || b.amazon || b.flipkart || 999999;
       return sortOrder === "price_asc" ? pa - pb : pb - pa;
@@ -650,6 +654,7 @@ export default function PriceTracking() {
                 <select className="sort-select" value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
                   <option value="price_asc">Price low → high</option>
                   <option value="price_desc">Price high → low</option>
+                  <option value="name">Model name (A → Z)</option>
                 </select>
               </div>
             </div>

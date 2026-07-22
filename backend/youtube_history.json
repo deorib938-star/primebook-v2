@@ -314,6 +314,41 @@
           "video_count": 733
         }
       }
+    },
+    {
+      "date": "2026-07-22",
+      "brands": {
+        "primebook": {
+          "subscribers": 16200,
+          "total_views": 2275117,
+          "video_count": 123
+        },
+        "hp": {
+          "subscribers": 200000,
+          "total_views": 1441494103,
+          "video_count": 689
+        },
+        "lenovo": {
+          "subscribers": 395000,
+          "total_views": 2670017186,
+          "video_count": 1209
+        },
+        "acer": {
+          "subscribers": 39400,
+          "total_views": 821997215,
+          "video_count": 514
+        },
+        "dell": {
+          "subscribers": 229000,
+          "total_views": 1295089997,
+          "video_count": 301
+        },
+        "asus": {
+          "subscribers": 234000,
+          "total_views": 357509722,
+          "video_count": 736
+        }
+      }
     }
   ]
 }

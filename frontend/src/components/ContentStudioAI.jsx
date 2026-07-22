@@ -135,7 +135,7 @@ export default function ContentStudioAI({ platform }) {
               <div style={sectionLbl(TEAL)}>📈 What&apos;s coming — get ahead of it</div>
               {(forecast.trends_now || []).length > 0 && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 6, margin: "6px 0 12px" }}>
-                  {forecast.trends_now.map((t, i) => <span key={i} style={pill(TEAL)}>{t}</span>)}
+                  {forecast.trends_now.map((t, i) => <span key={i} style={{ ...pill(TEAL), whiteSpace: "normal", maxWidth: "100%", lineHeight: 1.5 }}>{t}</span>)}
                 </div>
               )}
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
@@ -176,10 +176,14 @@ export default function ContentStudioAI({ platform }) {
 function IdeaBody({ idea, isYT }) {
   return (
     <div>
-      <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 8, flexWrap: "wrap" }}>
+      <div style={{ marginBottom: 8 }}>
         <span style={{ ...pill(isYT ? RED : GOLD), color: "#0f1218", background: isYT ? RED : GOLD }}>{idea.format || (isYT ? "Video" : "Post")}</span>
-        {idea.trend && <span style={pill(TEAL)}>📈 {idea.trend}</span>}
       </div>
+      {idea.trend && (
+        <div style={{ ...pill(TEAL), whiteSpace: "normal", display: "block", maxWidth: "100%", lineHeight: 1.5, wordBreak: "break-word", marginBottom: 8 }}>
+          📈 {idea.trend}
+        </div>
+      )}
       <div style={{ color: "white", fontSize: 15, fontWeight: 700, marginBottom: 8 }}>{idea.title}</div>
       {idea.hook && <div style={{ color: "#e2e8f0", fontStyle: "italic", fontSize: 13, borderLeft: `3px solid ${GOLD}`, paddingLeft: 10, marginBottom: 8 }}>{idea.hook}</div>}
       {idea.concept && <div style={{ color: TEXT, fontSize: 12, lineHeight: 1.55, marginBottom: 8 }}>{idea.concept}</div>}
@@ -197,7 +201,7 @@ const Line = ({ k, v, c }) => (
 )
 const Empty = ({ t }) => <div style={{ color: MUTED, fontSize: 13, padding: 16 }}>{t}</div>
 
-const card = { background: CARD, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 16 }
+const card = { background: CARD, border: `1px solid ${BORDER}`, borderRadius: 10, padding: 16, minWidth: 0, overflowWrap: "anywhere", wordBreak: "break-word" }
 const sectionLbl = (c) => ({ color: c, fontSize: 11, fontWeight: 700, letterSpacing: ".08em", textTransform: "uppercase", marginBottom: 8 })
 const pill = (c) => ({ background: `${c}22`, color: c, fontSize: 10, fontWeight: 700, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap" })
 const btnBase = { fontSize: 12, fontWeight: 600, borderRadius: 8, padding: "8px 10px", cursor: "pointer", border: `1px solid ${BORDER}` }
