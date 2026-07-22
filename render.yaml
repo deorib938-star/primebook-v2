@@ -16,3 +16,26 @@ services:
         sync: false
       - key: GNEWS_API_KEY
         sync: false
+      # Twitter/X session cookies + dedicated Groq key for live Content Strategy AI
+      - key: TW_AUTH_TOKEN
+        sync: false
+      - key: TW_CT0
+        sync: false
+      - key: GROQ_API_KEY_STUDIO
+        sync: false
+
+  # Frontend — static site (Vite build). VITE_API_URL points at the backend above
+  # so the phone/browser talks to the live API instead of localhost.
+  - type: web
+    name: primebook-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: ./dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://primebook-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

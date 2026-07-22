@@ -24,3 +24,14 @@ backend/logs/
 backend/content_studio_state.json
 # stray windows shortcut
 backend/Multi Agent - Shortcut.lnk
+
+# stray scaffolding / share artifacts / debug dumps (not part of the app)
+app/
+/twitter_cache.json
+/flipkart_cache.json
+/youtube_cache.json
+/youtube_comments.json
+/instagram_cache.json
+/product_data.json
+*.zip
+amazon_debug.html
