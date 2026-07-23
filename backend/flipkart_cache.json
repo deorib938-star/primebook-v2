@@ -22,7 +22,7 @@
                 "url": "https://www.flipkart.com/hp-chromebook-mediatek-kompanio-500-4-gb-64-gb-emmc-storage-chrome-os-11a-na0004mu/p/itm004641dd14e15?pid=COMG4ZYCJZA8YNKX&lid=LSTCOMG4ZYCJZA8YNKXVUE69E&marketplace=FLIPKART&store=6bo%2Fb5g&spotlightTagId=default_TrendingId_6bo%2Fb5g&srno=b_1_10&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMG4ZYCJZA8YNKX.SEARCH&ppt=browse&ppn=browse&ssid=xrm90vkzr40000001784526689937&ov_redirect=true",
                 "first_seen": "2026-07-20",
                 "last_checked": "2026-07-23",
-                "available": true
+                "available": false
             },
             {
                 "name": "HP Chromebook Intel Celeron Dual Core N4120 - (4 GB/64 GB EMMC Storage/Chrome OS) 14a-ca0506TU Chrom",
@@ -225,6 +225,28 @@
                 "source": "Flipkart",
                 "url": "https://www.flipkart.com/lenovo-chromebook-duet-11m889-mediatek-kompanio-838-8-gb-128-gb-emmc-storage-chrome-os/p/itm587e47e82499e?pid=COMHBCAFZGVNEDTK&lid=LSTCOMHBCAFZGVNEDTKUGILYO&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_4&otracker=browse&fm=organic&iid=20bf2f81-5f8c-4824-a63c-98c0850aa355.COMHBCAFZGVNEDTK.SEARCH&ppt=None&ppn=None&ssid=b26bv38p8g0000001784526744344&ov_redirect=true",
                 "first_seen": "2026-07-20",
+                "last_checked": "2026-07-23",
+                "available": true
+            },
+            {
+                "name": "Lenovo Chromebook Intel Celeron Dual Core N4020 - (4 GB/64 GB EMMC Storage/Chrome OS) 14IGL05 Chrome",
+                "price_inr": 29999,
+                "processor": "Celeron",
+                "ram_gb": 4,
+                "storage_gb": 64,
+                "display_inch": 14.0,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "ChromeOS",
+                "weight_kg": 1.7,
+                "rating": 3.853,
+                "reviews": 8538,
+                "brand": "Lenovo",
+                "source": "Flipkart",
+                "url": "https://www.flipkart.com/lenovo-chromebook-intel-celeron-dual-core-n4020-4-gb-64-gb-emmc-storage-chrome-os-14igl05/p/itm0b3ac22e231d9?pid=COMGGR9SPXCF8RUU&lid=LSTCOMGGR9SPXCF8RUU3MMUKD&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_14&otracker=browse&fm=organic&iid=6e1043a2-15a1-4620-9f7b-a3cf1cbe076b.COMGGR9SPXCF8RUU.SEARCH&ppt=None&ppn=None&ssid=3blxctj4c00000001784795962557&ov_redirect=true",
+                "first_seen": "2026-07-23",
                 "last_checked": "2026-07-23",
                 "available": true
             },
@@ -449,7 +471,7 @@
                 "available": true
             }
         ],
-        "total": 15
+        "total": 16
     },
     "acer": {
         "name": "Acer",
@@ -1528,6 +1550,28 @@
                 "available": true
             },
             {
+                "name": "Primebook Wifi MediaTek MT8183 - (4 GB/64 GB EMMC Storage/Prime OS) PB Wifi Thin and Light Laptop",
+                "price_inr": 17990,
+                "processor": "MediaTek",
+                "ram_gb": 4,
+                "storage_gb": 64,
+                "display_inch": 11.6,
+                "display_quality": "FHD",
+                "battery_hours": 7,
+                "webcam": "720p",
+                "keyboard_backlit": false,
+                "os": "PrimeOS 3.0 (Android 15)",
+                "weight_kg": 1.7,
+                "rating": 4.23,
+                "reviews": 23440,
+                "brand": "Primebook",
+                "source": "Flipkart",
+                "url": "https://www.flipkart.com/primebook-wifi-mediatek-mt8183-4-gb-64-gb-emmc-storage-prime-os-pb-thin-light-laptop/p/itmfd14d0fbf7736?pid=COMGT846VD2DQBG4&lid=LSTCOMGT846VD2DQBG4VPIAOU&marketplace=FLIPKART&q=primebook+laptop&store=6bo%2Fb5g&srno=s_1_3&otracker=search&fm=organic&iid=4097ba64-1562-4af6-a900-29d754ed0c18.COMGT846VD2DQBG4.SEARCH&ppt=None&ppn=None&ssid=wle09gaeww0000001784796344462&qH=3debb94181b50020&ov_redirect=true",
+                "first_seen": "2026-07-23",
+                "last_checked": "2026-07-23",
+                "available": true
+            },
+            {
                 "name": "Primebook 4G enabled Android based MediaTek MT8788 - (4 GB/128 GB EMMC Storage/Prime OS) S 4G Thin a",
                 "price_inr": 22000,
                 "processor": "MediaTek",
@@ -1572,7 +1616,7 @@
                 "available": true
             }
         ],
-        "total": 4
+        "total": 5
     },
-    "last_updated": "2026-07-23 12:38"
+    "last_updated": "2026-07-23 14:16"
 }

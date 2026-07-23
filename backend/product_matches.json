@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-23T07:25:12.042516+00:00",
-  "total": 104,
+  "generated_at": "2026-07-23T09:02:57.284795+00:00",
+  "total": 103,
   "matched_both": 2,
   "matches": [
     {
-      "canonical_name": "Primebook 2 Max (2025)",
+      "canonical_name": "Primebook 2 Max",
       "confidence": 0.95,
       "amazon": {
         "title": "Primebook 2 Max (2026) | 8GB RAM, 256GB UFS Storage | 15.6-Inch Full HD IPS Display | 12hrs Battery ",
@@ -18,7 +18,7 @@
       }
     },
     {
-      "canonical_name": "Primebook 2 Pro (2025)",
+      "canonical_name": "Primebook 2 Pro",
       "confidence": 0.95,
       "amazon": {
         "title": "Primebook 2 Pro (2026) | 8GB RAM, 128GB UFS Storage | 14.1-Inch FHD IPS Display | 14 Hours Battery |",
@@ -32,7 +32,17 @@
       }
     },
     {
-      "canonical_name": "Primebook 4G enabled Android based MediaTek MT8788",
+      "canonical_name": "Primebook Wifi",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "Primebook Wifi MediaTek MT8183 - (4 GB/64 GB EMMC Storage/Prime OS) PB Wifi Thin and Light Laptop",
+        "price": 17990,
+        "url": "https://www.flipkart.com/primebook-wifi-mediatek-mt8183-4-gb-64-gb-emmc-storage-prime-os-pb-thin-light-laptop/p/itmfd14d0fbf7736?pid=COMGT846VD2DQBG4&lid=LSTCOMGT846VD2DQBG4VPIAOU&marketplace=FLIPKART&q=primebook+laptop&store=6bo%2Fb5g&srno=s_1_3&otracker=search&fm=organic&iid=4097ba64-1562-4af6-a900-29d754ed0c18.COMGT846VD2DQBG4.SEARCH&ppt=None&ppn=None&ssid=wle09gaeww0000001784796344462&qH=3debb94181b50020&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "Primebook 4G",
       "confidence": 1.0,
       "amazon": null,
       "flipkart": {
@@ -42,7 +52,7 @@
       }
     },
     {
-      "canonical_name": "Primebook 2 Neo (2025)",
+      "canonical_name": "Primebook 2 Neo",
       "confidence": 1.0,
       "amazon": null,
       "flipkart": {
@@ -92,46 +102,6 @@
       "flipkart": null
     },
     {
-      "canonical_name": "HP 255 Notebook, AMD Athlon Silver 7120U",
-      "confidence": 1.0,
-      "amazon": {
-        "title": "HP 255 Notebook, AMD Athlon Silver 7120U,8GB DDR4, 256GB SSD, 15.6-inch(39.6cm), Anti-Glare, HD Lapt",
-        "price": 39999,
-        "url": "https://www.amazon.in/dp/B0DV984J97"
-      },
-      "flipkart": null
-    },
-    {
-      "canonical_name": "HP Laptop 255 G8/G9 AMD Ryzen 3 3250U",
-      "confidence": 1.0,
-      "amazon": {
-        "title": "HP Laptop 255 G8/G9 AMD Ryzen 3 3250U Dual Core - (8GB/512GB SSD/AMD Radeon Graphics/15.6\" (39.62cm)",
-        "price": 33990,
-        "url": "https://www.amazon.in/dp/B0B88K9XNJ"
-      },
-      "flipkart": null
-    },
-    {
-      "canonical_name": "HP Laptop 15s, Intel Celeron N4500",
-      "confidence": 1.0,
-      "amazon": {
-        "title": "HP Laptop 15s, Intel Celeron N4500, 15.6-inch (39.6 cm), HD, 8GB DDR4, 512GB SSD, Intel UHD Graphics",
-        "price": 26980,
-        "url": "https://www.amazon.in/dp/B0DGQ3JLPF"
-      },
-      "flipkart": null
-    },
-    {
-      "canonical_name": "HP Chromebook MediaTek Kompanio 500",
-      "confidence": 1.0,
-      "amazon": null,
-      "flipkart": {
-        "title": "HP Chromebook MediaTek Kompanio 500 - (4 GB/64 GB EMMC Storage/Chrome OS) 11a-na0004MU Chromebook",
-        "price": 36990,
-        "url": "https://www.flipkart.com/hp-chromebook-mediatek-kompanio-500-4-gb-64-gb-emmc-storage-chrome-os-11a-na0004mu/p/itm004641dd14e15?pid=COMG4ZYCJZA8YNKX&lid=LSTCOMG4ZYCJZA8YNKXVUE69E&marketplace=FLIPKART&store=6bo%2Fb5g&spotlightTagId=default_TrendingId_6bo%2Fb5g&srno=b_1_10&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMG4ZYCJZA8YNKX.SEARCH&ppt=browse&ppn=browse&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
-      }
-    },
-    {
       "canonical_name": "HP Chromebook Intel Celeron Dual Core N4120",
       "confidence": 1.0,
       "amazon": null,
@@ -152,6 +122,16 @@
       }
     },
     {
+      "canonical_name": "HP Chromebook MediaTek Kompanio 500",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "HP Chromebook MediaTek Kompanio 500 - (4 GB/64 GB EMMC Storage/Chrome OS) 11a-na0004MU Chromebook",
+        "price": 36990,
+        "url": "https://www.flipkart.com/hp-chromebook-mediatek-kompanio-500-4-gb-64-gb-emmc-storage-chrome-os-11a-na0004mu/p/itm004641dd14e15?pid=COMG4ZYCJZA8YNKX&lid=LSTCOMG4ZYCJZA8YNKXVUE69E&marketplace=FLIPKART&store=6bo%2Fb5g&spotlightTagId=default_TrendingId_6bo%2Fb5g&srno=b_1_10&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMG4ZYCJZA8YNKX.SEARCH&ppt=browse&ppn=browse&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
+      }
+    },
+    {
       "canonical_name": "HP Chromebook MediaTek Kompanio 540",
       "confidence": 1.0,
       "amazon": null,
@@ -162,7 +142,7 @@
       }
     },
     {
-      "canonical_name": "HP Chromebook (TouchScreen) MediaTek Kompanio 540",
+      "canonical_name": "HP Chromebook MediaTek Kompanio 540",
       "confidence": 1.0,
       "amazon": null,
       "flipkart": {
@@ -279,6 +259,16 @@
         "title": "Lenovo Chromebook Duet 11M889 MediaTek MediaTek Kompanio 838 - (8 GB/128 GB EMMC Storage/Chrome OS) ",
         "price": 36990,
         "url": "https://www.flipkart.com/lenovo-chromebook-duet-11m889-mediatek-kompanio-838-8-gb-128-gb-emmc-storage-chrome-os/p/itm587e47e82499e?pid=COMHBCAFZGVNEDTK&lid=LSTCOMHBCAFZGVNEDTKUGILYO&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_4&otracker=browse&fm=organic&iid=20bf2f81-5f8c-4824-a63c-98c0850aa355.COMHBCAFZGVNEDTK.SEARCH&ppt=None&ppn=None&ssid=b26bv38p8g0000001784526744344&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "Lenovo Chromebook Intel Celeron Dual Core N4020 - (4 GB/64 GB EMMC Storage/Chrome OS) 14IGL05 Chrome",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "Lenovo Chromebook Intel Celeron Dual Core N4020 - (4 GB/64 GB EMMC Storage/Chrome OS) 14IGL05 Chrome",
+        "price": 29999,
+        "url": "https://www.flipkart.com/lenovo-chromebook-intel-celeron-dual-core-n4020-4-gb-64-gb-emmc-storage-chrome-os-14igl05/p/itm0b3ac22e231d9?pid=COMGGR9SPXCF8RUU&lid=LSTCOMGGR9SPXCF8RUU3MMUKD&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_14&otracker=browse&fm=organic&iid=6e1043a2-15a1-4620-9f7b-a3cf1cbe076b.COMGGR9SPXCF8RUU.SEARCH&ppt=None&ppn=None&ssid=3blxctj4c00000001784795962557&ov_redirect=true"
       }
     },
     {

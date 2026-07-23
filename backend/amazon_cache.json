@@ -4,7 +4,7 @@
         "products": [
             {
                 "name": "HP 255 Notebook, AMD Athlon Silver 7120U,8GB DDR4, 256GB SSD, 15.6-inch(39.6cm), Anti-Glare, HD Lapt",
-                "price_inr": 39999,
+                "price_inr": 26980,
                 "processor": "Others",
                 "ram_gb": 8,
                 "storage_gb": 256,
@@ -44,7 +44,7 @@
                 "source": "Amazon",
                 "first_seen": "2026-07-20",
                 "last_checked": "2026-07-23",
-                "available": true
+                "available": false
             },
             {
                 "name": "HP Laptop 15s, Intel Celeron N4500, 15.6-inch (39.6 cm), HD, 8GB DDR4, 512GB SSD, Intel UHD Graphics",
@@ -92,7 +92,7 @@
             },
             {
                 "name": "HP Laptop 255 G9 (2024), AMD Athlon Silver 3050U - (4GB/256GB SSD/AMD Radeon Graphics/Windows 11) Th",
-                "price_inr": 39999,
+                "price_inr": 39200,
                 "processor": "Athlon Silver 3050U",
                 "ram_gb": 4,
                 "storage_gb": 256,
@@ -655,8 +655,8 @@
                 "keyboard_backlit": false,
                 "os": "ChromeOS",
                 "weight_kg": 1.7,
-                "rating": 3.0,
-                "reviews": 18,
+                "rating": 3.2,
+                "reviews": 19,
                 "url": "https://www.amazon.in/dp/B0GN2Y3T6M",
                 "brand": "Asus",
                 "source": "Amazon",
@@ -743,8 +743,8 @@
                 "keyboard_backlit": false,
                 "os": "ChromeOS",
                 "weight_kg": 1.7,
-                "rating": 5.0,
-                "reviews": 1,
+                "rating": 4.5,
+                "reviews": 2,
                 "url": "https://www.amazon.in/dp/B0H2J8DDKH",
                 "brand": "Asus",
                 "source": "Amazon",
@@ -816,7 +816,7 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.3,
-                "reviews": 815,
+                "reviews": 814,
                 "url": "https://www.amazon.in/dp/B0FFM8M9B5",
                 "brand": "Primebook",
                 "source": "Amazon",
@@ -838,7 +838,7 @@
                 "os": "PrimeOS 3.0 (Android 15)",
                 "weight_kg": 1.7,
                 "rating": 4.4,
-                "reviews": 800,
+                "reviews": 799,
                 "url": "https://www.amazon.in/dp/B0FFMQB3KL",
                 "brand": "Primebook",
                 "source": "Amazon",
@@ -849,5 +849,5 @@
         ],
         "total": 2
     },
-    "last_updated": "2026-07-23 12:30"
+    "last_updated": "2026-07-23 14:07"
 }
