@@ -2,6 +2,33 @@
   "hp": [
     {
       "brand": "hp",
+      "title": "RTX 5080 gaming laptop deals have finally started returning to their previous sale prices, and my top rig is leading the charge",
+      "description": "The RTX 5080 HP Omen Max 16 is bucking industry trends this week, with a sales price previously only seen in a pre-component shortage market.",
+      "url": "https://www.gamesradar.com/hardware/laptops/rtx-5080-gaming-laptop-deals-have-finally-started-returning-to-their-previous-sale-prices-and-my-top-rig-is-leading-the-charge/",
+      "image": "https://cdn.mos.cms.futurecdn.net/H4kDiFRPd8RJ4xjtb2UzoN-2560-80.jpg",
+      "source": "GamesRadar+",
+      "published_at": "2026-07-22T09:56:33Z"
+    },
+    {
+      "brand": "hp",
+      "title": "Summer exams can be brutal, but this Intel Core Ultra 7 laptop with 16GB will help you survive them with A+ grades - and at a 38% discount to boot",
+      "description": "The 16-inch version of the HP OmniBook X Flip laptop, which we rated highly for its efficient performance and detailed touchscreen display, is now on sale for Best Buy's Back to School sale",
+      "url": "https://www.windowscentral.com/hardware/laptops/summer-exams-can-be-brutal-but-this-intel-core-ultra-7-laptop-with-16gb-will-help-you-survive-them-with-a-grades-and-at-a-38-percent-discount-to-boot",
+      "image": "https://cdn.mos.cms.futurecdn.net/jne8HjatJufnnDyLV7dRqH-2560-80.jpg",
+      "source": "Windows Central",
+      "published_at": "2026-07-21T20:10:33Z"
+    },
+    {
+      "brand": "hp",
+      "title": "Game On With a Massive $1,500 Off This HP Omen Max Gaming Laptop",
+      "description": "This high-end gaming laptop is built for serious play and demanding creative work.",
+      "url": "https://www.cnet.com/deals/hp-omen-max-gaming-laptop-deal-2026-07-21/",
+      "image": "https://www.cnet.com/wp-content/uploads/sites/2/OMEN-MAX-Gaming-Laptop.jpg",
+      "source": "CNET",
+      "published_at": "2026-07-21T19:25:08Z"
+    },
+    {
+      "brand": "hp",
       "title": "Need a new laptop for Back-to-School season? Best Buy is offering up to 60% OFF Lenovo, HP, and Acer Chromebooks during its Black Friday in July sale",
       "description": "Epic Chromebook discounts for work and play.",
       "url": "https://www.androidcentral.com/chromebooks-laptops/best-buy-back-to-school-chromebook-deals-2026",
@@ -62,36 +89,27 @@
       "image": "https://www.cnet.com/a/img/resize/a7e2884608a0c708c36fdc2b3fbd496e14f47e07/hub/2026/07/17/98897c1b-11ff-48b8-88ed-658537887cdb/hp-omnibook-x-flip.jpg?auto=webp&fit=crop&height=675&width=1200",
       "source": "CNET",
       "published_at": "2026-07-17T18:56:00Z"
-    },
-    {
-      "brand": "hp",
-      "title": "Amazon Deals of the Day: I Found a Rare 30% Discount on the Sonos Ace Headphones",
-      "description": "Plus, score almost 40% off the TP-Link Tapo indoor security camera and the HP OmniBook 3 laptop.",
-      "url": "https://www.cnet.com/deals/amazon-deals-of-the-day-7-16/",
-      "image": "https://www.cnet.com/wp-content/uploads/sites/2/amazon-dod-716.jpg",
-      "source": "CNET",
-      "published_at": "2026-07-16T19:24:38Z"
-    },
-    {
-      "brand": "hp",
-      "title": "HP HyperX OMEN 15 review: Built for speed, tuned for competitive gaming",
-      "description": "Reviews News: 'Rating: 3.5/5HP has refreshed its gaming portfolio with the launch of the HyperX OMEN 15. This marked the debut of its first gaming laptop under the .",
-      "url": "https://timesofindia.indiatimes.com/reviews/hp-hyperx-omen-15-review-built-for-speed-tuned-for-competitive-gaming/articleshow/132442427.cms",
-      "image": "https://static.toiimg.com/thumb/msid-132442478,width-1280,height-720,resizemode-6,overlay-toi_sw,pt-32,y_pad-600/photo.jpg",
-      "source": "Times of India",
-      "published_at": "2026-07-16T15:49:00Z"
-    },
-    {
-      "brand": "hp",
-      "title": "Alienware Ryzen Gaming Laptop Deal At Walmart Slashes Price To $899",
-      "description": "Shopping for a budget-friendly gaming laptop? Walmart has slashed the price of the Alienware 15.3-inch gaming laptop to $899, while the HP HyperX Omen is also on sale.",
-      "url": "https://hothardware.com/news/alienware-ryzen-gaming-laptop-deal-walmart-899",
-      "image": "https://images.hothardware.com/contentimages/newsitem/71131/content/hero-alienware-gaming-laptop.jpg",
-      "source": "Hot Hardware",
-      "published_at": "2026-07-16T14:07:00Z"
     }
   ],
   "lenovo": [
+    {
+      "brand": "lenovo",
+      "title": "Lenovo Knocks $850 Off Its Slim 7X Laptop in Time for Back",
+      "description": "It's got 32GB of RAM, a stunning OLED display, 24-hour battery life, and it's down to $1,250 right now.",
+      "url": "https://www.cnet.com/deals/lenovo-yoga-slim-7x-laptop-deal-2026-07-22/",
+      "image": "https://www.cnet.com/wp-content/uploads/sites/2/Lenovo-Yoga-Slim-7X.jpg",
+      "source": "CNET",
+      "published_at": "2026-07-22T18:19:57Z"
+    },
+    {
+      "brand": "lenovo",
+      "title": "Your next laptop could hit new heights of brightness as Samsung introduces new OLED panels for Lenovo, Asus, MSI and Dell machines",
+      "description": "The brighter, the better",
+      "url": "https://www.techradar.com/computing/laptops/your-next-laptop-could-hit-new-heights-of-brightness-as-samsung-introduces-new-oled-panels-for-lenovo-asus-msi-and-dell-machines",
+      "image": "https://cdn.mos.cms.futurecdn.net/LnNw6m2HxAkGFmyfo27Z7o-1920-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-22T08:02:19Z"
+    },
     {
       "brand": "lenovo",
       "title": "Need a new laptop for Back-to-School season? Best Buy is offering up to 60% OFF Lenovo, HP, and Acer Chromebooks during its Black Friday in July sale",
@@ -163,24 +181,6 @@
       "image": "https://www.bgr.com/img/gallery/5-new-snapdragon-x2-laptops-to-keep-on-your-radar-in-2026/l-intro-1784121442.jpg",
       "source": "BGR",
       "published_at": "2026-07-19T21:17:00Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "Lenovo just changed laptop screens forever with TCL’s decade-long OLED technology finally reaching everyday computers",
-      "description": "TCL’s OLED printing tech finally appears inside a Lenovo gaming laptop",
-      "url": "https://www.techradar.com/pro/finally-some-good-news-for-budget-conscious-laptop-fans-lenovo-legion-r9000p-is-the-worlds-first-laptop-with-inkjet-printed-oled",
-      "image": "https://cdn.mos.cms.futurecdn.net/JmeUBkpm3yNYVBjXy8ttFh-1920-80.png",
-      "source": "TechRadar",
-      "published_at": "2026-07-19T21:05:00Z"
-    },
-    {
-      "brand": "lenovo",
-      "title": "23 of the best laptop deals for students next term including Apple, Dell, Lenovo and more",
-      "description": "We've made sure to cover every price point, from the lower end and more affordable, to the more premium and high-performing laptops",
-      "url": "https://www.manchestereveningnews.co.uk/whats-on/family-kids-news/23-best-laptop-deals-students-34296711",
-      "image": "https://i2-prod.manchestereveningnews.co.uk/article34303885.ece/ALTERNATES/s1200d/0_GettyImages-2149691945.jpg",
-      "source": "Manchester Evening News",
-      "published_at": "2026-07-19T19:00:00Z"
     }
   ],
   "acer": [
@@ -278,6 +278,15 @@
   "dell": [
     {
       "brand": "dell",
+      "title": "Your next laptop could hit new heights of brightness as Samsung introduces new OLED panels for Lenovo, Asus, MSI and Dell machines",
+      "description": "The brighter, the better",
+      "url": "https://www.techradar.com/computing/laptops/your-next-laptop-could-hit-new-heights-of-brightness-as-samsung-introduces-new-oled-panels-for-lenovo-asus-msi-and-dell-machines",
+      "image": "https://cdn.mos.cms.futurecdn.net/LnNw6m2HxAkGFmyfo27Z7o-1920-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-22T08:02:19Z"
+    },
+    {
+      "brand": "dell",
       "title": "Dell's Intel Core i5 Laptop Drops 40% to a Record Low in Refurbished Excellent Condition for Back-to-School",
       "description": "Back Market has an astonishing deal that cuts 40% off this excellent laptop.",
       "url": "https://gizmodo.com/dells-intel-core-i5-laptop-drops-40-to-a-record-low-in-refurbished-excellent-condition-for-back-to-school-2000788099",
@@ -356,18 +365,27 @@
       "image": "https://cdn.mos.cms.futurecdn.net/LpYiVMTgvojcnudteqK7FB-2000-80.jpg",
       "source": "TechRadar",
       "published_at": "2026-07-14T11:38:47Z"
-    },
-    {
-      "brand": "dell",
-      "title": "Need a Faster Work Laptop? Entrepreneurs Can Save Big on This Dell Latitude While Supplies Last.",
-      "description": "A dependable Dell Latitude laptop is down to just $250.",
-      "url": "https://www.entrepreneur.com/science-technology/need-a-faster-work-laptop-entrepreneurs-can-save-big-on/504922",
-      "image": "https://www.entrepreneur.com/wp-content/uploads/sites/2/2026/07/1783523238-DellLattitude1.jpg?resize=1024,682",
-      "source": "Entrepreneur",
-      "published_at": "2026-07-11T13:00:00Z"
     }
   ],
   "asus": [
+    {
+      "brand": "asus",
+      "title": "3 things to look for when shopping for a laptop for school - and this notebook checks all the boxes",
+      "description": "Here’s what to look for when you’re shopping for a laptop for school, and why the Asus Vivobook 16 might be a great fit for you.",
+      "url": "https://www.tomsguide.com/computing/laptops/3-things-to-look-for-when-shopping-for-a-laptop-for-school-and-this-notebook-checks-all-the-boxes",
+      "image": "https://cdn.mos.cms.futurecdn.net/w7QKNgZYuX8SjMttZ2LmtG-2226-80.png",
+      "source": "Tom's Guide",
+      "published_at": "2026-07-22T10:44:54Z"
+    },
+    {
+      "brand": "asus",
+      "title": "Your next laptop could hit new heights of brightness as Samsung introduces new OLED panels for Lenovo, Asus, MSI and Dell machines",
+      "description": "The brighter, the better",
+      "url": "https://www.techradar.com/computing/laptops/your-next-laptop-could-hit-new-heights-of-brightness-as-samsung-introduces-new-oled-panels-for-lenovo-asus-msi-and-dell-machines",
+      "image": "https://cdn.mos.cms.futurecdn.net/LnNw6m2HxAkGFmyfo27Z7o-1920-80.jpg",
+      "source": "TechRadar",
+      "published_at": "2026-07-22T08:02:19Z"
+    },
     {
       "brand": "asus",
       "title": "I’ve been using the Asus ROG Strix Scar 18 (2026), and this is the best (and biggest) gaming laptop you can buy right now",
@@ -439,25 +457,7 @@
       "image": "https://images.indianexpress.com/2026/07/Tech-featured-image296.jpg",
       "source": "The Indian Express",
       "published_at": "2026-07-12T08:40:50Z"
-    },
-    {
-      "brand": "asus",
-      "title": "Asus Vivobook 14, Vivobook 15 updated with Intel Core series 3 chips and AI features",
-      "description": "Asus has refreshed its Vivobook 14 and Vivobook 15 laptop lineup with Intel Core Series 3 processors, built-in AI capabilities and improved performance. The new models feature Full-HD IPS displays, up to 16GB RAM, PCIe 4.0 SSD storage and dedicated NPUs for enhanced on-device AI tasks.",
-      "url": "https://www.indiatvnews.com/technology/news/asus-vivobook-14-vivobook-15-updated-with-intel-core-series-3-chips-and-ai-features-2026-07-10-1047821",
-      "image": "https://resize.indiatvnews.com/en/resize/newbucket/1200_-/2026/07/asus-vivobook-1783682634.jpg",
-      "source": "India TV News",
-      "published_at": "2026-07-10T11:34:06Z"
-    },
-    {
-      "brand": "asus",
-      "title": "Asus Vivobook 15 with Intel Core 5 Series 3 processor, 16GB RAM, and 15.6-inch FHD anti-glare display launched in India",
-      "description": "Tech News News: Asus has launched the Vivobook 15 in India, marking the first laptop in the country to run on Intel's new Core 5 Series 3 processor. The company is po.",
-      "url": "https://timesofindia.indiatimes.com/technology/tech-news/asus-vivobook-15-with-intel-core-5-series-3-processor-16gb-ram-and-15-6-inch-fhd-anti-glare-display-launched-in-india/articleshow/132285152.cms",
-      "image": "https://static.toiimg.com/thumb/msid-132285249,width-1280,height-720,resizemode-6,overlay-toi_sw,pt-32,y_pad-600/photo.jpg",
-      "source": "Times of India",
-      "published_at": "2026-07-09T11:24:00Z"
     }
   ],
-  "last_updated": "2026-07-22T06:02:53.235995+00:00"
+  "last_updated": "2026-07-23T07:24:39.228015+00:00"
 }
