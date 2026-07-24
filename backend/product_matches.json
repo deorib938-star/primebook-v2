@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-07-23T09:02:57.284795+00:00",
-  "total": 103,
+  "generated_at": "2026-07-24T06:13:35.976695+00:00",
+  "total": 112,
   "matched_both": 2,
   "matches": [
     {
-      "canonical_name": "Primebook 2 Max",
+      "canonical_name": "Primebook 2 Max (2025)",
       "confidence": 0.95,
       "amazon": {
         "title": "Primebook 2 Max (2026) | 8GB RAM, 256GB UFS Storage | 15.6-Inch Full HD IPS Display | 12hrs Battery ",
@@ -18,7 +18,7 @@
       }
     },
     {
-      "canonical_name": "Primebook 2 Pro",
+      "canonical_name": "Primebook 2 Pro (2025)",
       "confidence": 0.95,
       "amazon": {
         "title": "Primebook 2 Pro (2026) | 8GB RAM, 128GB UFS Storage | 14.1-Inch FHD IPS Display | 14 Hours Battery |",
@@ -32,7 +32,7 @@
       }
     },
     {
-      "canonical_name": "Primebook Wifi",
+      "canonical_name": "Primebook Wifi (2025)",
       "confidence": 1.0,
       "amazon": null,
       "flipkart": {
@@ -42,7 +42,7 @@
       }
     },
     {
-      "canonical_name": "Primebook 4G",
+      "canonical_name": "Primebook 4G (2025)",
       "confidence": 1.0,
       "amazon": null,
       "flipkart": {
@@ -52,7 +52,7 @@
       }
     },
     {
-      "canonical_name": "Primebook 2 Neo",
+      "canonical_name": "Primebook 2 Neo (2025)",
       "confidence": 1.0,
       "amazon": null,
       "flipkart": {
@@ -62,12 +62,112 @@
       }
     },
     {
+      "canonical_name": "HP Chromebook MediaTek Kompanio 500",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "HP Chromebook MediaTek Kompanio 500 - (4 GB/64 GB EMMC Storage/Chrome OS) 11a-na0004MU Chromebook",
+        "price": 15999,
+        "url": "https://www.flipkart.com/hp-chromebook-mediatek-kompanio-500-4-gb-64-gb-emmc-storage-chrome-os-11a-na0004mu/p/itm004641dd14e15?pid=COMG4ZYCJZA8YNKX&lid=LSTCOMG4ZYCJZA8YNKXVUE69E&marketplace=FLIPKART&store=6bo%2Fb5g&spotlightTagId=default_TrendingId_6bo%2Fb5g&srno=b_1_10&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMG4ZYCJZA8YNKX.SEARCH&ppt=browse&ppn=browse&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "HP Chromebook Intel Celeron Dual Core N4120",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "HP Chromebook Intel Celeron Dual Core N4120 - (4 GB/64 GB EMMC Storage/Chrome OS) 14a-ca0506TU Chrom",
+        "price": 21990,
+        "url": "https://www.flipkart.com/hp-chromebook-intel-celeron-dual-core-n4120-4-gb-64-gb-emmc-storage-chrome-os-14a-ca0506tu/p/itmb2e03ff1f9366?pid=COMGBHKFAYHEMVAT&lid=LSTCOMGBHKFAYHEMVATTMWBVX&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_9&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMGBHKFAYHEMVAT.SEARCH&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "HP Touch Chromebook MediaTek MT8183",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "HP Touch Chromebook MediaTek MT8183 - (4 GB/32 GB EMMC Storage/Chrome OS) 11MK G9 Chromebook",
+        "price": 25900,
+        "url": "https://www.flipkart.com/hp-touch-chromebook-mediatek-mt8183-4-gb-32-gb-emmc-storage-chrome-os-11mk-g9/p/itmbcfcbc0ab424f?pid=COMGZFFXQ9GEXPVR&lid=LSTCOMGZFFXQ9GEXPVRIBCKI6&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_8&otracker=browse&fm=organic&iid=8650c85e-8a23-490c-ba3d-6e16af4a9690.COMGZFFXQ9GEXPVR.SEARCH&ppt=hp&ppn=homepage&ssid=f9ad25nya80000001784871731943&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "HP Chromebook Intel Celeron Quad Core N4120",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "HP Chromebook Intel Celeron Quad Core N4120 - (4 GB/64 GB EMMC Storage/Chrome OS) 14a-ca0504TU Chrom",
+        "price": 32279,
+        "url": "https://www.flipkart.com/hp-chromebook-intel-celeron-quad-core-n4120-4-gb-64-gb-emmc-storage-chrome-os-14a-ca0504tu/p/itm786e711f402fa?pid=COMGBHKF9E65BFZP&lid=LSTCOMGBHKF9E65BFZP5UAU9E&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_7&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMGBHKF9E65BFZP.SEARCH&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "HP Chromebook MediaTek Kompanio 540",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "HP Chromebook MediaTek Kompanio 540 - (4 GB/128 GB SSD/Chrome OS) Chromebook 14a-nm0004MU Chromebook",
+        "price": 36990,
+        "url": "https://www.flipkart.com/hp-chromebook-mediatek-kompanio-540-4-gb-128-gb-ssd-chrome-os-14a-nm0004mu/p/itmc28ee25e13254?pid=COMHMXAHGGGRVCYM&lid=LSTCOMHMXAHGGGRVCYMPV3FQL&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_1&otracker=browse&fm=organic&iid=en_yyY578OOvuP8R6gu0JCwk6QHXsmVU8TPGIna60CPwzr4nJ9DqlK8g4MpVuWx1jLxaqj6z_hhZINitQrYo6GXA1zT7Pu6mQPgpTLMAPT_Cbo4rSWrDuW7LDqOrs3Q7w9E&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "HP Chromebook (TouchScreen) MediaTek Kompanio 540",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "HP Chromebook (TouchScreen) MediaTek Kompanio 540 - (4 GB/128 GB SSD/Chrome OS) Chromebook 14a-nm000",
+        "price": 39990,
+        "url": "https://www.flipkart.com/hp-chromebook-touchscreen-mediatek-kompanio-540-4-gb-128-gb-ssd-chrome-os-14a-nm0006mu/p/itm65d2dcd4929ef?pid=COMHMXAHWDXHHDB2&lid=LSTCOMHMXAHWDXHHDB2DLO7VN&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_2&otracker=browse&fm=organic&iid=en_yyY578OOvuP8R6gu0JCwk6QHXsmVU8TPGIna60CPwzp_-txbTgB1a0ycyJV_YrR2zF298J9_nNXAlG4jzas2YlzT7Pu6mQPgpTLMAPT_Cbo4rSWrDuW7LDqOrs3Q7w9E&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "HP 255 Notebook, AMD Athlon Silver 7120U",
+      "confidence": 1.0,
+      "amazon": {
+        "title": "HP 255 Notebook, AMD Athlon Silver 7120U,8GB DDR4, 256GB SSD, 15.6-inch(39.6cm), Anti-Glare, HD Lapt",
+        "price": 26980,
+        "url": "https://www.amazon.in/dp/B0DV984J97"
+      },
+      "flipkart": null
+    },
+    {
+      "canonical_name": "HP Laptop 255 G8/G9 AMD Ryzen 3 3250U",
+      "confidence": 1.0,
+      "amazon": {
+        "title": "HP Laptop 255 G8/G9 AMD Ryzen 3 3250U Dual Core - (8GB/512GB SSD/AMD Radeon Graphics/15.6\" (39.62cm)",
+        "price": 33990,
+        "url": "https://www.amazon.in/dp/B0B88K9XNJ"
+      },
+      "flipkart": null
+    },
+    {
+      "canonical_name": "HP Laptop 15s, Intel Celeron N4500",
+      "confidence": 1.0,
+      "amazon": {
+        "title": "HP Laptop 15s, Intel Celeron N4500, 15.6-inch (39.6 cm), HD, 8GB DDR4, 512GB SSD, Intel UHD Graphics",
+        "price": 22999,
+        "url": "https://www.amazon.in/dp/B0DGQ3JLPF"
+      },
+      "flipkart": null
+    },
+    {
       "canonical_name": "HP 14s Intel Celeron Dual Core N4500 Laptop",
       "confidence": 1.0,
       "amazon": {
         "title": "HP 14s Intel Celeron Dual Core N4500 Laptop (8GB/512GB SSD/Win 11) 14.0\" HD Display, MSO 24, Black, ",
         "price": 39200,
         "url": "https://www.amazon.in/dp/B0FYYBXPPD"
+      },
+      "flipkart": null
+    },
+    {
+      "canonical_name": "HP Laptop 255 G9 (2024), AMD Athlon Silver 3050U",
+      "confidence": 1.0,
+      "amazon": {
+        "title": "HP Laptop 255 G9 (2024), AMD Athlon Silver 3050U - (4GB/256GB SSD/AMD Radeon Graphics/Windows 11) Th",
+        "price": 39999,
+        "url": "https://www.amazon.in/dp/B0DH8825W6"
       },
       "flipkart": null
     },
@@ -100,56 +200,6 @@
         "url": "https://www.amazon.in/dp/B0CGM8YD5J"
       },
       "flipkart": null
-    },
-    {
-      "canonical_name": "HP Chromebook Intel Celeron Dual Core N4120",
-      "confidence": 1.0,
-      "amazon": null,
-      "flipkart": {
-        "title": "HP Chromebook Intel Celeron Dual Core N4120 - (4 GB/64 GB EMMC Storage/Chrome OS) 14a-ca0506TU Chrom",
-        "price": 21990,
-        "url": "https://www.flipkart.com/hp-chromebook-intel-celeron-dual-core-n4120-4-gb-64-gb-emmc-storage-chrome-os-14a-ca0506tu/p/itmb2e03ff1f9366?pid=COMGBHKFAYHEMVAT&lid=LSTCOMGBHKFAYHEMVATTMWBVX&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_9&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMGBHKFAYHEMVAT.SEARCH&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
-      }
-    },
-    {
-      "canonical_name": "HP Chromebook Intel Celeron Quad Core N4120",
-      "confidence": 1.0,
-      "amazon": null,
-      "flipkart": {
-        "title": "HP Chromebook Intel Celeron Quad Core N4120 - (4 GB/64 GB EMMC Storage/Chrome OS) 14a-ca0504TU Chrom",
-        "price": 32279,
-        "url": "https://www.flipkart.com/hp-chromebook-intel-celeron-quad-core-n4120-4-gb-64-gb-emmc-storage-chrome-os-14a-ca0504tu/p/itm786e711f402fa?pid=COMGBHKF9E65BFZP&lid=LSTCOMGBHKF9E65BFZP5UAU9E&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_7&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMGBHKF9E65BFZP.SEARCH&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
-      }
-    },
-    {
-      "canonical_name": "HP Chromebook MediaTek Kompanio 500",
-      "confidence": 1.0,
-      "amazon": null,
-      "flipkart": {
-        "title": "HP Chromebook MediaTek Kompanio 500 - (4 GB/64 GB EMMC Storage/Chrome OS) 11a-na0004MU Chromebook",
-        "price": 36990,
-        "url": "https://www.flipkart.com/hp-chromebook-mediatek-kompanio-500-4-gb-64-gb-emmc-storage-chrome-os-11a-na0004mu/p/itm004641dd14e15?pid=COMG4ZYCJZA8YNKX&lid=LSTCOMG4ZYCJZA8YNKXVUE69E&marketplace=FLIPKART&store=6bo%2Fb5g&spotlightTagId=default_TrendingId_6bo%2Fb5g&srno=b_1_10&otracker=browse&fm=organic&iid=fc95bb42-058c-4590-b290-6820ad6363fa.COMG4ZYCJZA8YNKX.SEARCH&ppt=browse&ppn=browse&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
-      }
-    },
-    {
-      "canonical_name": "HP Chromebook MediaTek Kompanio 540",
-      "confidence": 1.0,
-      "amazon": null,
-      "flipkart": {
-        "title": "HP Chromebook MediaTek Kompanio 540 - (4 GB/128 GB SSD/Chrome OS) Chromebook 14a-nm0004MU Chromebook",
-        "price": 36990,
-        "url": "https://www.flipkart.com/hp-chromebook-mediatek-kompanio-540-4-gb-128-gb-ssd-chrome-os-14a-nm0004mu/p/itmc28ee25e13254?pid=COMHMXAHGGGRVCYM&lid=LSTCOMHMXAHGGGRVCYMPV3FQL&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_1&otracker=browse&fm=organic&iid=en_yyY578OOvuP8R6gu0JCwk6QHXsmVU8TPGIna60CPwzr4nJ9DqlK8g4MpVuWx1jLxaqj6z_hhZINitQrYo6GXA1zT7Pu6mQPgpTLMAPT_Cbo4rSWrDuW7LDqOrs3Q7w9E&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
-      }
-    },
-    {
-      "canonical_name": "HP Chromebook MediaTek Kompanio 540",
-      "confidence": 1.0,
-      "amazon": null,
-      "flipkart": {
-        "title": "HP Chromebook (TouchScreen) MediaTek Kompanio 540 - (4 GB/128 GB SSD/Chrome OS) Chromebook 14a-nm000",
-        "price": 39990,
-        "url": "https://www.flipkart.com/hp-chromebook-touchscreen-mediatek-kompanio-540-4-gb-128-gb-ssd-chrome-os-14a-nm0006mu/p/itm65d2dcd4929ef?pid=COMHMXAHWDXHHDB2&lid=LSTCOMHMXAHWDXHHDB2DLO7VN&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_2&otracker=browse&fm=organic&iid=en_yyY578OOvuP8R6gu0JCwk6QHXsmVU8TPGIna60CPwzp_-txbTgB1a0ycyJV_YrR2zF298J9_nNXAlG4jzas2YlzT7Pu6mQPgpTLMAPT_Cbo4rSWrDuW7LDqOrs3Q7w9E&ppt=None&ppn=None&ssid=xrm90vkzr40000001784526689937&ov_redirect=true"
-      }
     },
     {
       "canonical_name": "Lenovo IdeaPad 3 11th Gen Intel Core i3 15.6\" FHD Thin & Light Laptop(8GB/512GB SSD/Windows 11/Offic",
@@ -196,7 +246,7 @@
       "confidence": 1.0,
       "amazon": {
         "title": "Lenovo V15 Intel Core i3 10th Gen 15.6\" Laptop (4GBRAM/256GB SSD/Windows 10 Home/1.45 kg) 82C500X4IH",
-        "price": 24900,
+        "price": 27990,
         "url": "https://www.amazon.in/dp/B095YTYHR7"
       },
       "flipkart": null
@@ -317,7 +367,7 @@
       "amazon": null,
       "flipkart": {
         "title": "Lenovo Chromebook 11IJL9 Intel Celeron Dual Core N4500 - (4 GB/64 GB EMMC Storage/Chrome OS) Chromeb",
-        "price": 17990,
+        "price": 15999,
         "url": "https://www.flipkart.com/lenovo-chromebook-11ijl9-intel-celeron-dual-core-n4500-4-gb-64-gb-emmc-storage-chrome-os/p/itmd2a376187074e?pid=COMHCYMG83BGNQHH&lid=LSTCOMHCYMG83BGNQHHQNGMKF&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_9&otracker=browse&fm=organic&iid=20bf2f81-5f8c-4824-a63c-98c0850aa355.COMHCYMG83BGNQHH.SEARCH&ppt=None&ppn=None&ssid=b26bv38p8g0000001784526744344&ov_redirect=true"
       }
     },
@@ -517,7 +567,7 @@
       "amazon": null,
       "flipkart": {
         "title": "Acer Aspire 3 Intel Celeron Dual Core N4500 - (12 GB/512 GB SSD/Windows 11 Home) A324-45 Thin and Li",
-        "price": 27990,
+        "price": 19990,
         "url": "https://www.flipkart.com/acer-aspire-3-intel-celeron-dual-core-n4500-12-gb-512-gb-ssd-windows-11-home-a324-45-thin-light-laptop/p/itmbbfe217e40d59?pid=COMHFZYZFVD2MCAB&lid=LSTCOMHFZYZFVD2MCAB4MHZPI&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_21&otracker=browse&fm=organic&iid=8168ac04-9ee3-413b-95bf-9b2d2fe2aba0.COMHFZYZFVD2MCAB.SEARCH&ppt=None&ppn=None&ssid=hhkohy400w0000001784529480254&ov_redirect=true"
       }
     },
@@ -572,12 +622,22 @@
       }
     },
     {
+      "canonical_name": "Acer Aspire 3 Intel Celeron Dual Core - (8 GB/128 GB SSD/Windows 11 Home) A311-45 Thin and Light Lap",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "Acer Aspire 3 Intel Celeron Dual Core - (8 GB/128 GB SSD/Windows 11 Home) A311-45 Thin and Light Lap",
+        "price": 34640,
+        "url": "https://www.flipkart.com/acer-aspire-3-intel-celeron-dual-core-8-gb-128-gb-ssd-windows-11-home-a311-45-thin-light-laptop/p/itmad38595c5a902?pid=COMH7NCZGGGWQC4W&lid=LSTCOMH7NCZGGGWQC4WJEDQIL&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_21&otracker=browse&fm=organic&iid=044b065e-4034-420c-895a-d9dae80c0450.COMH7NCZGGGWQC4W.SEARCH&ppt=None&ppn=None&ssid=5c9c9ve0ds0000001784871868082&ov_redirect=true"
+      }
+    },
+    {
       "canonical_name": "Acer Chromebook Intel Celeron Dual Core N4500 - (8 GB/128 GB EMMC Storage/Chrome OS) CB314-3H-C5QE/ ",
       "confidence": 1.0,
       "amazon": null,
       "flipkart": {
         "title": "Acer Chromebook Intel Celeron Dual Core N4500 - (8 GB/128 GB EMMC Storage/Chrome OS) CB314-3H-C5QE/ ",
-        "price": 27869,
+        "price": 36990,
         "url": "https://www.flipkart.com/acer-chromebook-intel-celeron-dual-core-n4500-8-gb-128-gb-emmc-storage-chrome-os-cb314-3h-c5qe-cb314-3h-c0bz/p/itm04458b376eefa?pid=COMGSV3G3RYBAHX4&lid=LSTCOMGSV3G3RYBAHX4UBOUVK&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_19&otracker=browse&fm=organic&iid=8168ac04-9ee3-413b-95bf-9b2d2fe2aba0.COMGSV3G3RYBAHX4.SEARCH&ppt=None&ppn=None&ssid=hhkohy400w0000001784529480254&ov_redirect=true"
       }
     },
@@ -639,6 +699,16 @@
         "title": "Acer Aspire 3 AMD Ryzen 3 Dual Core 3250U - (4 GB/1 TB HDD/Windows 10 Home) A315-23-R96Y Laptop",
         "price": 36499,
         "url": "https://www.flipkart.com/acer-aspire-3-amd-ryzen-dual-core-3250u-4-gb-1-tb-hdd-windows-10-home-a315-23-r96y-laptop/p/itm45174eb5828a2?pid=COMFY344NPEFUHAV&lid=LSTCOMFY344NPEFUHAVZEB3CN&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_9&otracker=browse&fm=organic&iid=8fcd2edd-b466-4a83-a083-7e885b56013c.COMFY344NPEFUHAV.SEARCH&ppt=None&ppn=None&ssid=g0bu0zrkzk0000001784699586372&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "Acer Chromebook Intel Celeron Dual Core N4500 - (8 GB/64 GB EMMC Storage/Chrome OS) CB314-3H-C5QE/ C",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "Acer Chromebook Intel Celeron Dual Core N4500 - (8 GB/64 GB EMMC Storage/Chrome OS) CB314-3H-C5QE/ C",
+        "price": 22990,
+        "url": "https://www.flipkart.com/acer-chromebook-intel-celeron-dual-core-n4500-8-gb-64-gb-emmc-storage-chrome-os-cb314-3h-c5qe-cb314-3h-cobz/p/itm04458b376eefa?pid=COMGSV3GZYUDG6NP&lid=LSTCOMGSV3GZYUDG6NP2QWBZA&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_22&otracker=browse&fm=organic&iid=044b065e-4034-420c-895a-d9dae80c0450.COMGSV3GZYUDG6NP.SEARCH&ppt=None&ppn=None&ssid=5c9c9ve0ds0000001784871868082&ov_redirect=true"
       }
     },
     {
@@ -727,7 +797,7 @@
       "amazon": null,
       "flipkart": {
         "title": "Acer One 11 Intel Celeron Dual Core N4500 - (4 GB/128 GB SSD/Windows 11 Home) Z8-284 Thin and Light ",
-        "price": 27990,
+        "price": 36990,
         "url": "https://www.flipkart.com/acer-one-11-intel-celeron-dual-core-n4500-4-gb-128-gb-ssd-windows-home-z8-284-thin-light-laptop/p/itmb91d248191790?pid=COMGP2YUNSNG9ZZS&lid=LSTCOMGP2YUNSNG9ZZS8AKCG4&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_20&otracker=browse&fm=organic&iid=8168ac04-9ee3-413b-95bf-9b2d2fe2aba0.COMGP2YUNSNG9ZZS.SEARCH&ppt=None&ppn=None&ssid=hhkohy400w0000001784529480254&ov_redirect=true"
       }
     },
@@ -867,7 +937,7 @@
       "amazon": null,
       "flipkart": {
         "title": "ASUS Chromebook Intel Celeron Dual Core N4500 - (4 GB/128 GB EMMC Storage/Chrome OS) CX1500CKA-NJ041",
-        "price": 29572,
+        "price": 32400,
         "url": "https://www.flipkart.com/asus-chromebook-intel-celeron-dual-core-n4500-4-gb-128-gb-emmc-storage-chrome-os-cx1500cka-nj0413/p/itmc1d20ec9ce589?pid=COMGSHM3XZGQ5MGT&lid=LSTCOMGSHM3XZGQ5MGTP70KLD&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_15&otracker=browse&fm=organic&iid=48887c91-fc62-4b35-b114-53dd36d75487.COMGSHM3XZGQ5MGT.SEARCH&ppt=sp&ppn=sp&ssid=6r18s8pcwg0000001784529555195&ov_redirect=true"
       }
     },
@@ -982,6 +1052,16 @@
       }
     },
     {
+      "canonical_name": "ASUS Chromebook Intel Celeron Dual Core N4500 - (8 GB/128 GB EMMC Storage/Chrome OS) CX1400CKA-EK026",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "ASUS Chromebook Intel Celeron Dual Core N4500 - (8 GB/128 GB EMMC Storage/Chrome OS) CX1400CKA-EK026",
+        "price": 39990,
+        "url": "https://www.flipkart.com/asus-chromebook-intel-celeron-dual-core-n4500-8-gb-128-gb-emmc-storage-chrome-os-cx1400cka-ek0266/p/itm3cc0cadd59faf?pid=COMGSHM3MQYMZT8U&lid=LSTCOMGSHM3MQYMZT8UTXSY8K&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_18&otracker=browse&fm=organic&iid=eed51098-e2af-456a-b71a-0c9c2b12ba85.COMGSHM3MQYMZT8U.SEARCH&ppt=sp&ppn=sp&ssid=mr925da0ps0000001784871997403&ov_redirect=true"
+      }
+    },
+    {
       "canonical_name": "ASUS Chromebook Intel Celeron Dual Core N4500 - (8 GB/64 GB EMMC Storage/Chrome OS) CX1500CKA-EJ0275",
       "confidence": 1.0,
       "amazon": null,
@@ -989,6 +1069,16 @@
         "title": "ASUS Chromebook Intel Celeron Dual Core N4500 - (8 GB/64 GB EMMC Storage/Chrome OS) CX1500CKA-EJ0275",
         "price": 34990,
         "url": "https://www.flipkart.com/asus-chromebook-intel-celeron-dual-core-n4500-8-gb-64-gb-emmc-storage-chrome-os-cx1500cka-ej0275/p/itmc1d20ec9ce589?pid=COMGSHM3MYPYGYKG&lid=LSTCOMGSHM3MYPYGYKGLQIR3M&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_9&otracker=browse&fm=organic&iid=32551942-827c-4b07-8f3a-07d887d4f042.COMGSHM3MYPYGYKG.SEARCH&ppt=None&ppn=None&ssid=q50ovhkar40000001784699669824&ov_redirect=true"
+      }
+    },
+    {
+      "canonical_name": "ASUS Chromebook CX15 Intel Celeron Dual Core N4500 - (4 GB/64 GB EMMC Storage/Chrome OS) CX1505CKA-S",
+      "confidence": 1.0,
+      "amazon": null,
+      "flipkart": {
+        "title": "ASUS Chromebook CX15 Intel Celeron Dual Core N4500 - (4 GB/64 GB EMMC Storage/Chrome OS) CX1505CKA-S",
+        "price": 21990,
+        "url": "https://www.flipkart.com/asus-chromebook-cx15-intel-celeron-dual-core-n4500-4-gb-64-gb-emmc-storage-chrome-os-cx1505cka-s70179/p/itm75a5cdacc688f?pid=COMHDPZGFT7VH8BH&lid=LSTCOMHDPZGFT7VH8BHQNCKQO&marketplace=FLIPKART&store=6bo%2Fb5g&srno=b_1_9&otracker=browse&fm=organic&iid=eed51098-e2af-456a-b71a-0c9c2b12ba85.COMHDPZGFT7VH8BH.SEARCH&ppt=sp&ppn=sp&ssid=mr925da0ps0000001784871997403&ov_redirect=true"
       }
     },
     {
